@@ -38,7 +38,7 @@ public:
 int main()
 {
 	CustomClient c;
-	c.Connect("127.0.0.1", 60000);
+	c.Connect("2.tcp.ngrok.io",15739);
 
 	bool key[3] = { false, false, false };
 	bool old_key[3] = { false, false, false };
