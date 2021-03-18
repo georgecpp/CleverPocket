@@ -4,6 +4,7 @@
 #include "net_tsqueue.h"
 #include "net_message.h"
 #include "net_connection.h"
+#include "net_dbconnection.h"
 
 namespace olc
 {
@@ -65,6 +66,23 @@ namespace olc
 				std::cout << "[SERVER] Stopped!\n";
 			}
 
+			void ConnectToDatabase()
+			{
+				if (m_dbconnector.OnAttemptToConnect())
+				{
+					std::cout << "[SERVER] Server is connected successfully to the SQL Server Database!\n";
+				}
+			}
+
+			void ExecQuery(const std::string& query)
+			{
+				//SQLCHAR query_res = m_dbconnector.ExecuteQuery(query);
+				std::cout << "\n[SERVER] Query Result:\n\n\n";
+				m_dbconnector.ExecuteQuery(query);
+				
+			}
+
+		
 			// ASYNC - Instruct asio to wait for connection
 			void WaitForClientConnection()
 			{
@@ -245,6 +263,9 @@ namespace olc
 
 			// Clients will be identified in the "wider system" via an ID
 			uint32_t nIDCounter = 10000;
+
+			// dbconnection class.
+			dbconnection<T> m_dbconnector;
 		};
 	}
 }

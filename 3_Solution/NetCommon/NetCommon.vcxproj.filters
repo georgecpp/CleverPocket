@@ -36,5 +36,8 @@
     <ClInclude Include="net_server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="net_dbconnection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

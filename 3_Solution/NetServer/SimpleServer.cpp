@@ -69,6 +69,8 @@ int main()
 {
 	CustomServer server(60000);
 	server.Start();
+	server.ConnectToDatabase();
+	server.ExecQuery("SELECT TOP(1000) * FROM[CleverPocket].[dbo].[Users]");
 
 	while (1)
 	{
