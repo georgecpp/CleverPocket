@@ -86,6 +86,12 @@ namespace olc
 				return true;
 			}
 
+
+			bool isConnected()
+			{
+				return SQLGetConnectAttr(sqlConnHandle,SQL_ATTR_CONNECTION_DEAD,NULL,NULL,NULL);
+			}
+
 			void ExecuteQuery(const std::string& query)
 			{
 				//SQLCHAR queryResult[SQL_RESULT_LEN];
@@ -94,7 +100,7 @@ namespace olc
 				std::cout << "[DBCONNECTION] Executing SQL query...";
 				std::cout << "\n";
 
-				if (SQL_SUCCESS != SQLExecDirect(sqlStmtHandle, (SQLWCHAR*)L"SELECT TOP(1000) * FROM[CleverPocket].[dbo].[Users]", SQL_NTS))
+				if (SQLPrepareA(sqlStmtHandle, (SQLCHAR*)query.c_str(), SQL_NTS) != SQL_SUCCESS)
 				{
 					std::cout << "[DBCONNECTION] Error querying SQL Server";
 					std::cout << "\n";
@@ -102,17 +108,22 @@ namespace olc
 				}
 				else
 				{
+					SQLExecute(sqlStmtHandle);
+					std::cout << "[DBCONNECTION] Query executed successfully!\n";
 					//declare output variable and pointer
 					SQLCHAR queryResult[SQL_RESULT_LEN];
 					SQLINTEGER ptrQueryResult;
 					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
 						SQLGetData(sqlStmtHandle, 2, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
-						std::cout << "\nQuery Result:\n\n";
+						std::cout << "\nQuery Result:\n";
 						std::cout << queryResult << " ";
 					}
 
 					//return queryResult;
 				}
+
+				// finish the query and disconnect. Expect connect attempt in Server.ExecQuery()
+				SQLDisconnect(sqlConnHandle);
 			}
 
 

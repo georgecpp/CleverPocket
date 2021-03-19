@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <olc_net.h>
 
@@ -8,6 +9,7 @@ enum class CustomMsgTypes : uint32_t
 	ServerPing,
 	MessageAll,
 	ServerMessage,
+	RegisterRequest,
 };
 
 
@@ -61,6 +63,32 @@ protected:
 
 		}
 		break;
+
+		case CustomMsgTypes::RegisterRequest:
+		{
+			// the message contains the data for registration.
+			std::cout << "[" << client->GetID() << "]: Register to DB request\n";
+			char username[1024];
+			char password[1024];
+			char email[1024];
+
+			msg >> email >> password >> username;
+			char responseback[1024];
+
+			if (RegisterUserToDatabase(username, password, email))
+			{
+				strcpy(responseback,"Successfully registered user to the database!");
+			}
+			else
+			{
+				// MORE EXPLICIT!!! WHY?? ALREADY THERE? ETC.
+				strcpy(responseback, "Couldn't register user to the database");
+			}
+
+			msg << responseback;
+			client->Send(msg); // send message back to client.
+		}
+		break;
 		}
 	}
 };
@@ -69,8 +97,8 @@ int main()
 {
 	CustomServer server(60000);
 	server.Start();
-	server.ConnectToDatabase();
-	server.ExecQuery("SELECT TOP(1000) * FROM[CleverPocket].[dbo].[Users]");
+	//server.ConnectToDatabase();
+	//server.ExecQuery("INSERT INTO [CleverPocket].[dbo].[Users] (Username, Password, Email, Role) VALUES ('test1', 'test123', 'testxd', 'user')");
 
 	while (1)
 	{

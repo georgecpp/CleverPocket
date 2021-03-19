@@ -72,14 +72,42 @@ namespace olc
 				{
 					std::cout << "[SERVER] Server is connected successfully to the SQL Server Database!\n";
 				}
+				else
+				{
+					throw - 1;
+				}
 			}
 
 			void ExecQuery(const std::string& query)
 			{
-				//SQLCHAR query_res = m_dbconnector.ExecuteQuery(query);
-				std::cout << "\n[SERVER] Query Result:\n\n\n";
-				m_dbconnector.ExecuteQuery(query);
-				
+				/*if (!m_dbconnector.isConnected())
+				{*/
+					ConnectToDatabase();
+					std::cout << "\n[SERVER] Query Result:\n\n\n";
+					m_dbconnector.ExecuteQuery(query); // throws int exception!
+					std::cout << "\n";
+				//}
+
+
+				//else
+				//{
+				//	std::cout << "\n[SERVER] Query Result:\n\n\n";
+				//	m_dbconnector.ExecuteQuery(query); // throws int exception!
+				//	std::cout << "\n";
+				//}
+				 
+				//if (m_dbconnector.OnAttemptToConnect())
+				//{
+				//	//SQLCHAR query_res = m_dbconnector.ExecuteQuery(query);
+				//	std::cout << "\n[SERVER] Query Result:\n\n\n";
+				//	m_dbconnector.ExecuteQuery(query); // throws int exception!
+				//	std::cout << "\n";
+				//}
+				//else
+				//{
+				//	std::cout << "\n[SERVER] Couldn't connect to database anymore! :\n\n\n";
+				//	throw - 1;
+				//}
 			}
 
 		
@@ -246,7 +274,38 @@ namespace olc
 
 			}
 
+			bool RegisterUserToDatabase(char username[], char password[], char email[])
+			{
+				try
+				{
+					// build query with those credentials.
+					std::string l_username = convertToSqlVarcharFormat(username);
+					std::string l_password = convertToSqlVarcharFormat(password);
+					std::string l_email = convertToSqlVarcharFormat(email);
+					std::string query = "INSERT INTO [CleverPocket].[dbo].[Users] (Username, Password, Email) VALUES ( " + l_username + ", "+l_password+", "+l_email+")";
+					//std::string query = "SELECT * FROM [CleverPocket].[dbo].[Users]";
 
+					// exec query
+					ExecQuery(query);
+					return true;
+				}
+				catch (int)
+				{
+					return false;
+				}
+				// finally close connection.
+				
+			}
+
+			private:
+				std::string convertToSqlVarcharFormat(char field[])
+				{
+					std::string str;
+					str = "'";
+					str += field;
+					str += "'";
+					return str;
+				}
 		protected:
 			// Thread Safe Queue for incoming message packets
 			tsqueue<owned_message<T>> m_qMessagesIn;
