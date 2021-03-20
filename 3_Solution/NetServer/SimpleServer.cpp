@@ -2,6 +2,7 @@
 #include <iostream>
 #include <olc_net.h>
 
+
 enum class CustomMsgTypes : uint32_t
 {
 	ServerAccept,
@@ -75,14 +76,26 @@ protected:
 			msg >> email >> password >> username;
 			char responseback[1024];
 
-			if (RegisterUserToDatabase(username, password, email))
+			try
 			{
-				strcpy(responseback,"Successfully registered user to the database!");
+				RegisterUserToDatabase(username, password, email);
+				strcpy(responseback, "Successfully registered user to the database!");
 			}
-			else
+			catch(olc::net::EmailValidationError)
 			{
-				// MORE EXPLICIT!!! WHY?? ALREADY THERE? ETC.
-				strcpy(responseback, "Couldn't register user to the database");
+				strcpy(responseback, "The email you entered is not a valid format! ");
+			}
+			catch (olc::net::UserAlreadyRegisteredError)
+			{
+				strcpy(responseback, "User with these credentials is already registered!");
+			}
+			catch (olc::net::DatabaseQueryError)
+			{
+				strcpy(responseback, "Couldn't register user to the database!");
+			}
+			catch (olc::net::DatabaseConnectionError)
+			{
+				strcpy(responseback, "Server couldn't connect to SQL Server Database!");
 			}
 
 			msg << responseback;

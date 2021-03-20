@@ -1,5 +1,6 @@
 #pragma once
 #include "net_common.h"
+#include "net_exceptions.h"
 #include <windows.h>
 #include <sqlext.h>
 #include <sqltypes.h>
@@ -104,7 +105,7 @@ namespace olc
 				{
 					std::cout << "[DBCONNECTION] Error querying SQL Server";
 					std::cout << "\n";
-					throw - 1;
+					throw DatabaseQueryError("Error querying SQL Server");
 				}
 				else
 				{
@@ -114,7 +115,7 @@ namespace olc
 					SQLCHAR queryResult[SQL_RESULT_LEN];
 					SQLINTEGER ptrQueryResult;
 					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
-						SQLGetData(sqlStmtHandle, 2, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
 						std::cout << "\nQuery Result:\n";
 						std::cout << queryResult << " ";
 					}
@@ -124,6 +125,41 @@ namespace olc
 
 				// finish the query and disconnect. Expect connect attempt in Server.ExecQuery()
 				SQLDisconnect(sqlConnHandle);
+			}
+
+			std::string GetResultFromExecuteQuery(const std::string& query)
+			{
+				//SQLCHAR queryResult[SQL_RESULT_LEN];
+
+				std::string resultString = "";
+				std::cout << "\n";
+				std::cout << "[DBCONNECTION] Executing SQL query...";
+				std::cout << "\n";
+
+				if (SQLPrepareA(sqlStmtHandle, (SQLCHAR*)query.c_str(), SQL_NTS) != SQL_SUCCESS)
+				{
+					std::cout << "[DBCONNECTION] Error querying SQL Server";
+					std::cout << "\n";
+					throw DatabaseQueryError("Error querying SQL Server");
+				}
+				else
+				{
+					SQLExecute(sqlStmtHandle);
+					std::cout << "[DBCONNECTION] Query executed successfully!\n";
+					//declare output variable and pointer
+					SQLCHAR queryResult[SQL_RESULT_LEN];
+					SQLINTEGER ptrQueryResult;
+					if (SQLFetch(sqlStmtHandle) == SQL_SUCCESS)
+					{
+						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
+						std::string str((const char*)queryResult);
+						resultString += str;
+					}
+				}
+				// finish the query and disconnect. Expect connect attempt in Server.ExecQuery()
+				SQLDisconnect(sqlConnHandle);
+
+				return resultString;
 			}
 
 

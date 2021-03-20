@@ -5,6 +5,7 @@
 #include "net_message.h"
 #include "net_connection.h"
 #include "net_dbconnection.h"
+#include "net_exceptions.h"
 
 namespace olc
 {
@@ -74,8 +75,14 @@ namespace olc
 				}
 				else
 				{
-					throw - 1;
+					throw DatabaseConnectionError("[SERVER] Couldn't connect to SQL Server Database\n");
 				}
+			}
+
+			std::string GetQueryExecResult(const std::string& query)
+			{
+				ConnectToDatabase();
+				return m_dbconnector.GetResultFromExecuteQuery(query);
 			}
 
 			void ExecQuery(const std::string& query)
@@ -84,7 +91,7 @@ namespace olc
 				{*/
 					ConnectToDatabase();
 					std::cout << "\n[SERVER] Query Result:\n\n\n";
-					m_dbconnector.ExecuteQuery(query); // throws int exception!
+					m_dbconnector.ExecuteQuery(query); // throws Query exception!
 					std::cout << "\n";
 				//}
 
@@ -274,27 +281,25 @@ namespace olc
 
 			}
 
-			bool RegisterUserToDatabase(char username[], char password[], char email[])
+			void RegisterUserToDatabase(char username[], char password[], char email[])
 			{
-				try
-				{
 					// build query with those credentials.
+					if (!checkEmailFormat(email))
+					{
+						throw EmailValidationError("Email Validation Failed. Format is not good!");
+					}
+
+					if (checkUserAlreadyRegistered(username, email))
+					{
+						throw UserAlreadyRegisteredError("A user with this username is already registered to the database!");
+					}
 					std::string l_username = convertToSqlVarcharFormat(username);
 					std::string l_password = convertToSqlVarcharFormat(password);
 					std::string l_email = convertToSqlVarcharFormat(email);
 					std::string query = "INSERT INTO [CleverPocket].[dbo].[Users] (Username, Password, Email) VALUES ( " + l_username + ", "+l_password+", "+l_email+")";
 					//std::string query = "SELECT * FROM [CleverPocket].[dbo].[Users]";
-
 					// exec query
-					ExecQuery(query);
-					return true;
-				}
-				catch (int)
-				{
-					return false;
-				}
-				// finally close connection.
-				
+					ExecQuery(query); 				
 			}
 
 			private:
@@ -305,6 +310,35 @@ namespace olc
 					str += field;
 					str += "'";
 					return str;
+				}
+				bool checkUserAlreadyRegistered(char username[], char email[])
+				{
+					// first check if the username is already there.
+					std::string l_username = convertToSqlVarcharFormat(username);
+					std::string query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Username = " + l_username + ") " + "SELECT 1 ELSE SELECT 0";
+					std::string result = GetQueryExecResult(query);
+					if (result == "1")
+					{
+						return true;
+					}
+
+					// then check if email is already there.
+					std::string l_email = convertToSqlVarcharFormat(email);
+					query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Email = " + l_email + ") " + "SELECT 1 ELSE SELECT 0";
+					result = GetQueryExecResult(query);
+					if (result == "1")
+					{
+						return true;
+					}
+
+					return false;
+				}
+				bool checkEmailFormat(char email[])
+				{
+					// handle REGEX.
+
+
+					return true;
 				}
 		protected:
 			// Thread Safe Queue for incoming message packets

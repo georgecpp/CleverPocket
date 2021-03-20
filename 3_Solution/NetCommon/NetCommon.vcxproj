@@ -23,6 +23,7 @@
     <ClInclude Include="net_common.h" />
     <ClInclude Include="net_connection.h" />
     <ClInclude Include="net_dbconnection.h" />
+    <ClInclude Include="net_exceptions.h" />
     <ClInclude Include="net_message.h" />
     <ClInclude Include="net_server.h" />
     <ClInclude Include="net_tsqueue.h" />
