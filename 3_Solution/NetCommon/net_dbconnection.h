@@ -113,7 +113,7 @@ namespace olc
 					std::cout << "[DBCONNECTION] Query executed successfully!\n";
 					//declare output variable and pointer
 					SQLCHAR queryResult[SQL_RESULT_LEN];
-					SQLINTEGER ptrQueryResult;
+					SQLLEN ptrQueryResult;
 					while (SQLFetch(sqlStmtHandle) == SQL_SUCCESS) {
 						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
 						std::cout << "\nQuery Result:\n";
@@ -148,7 +148,7 @@ namespace olc
 					std::cout << "[DBCONNECTION] Query executed successfully!\n";
 					//declare output variable and pointer
 					SQLCHAR queryResult[SQL_RESULT_LEN];
-					SQLINTEGER ptrQueryResult;
+					SQLLEN ptrQueryResult;
 					if (SQLFetch(sqlStmtHandle) == SQL_SUCCESS)
 					{
 						SQLGetData(sqlStmtHandle, 1, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);

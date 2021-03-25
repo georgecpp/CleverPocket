@@ -1,6 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <olc_net.h>
+#include <sstream>
 
 
 enum class CustomMsgTypes : uint32_t
@@ -44,14 +45,11 @@ public:
 		std::string readpassword;
 		std::string reademail;
 		std::cout << "\nUsername: ";
-		//std::getline(std::cin, readusername);
-		std::cin >> readusername;
-		std::cout << "\nPassword: ";
-		//std::getline(std::cin, readpassword);
-		std::cin >> readpassword;
-		std::cout << "\nEmail: ";
-		//std::getline(std::cin, reademail);
-		std::cin >> reademail;
+		std::getline(std::cin, readusername);
+		std::cout << "Password: ";
+		std::getline(std::cin, readpassword);
+		std::cout << "Email: ";
+		std::getline(std::cin, reademail);
 		std::cout << "\n";
 
 		olc::net::message<CustomMsgTypes> msg;
@@ -78,11 +76,33 @@ public:
 	}
 };
 
+std::vector<std::string> getIpPort()
+{
+
+	// CHECK ALSO FOR SECURITY!!!!! KEY BASED ALGO. TO DO.
+
+	FILE* fin = fopen("ngrok.txt", "r");
+	char buffer[1024];
+	fgets(buffer, sizeof(buffer), fin);
+	std::string ip_port = buffer;
+	std::string ip;
+	std::string port;
+	std::stringstream ss(ip_port);
+	std::getline(ss, ip, ':');
+	std::getline(ss, port, ':');
+
+	std::vector<std::string> utils;
+	utils.push_back(ip); utils.push_back(port);
+
+	return utils;
+	
+}
 int main()
 {
 	CustomClient c;
-	// c.Connect("2.tcp.ngrok.io",15739); CONNECT FROM OUTSIDE!!!!
-	c.Connect("127.0.0.1", 60000);
+	std::vector<std::string> connects = getIpPort();
+	c.Connect(connects[0], std::stoi(connects[1]));
+
 
 	bool key[4] = { false, false, false,false };
 	bool old_key[4] = { false, false, false,false };
