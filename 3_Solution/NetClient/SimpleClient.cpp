@@ -39,11 +39,39 @@ public:
 
 	void Register(const std::string& username, const std::string& password, const std::string& email)
 	{
+		std::string help = "";
+		std::string readusername;
+		std::string readpassword;
+		std::string reademail;
+		std::cout << "\nUsername: ";
+		//std::getline(std::cin, readusername);
+		std::cin >> readusername;
+		std::cout << "\nPassword: ";
+		//std::getline(std::cin, readpassword);
+		std::cin >> readpassword;
+		std::cout << "\nEmail: ";
+		//std::getline(std::cin, reademail);
+		std::cin >> reademail;
+		std::cout << "\n";
+
 		olc::net::message<CustomMsgTypes> msg;
 		msg.header.id = CustomMsgTypes::RegisterRequest;
-		char l_username[1024]; strcpy(l_username, username.c_str());
-		char l_password[1024]; strcpy(l_password, password.c_str());
-		char l_email[1024]; strcpy(l_email, email.c_str());
+		char l_username[1024]; 
+		char l_password[1024]; 
+		char l_email[1024];
+
+		if (readusername == "" && readpassword == "" && reademail == "")
+		{
+			strcpy(l_username, username.c_str());
+			strcpy(l_password, password.c_str());
+			strcpy(l_email, email.c_str());
+		}
+		else
+		{
+			strcpy(l_username, readusername.c_str());
+			strcpy(l_password, readpassword.c_str());
+			strcpy(l_email, reademail.c_str());
+		}
 
 		msg << l_username << l_password << l_email;
 		Send(msg);
@@ -66,13 +94,13 @@ int main()
 			key[0] = GetAsyncKeyState('1') & 0x8000;
 			key[1] = GetAsyncKeyState('2') & 0x8000;
 			key[2] = GetAsyncKeyState('3') & 0x8000;
-			key[3] = GetAsyncKeyState('4') & 0x8000;
+			key[3] = GetAsyncKeyState('R') & 0x8000;
 		}
 		
 		if (key[0] && !old_key[0]) c.PingServer();
 		if (key[1] && !old_key[1]) c.MessageAll();
 		if (key[2] && !old_key[2]) bQuit = true;
-		if (key[3] && !old_key[3]) c.Register("rifflord", "rifflord123", "rifflord@gmail.com");
+		if (key[3] && !old_key[3]) { c.Register("rifflord", "rifflord123", "rifflord@gmail.com"); }
 
 		for (int i = 0; i < 4; i++) old_key[i] = key[i];
 
