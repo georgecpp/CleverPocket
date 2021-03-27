@@ -107,16 +107,22 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtRcc Include="cleverclient.qrc" />
-    <QtUic Include="cleverclient.ui" />
-    <QtMoc Include="cleverclient.h" />
-    <ClCompile Include="cleverclient.cpp" />
-    <ClCompile Include="main.cpp" />
+    <QtMoc Include="startup.h" />
+    <ClInclude Include="Client.h" />
     <ClInclude Include="stdafx.h" />
+    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="startup.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="startup.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ngrok.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

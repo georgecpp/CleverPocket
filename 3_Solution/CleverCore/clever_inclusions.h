@@ -11,6 +11,7 @@
 #include <chrono>
 #include <cstdint>
 #include <regex>
+#include <sstream>
 
 
 #ifdef _WIN32
