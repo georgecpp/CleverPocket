@@ -10,6 +10,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CleverServer", "CleverServe
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CleverCore", "CleverCore\CleverCore.vcxproj", "{00F9E8EF-5E7E-4259-9302-BF3968DF5FD2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CleverClient", "CleverClient\CleverClient.vcxproj", "{A8981213-0B4A-4DF9-8054-CDB9544AB430}"
+	ProjectSection(ProjectDependencies) = postProject
+		{00F9E8EF-5E7E-4259-9302-BF3968DF5FD2} = {00F9E8EF-5E7E-4259-9302-BF3968DF5FD2}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -34,6 +39,12 @@ Global
 		{00F9E8EF-5E7E-4259-9302-BF3968DF5FD2}.Release|x64.Build.0 = Release|x64
 		{00F9E8EF-5E7E-4259-9302-BF3968DF5FD2}.Release|x86.ActiveCfg = Release|Win32
 		{00F9E8EF-5E7E-4259-9302-BF3968DF5FD2}.Release|x86.Build.0 = Release|Win32
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Debug|x64.ActiveCfg = Debug|x64
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Debug|x64.Build.0 = Debug|x64
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Debug|x86.ActiveCfg = Debug|x64
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Release|x64.ActiveCfg = Release|x64
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Release|x64.Build.0 = Release|x64
+		{A8981213-0B4A-4DF9-8054-CDB9544AB430}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
