@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdint>
-
+#include <regex>
 
 
 #ifdef _WIN32

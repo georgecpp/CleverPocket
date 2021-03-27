@@ -2,6 +2,7 @@
 #include "stdafx.h"
 #include <qmessagebox.h>
 
+
 qtme::qtme(QWidget *parent)
     : QMainWindow(parent)
 {

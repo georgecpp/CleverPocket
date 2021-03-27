@@ -335,10 +335,10 @@ namespace olc
 				}
 				bool checkEmailFormat(char email[])
 				{
+					std::string str_email = email;
 					// handle REGEX.
-
-
-					return true;
+					const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
+					return std::regex_match(str_email, pattern);
 				}
 		protected:
 			// Thread Safe Queue for incoming message packets
