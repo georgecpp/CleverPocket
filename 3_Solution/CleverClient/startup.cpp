@@ -17,6 +17,7 @@ Startup::~Startup()
 
 void Startup::on_registerButton_clicked()
 {
+	bool stillConnectedWaitingForAnswer = true;
 	Client& c = Client::getInstance(); // handles connection too, if it is not connected.
 
 
@@ -37,7 +38,7 @@ void Startup::on_registerButton_clicked()
 
 	// handle a delay before getting response from server -- EVENTUALLY A LOADING STATE.
 	QMessageBox msgBox;
-	if(!c.Incoming().empty())
+	if(!c.Incoming().empty() && stillConnectedWaitingForAnswer)
 	{
 		auto msg = c.Incoming().pop_front().msg;
 		if (msg.header.id == clever::MessageType::RegisterRequest)
