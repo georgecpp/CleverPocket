@@ -27,13 +27,13 @@ Here is the actual developed project. Usually it will be a Visual Studio Solutio
 
 ### Second Deliverable
 #### Addition to SRD
-- [ ] Logic model of the system (flow diagrame)
-- [ ] Class diagrame
+- [x] Logic model of the system (flow diagrame)
+- [x] Class diagrame
 #### Test plan
-- [ ] Table of contents
-- [ ] **Versions table**
-- [ ] Test process requirements
-- [ ] At least 10 tests
+- [x] Table of contents
+- [x] **Versions table**
+- [x] Test process requirements
+- [x] At least 10 tests
 
 
 # Setup Instructions
