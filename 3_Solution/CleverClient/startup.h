@@ -2,6 +2,9 @@
 //#include "client_backend.h"
 #include <QtWidgets/QMainWindow>
 #include "ui_startup.h"
+#include <qstackedwidget.h>
+#include <QtGui>
+
 
 class Startup : public QWidget
 {
@@ -12,7 +15,12 @@ public:
 	~Startup();
 private:
 	Ui::Startup ui;
+	void resizeToLoginPage();
+	void resizeToRegisterPage();
+	void resizeToForgotPasswordPage();
 	//Client c;
 private slots:
-	void on_registerButton_clicked();
+	void on_registerLinkButton_clicked();
+	void on_alreadyRegisteredLinkButton_clicked();
+	void on_registerPushButton_clicked();
 };

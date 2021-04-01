@@ -65,23 +65,23 @@ protected:
 			try
 			{
 				RegisterUserToDatabase(username, password, email);
-				strcpy(responseback, "Successfully registered user to the database!");
+				strcpy(responseback, "Success");
 			}
 			catch (clever::EmailValidationError)
 			{
-				strcpy(responseback, "The email you entered is not a valid format! ");
+				strcpy(responseback, "EmailInvalid");
 			}
 			catch (clever::UserAlreadyRegisteredError)
 			{
-				strcpy(responseback, "User with these credentials is already registered!");
+				strcpy(responseback, "AlreadyRegistered");
 			}
 			catch (clever::DatabaseQueryError)
 			{
-				strcpy(responseback, "Couldn't register user to the database!");
+				strcpy(responseback, "ServerToDatabaseQueryError");
 			}
 			catch (clever::DatabaseConnectionError)
 			{
-				strcpy(responseback, "Server couldn't connect to SQL Server Database!");
+				strcpy(responseback, "ServerToDatabaseConnectionError");
 			}
 
 			msg << responseback;
