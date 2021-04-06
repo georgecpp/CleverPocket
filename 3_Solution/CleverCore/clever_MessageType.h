@@ -10,5 +10,6 @@ namespace clever
 		MessageAll,
 		ServerMessage,
 		RegisterRequest,
+		LoginRequest,
 	};
 }

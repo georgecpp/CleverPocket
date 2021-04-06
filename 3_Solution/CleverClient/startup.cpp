@@ -8,6 +8,8 @@ Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
 	ui.setupUi(this);
+	m_dshptr = new Dashboard();
+	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 	ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
 	// SIZE FOR THE LOGIN PAGE
 	this->resizeToLoginPage();
@@ -89,6 +91,73 @@ void Startup::on_registerPushButton_clicked()
 			{
 				msgBox.setText("A user with these credentials is already registered!");
 				msgBox.exec();
+			}
+		}
+	}
+}
+
+void Startup::on_loginPushButton_clicked()
+{
+	// first perform check with these credentials.
+	// if not, tell user what's wrong and return.
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox msgBox;
+	QString username = ui.usernameLineEdit->text();
+	QString password = ui.passwordLineEdit->text();
+
+	if (username == "" || password == "")
+	{
+		msgBox.setText("Please fill all the boxes!");
+		msgBox.exec();
+		return;
+	}
+
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.LoginUser(username.toStdString(), password.toStdString());
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox.setText("Server down! Client disconnected!");
+			msgBox.exec();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::LoginRequest)
+		{
+			char responseback[1024];
+			msg >> responseback;
+			if (strcmp(responseback, "UsernameInvalidError") == 0)
+			{
+				msgBox.setText("Invalid Username! Please try again.");
+				msgBox.exec();
+
+				// optional, clear the username...
+				// ui.usernameLineEdit->clear(); 
+				return;
+			}
+			if (strcmp(responseback, "PasswordInvalidError") == 0)
+			{
+				msgBox.setText("Invalid Password! Please try again.");
+				msgBox.exec();
+
+				// optional, clear the password...
+				//ui.passwordLineEdit->clear();
+				return;
+			}
+			if (strcmp(responseback, "SuccessLogin") == 0)
+			{
+				// then check if "Keep Me Logged In" is checked.
+				// TO DO
+
+				// finally, go to dashboard.
+				ui.stackedWidget->setCurrentWidget(m_dshptr); 
+				// and resize this to dashboard.
 			}
 		}
 	}

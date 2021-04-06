@@ -46,14 +46,23 @@
     <ClCompile Include="Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="dashboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="startup.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="dashboard.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="startup.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="dashboard.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

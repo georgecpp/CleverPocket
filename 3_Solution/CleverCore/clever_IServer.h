@@ -279,6 +279,25 @@ namespace clever
 
 		}
 
+		void OnLoginUserToServer(char username[], char password[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Username = " + l_username + ") " + "SELECT 1 ELSE SELECT 0";
+			std::string result = GetQueryExecResult(query);
+			if (result == "0")
+			{
+				throw UsernameInvalidLoginError("Username is not valid! No user registered with this credential!");
+			}
+
+			std::string l_password = convertToSqlVarcharFormat(password);
+			query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Password = " + l_password + ") " + "SELECT 1 ELSE SELECT 0";
+			result = GetQueryExecResult(query);
+			if (result == "0")
+			{
+				throw PasswordInvalidLoginError("Password is incorrect for this user!");
+			}
+		}
+
 		void RegisterUserToDatabase(char username[], char password[], char email[])
 		{
 			// build query with those credentials.

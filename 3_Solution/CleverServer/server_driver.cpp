@@ -88,6 +88,33 @@ protected:
 			client->Send(msg); // send message back to client.
 		}
 		break;
+
+		case clever::MessageType::LoginRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Login to Server request\n";
+			char username[1024];
+			char password[1024];
+
+			msg >> password >> username;
+			char responseback[1024];
+			try
+			{
+				OnLoginUserToServer(username, password);
+				strcpy(responseback, "SuccessLogin");
+			}
+			catch (clever::UsernameInvalidLoginError)
+			{
+				strcpy(responseback, "UsernameInvalidError");
+			}
+			catch (clever::PasswordInvalidLoginError)
+			{
+				strcpy(responseback, "PasswordInvalidError");
+			}
+
+			msg << responseback;
+			client->Send(msg); // send message back to client.
+		}
+		break;
 		}
 	}
 };

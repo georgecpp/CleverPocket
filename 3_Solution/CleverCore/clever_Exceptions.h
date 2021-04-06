@@ -55,4 +55,21 @@ namespace clever
 
 		}
 	};
+
+	class UsernameInvalidLoginError : public IException
+	{
+	public:
+		UsernameInvalidLoginError(std::string err, int errcode = 5) : IException(err, errcode)
+		{
+
+		}
+	};
+	class PasswordInvalidLoginError : public IException
+	{
+	public:
+		PasswordInvalidLoginError(std::string err, int errcode = 6) : IException(err, errcode)
+		{
+
+		}
+	};
 }

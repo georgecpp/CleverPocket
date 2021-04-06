@@ -21,6 +21,7 @@ public:
 	void PingServer();
 	void MessageAll();
 	void Register(const std::string& username, const std::string& password, const std::string& email);
+	void LoginUser(const std::string& username, const std::string& password);
 
 public:
 	std::string getIpAddressTo();

@@ -4,6 +4,7 @@
 #include "ui_startup.h"
 #include <qstackedwidget.h>
 #include <QtGui>
+#include "dashboard.h"
 
 
 class Startup : public QWidget
@@ -18,9 +19,11 @@ private:
 	void resizeToLoginPage();
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
-	//Client c;
+	Dashboard* m_dshptr;
+
 private slots:
 	void on_registerLinkButton_clicked();
 	void on_alreadyRegisteredLinkButton_clicked();
 	void on_registerPushButton_clicked();
+	void on_loginPushButton_clicked();
 };
