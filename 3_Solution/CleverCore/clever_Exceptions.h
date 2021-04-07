@@ -72,4 +72,12 @@ namespace clever
 
 		}
 	};
+	class InvalidPATLoginError : public IException
+	{
+	public:
+		InvalidPATLoginError(std::string errr, int errcode = 7) : IException(err, errcode)
+		{
+
+		}
+	};
 }

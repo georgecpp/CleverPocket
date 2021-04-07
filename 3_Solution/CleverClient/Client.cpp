@@ -24,13 +24,12 @@ Client& Client::getInstance()
 {
 	if (!instance)
 	{
-
 		instance = new Client();
-		instance->setIpPortTo();
+		//instance->setIpPortTo();
 		if (!instance->IsConnected())
 		{
 			// replace with credentials.
-			instance->Connect("127.0.0.1", 60000);
+			instance->Connect("0.tcp.ngrok.io", 19474);
 		}
 	}
 	return *instance;
@@ -43,6 +42,11 @@ void Client::destroyInstance()
 		delete instance;
 		instance = nullptr;
 	}
+}
+
+std::string Client::generatePAT()
+{
+	return std::string("12345");
 }
 
 void Client::PingServer()
@@ -97,6 +101,27 @@ void Client::LoginUser(const std::string& username, const std::string& password)
 	char l_username[1024]; strcpy(l_username, username.c_str());
 	char l_password[1024]; strcpy(l_password, password.c_str());
 	msg << l_username << l_password;
+	Send(msg);
+}
+
+void Client::LoginUserRemembered(const std::string& PAT)
+{
+	// to do.
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::LoginRememeberedRequest;
+	char l_pat[1024];
+	strcpy(l_pat, PAT.c_str());
+	msg << l_pat;
+	Send(msg);
+}
+
+void Client::RememberMe(const std::string& PAT, const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::RememberMeRequest;
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username << l_pat;
 	Send(msg);
 }
 

@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Client.h"
 #include "startup.h"
 #include "stdafx.h"
@@ -10,10 +11,22 @@ Startup::Startup(QWidget *parent)
 	ui.setupUi(this);
 	m_dshptr = new Dashboard();
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
-	ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
-	// SIZE FOR THE LOGIN PAGE
+
+	// check if pat.txt file can be opened.
+	if (tryLoginRemembered())
+	{
+		ui.stackedWidget->setCurrentWidget(m_dshptr);
+		// and resize for the dashboard.
+	}
+	else
+	{
+		// if not, sure login form
+		ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
+		// SIZE FOR THE LOGIN PAGE
+		this->resizeToLoginPage();
+	}
+	ui.stackedWidget->setCurrentWidget(ui.loginPage);
 	this->resizeToLoginPage();
-	
 }
 
 Startup::~Startup()
@@ -36,6 +49,51 @@ void Startup::resizeToRegisterPage()
 void Startup::resizeToForgotPasswordPage()
 {
 	// TO BE DONE.
+}
+
+bool Startup::tryLoginRemembered()
+{
+	FILE* fin = fopen("PAT.txt", "r");
+	if (fin)
+	{
+		QMessageBox msgBox;
+		bool stillConnectedWaitingForAnswer = true;
+		// if it does, try to login with pat and set currentWidget to dashboard.
+		char buffer[21];
+		fgets(buffer, sizeof(buffer), fin);
+		std::string PAT = buffer;
+		Client& c = Client::getInstance();
+		c.Incoming().clear();
+		c.LoginUserRemembered(PAT);
+		while (c.Incoming().empty())
+		{
+			// do-wait.
+			if (!c.IsConnected())
+			{
+				msgBox.setText("Server down! Client disconnected!");
+				msgBox.exec();
+				stillConnectedWaitingForAnswer = false;
+				break;
+			}
+		}
+		if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::LoginRememeberedRequest)
+			{
+				// server has responded to remembered-login request.
+				char responseback[1024];
+				msg >> responseback;
+				if (strcmp(responseback, "SuccessRememberLogin") == 0)
+				{
+					// login successfully -- proceed to dashboard with this account logged in.
+					fclose(fin);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
 }
 
 void Startup::on_alreadyRegisteredLinkButton_clicked()
@@ -154,6 +212,16 @@ void Startup::on_loginPushButton_clicked()
 			{
 				// then check if "Keep Me Logged In" is checked.
 				// TO DO
+				if (ui.keeploggedCheckBox->isChecked())
+				{
+					FILE* fpat = fopen("PAT.txt", "w");
+					std::string PAT = Client::generatePAT();
+					fputs(PAT.c_str(), fpat);
+					fclose(fpat);
+
+					// request to update the database with this new PAT for this user.
+					c.RememberMe(PAT, username.toStdString());
+				}
 
 				// finally, go to dashboard.
 				ui.stackedWidget->setCurrentWidget(m_dshptr); 

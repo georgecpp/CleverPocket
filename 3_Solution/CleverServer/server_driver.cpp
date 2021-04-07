@@ -115,6 +115,48 @@ protected:
 			client->Send(msg); // send message back to client.
 		}
 		break;
+
+		case clever::MessageType::RememberMeRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: 'Keep Me Logged In' request\n";
+			char PAT[1024];
+			char username[1024];
+			msg >> PAT >> username;
+			char responseback[1024];
+			try
+			{
+				OnRememberUserLoggedIn(username, PAT);
+				strcpy(responseback, "SuccessRemember");
+			}
+			catch (clever::UsernameInvalidLoginError)
+			{
+				strcpy(responseback, "UsernameInvalidError");
+				msg << responseback;
+				client->Send(msg);
+			}
+		}
+		break;
+		
+		case clever::MessageType::LoginRememeberedRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Remembered-Login request\n";
+			char PAT[1024];
+			msg >> PAT;
+			char responseback[1024];
+			try
+			{
+				OnLoginUserPAT(PAT);
+				strcpy(responseback, "SuccessRememberLogin");
+			}
+			catch (clever::InvalidPATLoginError)
+			{
+				strcpy(responseback, "UsernameInvalidError");
+			}
+
+			msg << responseback;
+			client->Send(msg);
+		}
+		break;
 		}
 	}
 };

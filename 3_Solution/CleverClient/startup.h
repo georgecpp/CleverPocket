@@ -19,6 +19,7 @@ private:
 	void resizeToLoginPage();
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
+	bool tryLoginRemembered();
 	Dashboard* m_dshptr;
 
 private slots:

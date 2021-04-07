@@ -278,7 +278,32 @@ namespace clever
 		{
 
 		}
+		void OnLoginUserPAT(char PAT[])
+		{
+			// TO DO.
+			throw InvalidPATLoginError("PAT is invalid, we couldn't get any user with this PAT. Try to login again!");
+		}
+		void OnRememberUserLoggedIn(char username[], char PAT[])
+		{
+			// first get the ID of user that is registered with this username
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string query = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(query);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("Username is not valid! No user registered with this credential!");
+			}
+			else
+			{
+				// then go insert into Sessions userID and PAT.
+				char resultIDChar[1024]; strcpy(resultIDChar, resultID.c_str());
+				resultID = convertToSqlVarcharFormat(resultIDChar);
+				std::string l_PAT = convertToSqlVarcharFormat(PAT);
 
+				query = "INSERT INTO [CleverPocket].[dbo].[Sessions] (UserID, PAT) VALUES ( " + resultID + ", " + l_PAT+")";
+				ExecQuery(query);
+			}
+		}
 		void OnLoginUserToServer(char username[], char password[])
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);

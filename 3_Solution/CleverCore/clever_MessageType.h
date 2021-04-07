@@ -11,5 +11,7 @@ namespace clever
 		ServerMessage,
 		RegisterRequest,
 		LoginRequest,
+		LoginRememeberedRequest,
+		RememberMeRequest,
 	};
 }
