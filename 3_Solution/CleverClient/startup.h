@@ -19,6 +19,7 @@ private:
 	void resizeToLoginPage();
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
+	void resizeToTermsAndConditionsPage();
 	Dashboard* m_dshptr;
 
 private slots:
@@ -26,4 +27,9 @@ private slots:
 	void on_alreadyRegisteredLinkButton_clicked();
 	void on_registerPushButton_clicked();
 	void on_loginPushButton_clicked();
+	void on_forgotPasswordLinkButton_clicked();
+	void on_termsAndConditionsLinkButton_clicked();
+	void on_backToRegisterLinkButton_clicked();
+	void on_backToLoginLinkButton_clicked();
+	void on_registerNowLinkButton_clicked();
 };
