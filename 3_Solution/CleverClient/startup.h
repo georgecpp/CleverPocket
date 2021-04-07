@@ -20,6 +20,7 @@ private:
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
 	void resizeToTermsAndConditionsPage();
+	void clearGaps();
 	Dashboard* m_dshptr;
 
 private slots:

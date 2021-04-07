@@ -20,6 +20,22 @@ Startup::~Startup()
 {
 
 }
+//deletes all inputs that could remain while crossing pages
+void Startup::clearGaps()
+{
+	ui.usernameLineEdit->clear();
+	ui.passwordLineEdit->clear();
+	ui.firstNameLineEdit->clear();
+	ui.lastNameLineEdit->clear();
+	ui.usernameRLineEdit->clear();
+	ui.passwordRLineEdit->clear();
+	ui.confirmPasswordRLineEdit->clear();
+	ui.countryComboBox->setCurrentIndex(0);
+	ui.phoneLineEdit->clear();
+	ui.forgotPasswordEmailLineEdit->clear();
+	ui.keeploggedCheckBox->setChecked(false);
+	ui.termsAndConditonsCheckBox->setChecked(false);
+}
 
 void Startup::resizeToLoginPage()
 {
@@ -27,6 +43,7 @@ void Startup::resizeToLoginPage()
 	ui.stackedWidget->resize(QSize(800, 600));*/
 	this->setFixedSize(QSize(800, 600));
 	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	this->clearGaps();
 }
 
 void Startup::resizeToRegisterPage()
@@ -35,6 +52,7 @@ void Startup::resizeToRegisterPage()
 	ui.stackedWidget->resize(QSize(1360, 768));*/
 	this->setFixedSize(QSize(1360, 768));
 	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
+	this->clearGaps();
 }
 
 void Startup::resizeToForgotPasswordPage()
@@ -43,6 +61,7 @@ void Startup::resizeToForgotPasswordPage()
 	ui.stackedWidget->resize(QSize(800, 600));*/
 	this->setFixedSize(QSize(800, 600));
 	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	this->clearGaps();
 }
 
 void Startup::resizeToTermsAndConditionsPage()

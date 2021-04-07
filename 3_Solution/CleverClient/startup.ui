@@ -55,7 +55,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QGroupBox" name="loginGroupBox">
@@ -342,6 +342,12 @@
          <width>400</width>
          <height>30</height>
         </rect>
+       </property>
+       <property name="currentText">
+        <string>Country</string>
+       </property>
+       <property name="placeholderText">
+        <string/>
        </property>
        <item>
         <property name="text">
