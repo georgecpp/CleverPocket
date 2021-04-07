@@ -23,14 +23,18 @@ Startup::~Startup()
 
 void Startup::resizeToLoginPage()
 {
-	this->resize(QSize(800, 600));
-	ui.stackedWidget->resize(QSize(800, 600));
+	/*this->resize(QSize(800, 600));
+	ui.stackedWidget->resize(QSize(800, 600));*/
+	this->setFixedSize(QSize(800, 600));
+	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
 }
 
 void Startup::resizeToRegisterPage()
 {
-	this->resize(QSize(1360, 768));
-	ui.stackedWidget->resize(QSize(1360, 768));
+	/*this->resize(QSize(1360, 768));
+	ui.stackedWidget->resize(QSize(1360, 768));*/
+	this->setFixedSize(QSize(1360, 768));
+	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
 }
 
 void Startup::resizeToForgotPasswordPage()
