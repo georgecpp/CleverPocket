@@ -33,22 +33,56 @@ Startup::~Startup()
 {
 
 }
+//deletes all inputs that could remain while crossing pages
+void Startup::clearGaps()
+{
+	ui.usernameLineEdit->clear();
+	ui.passwordLineEdit->clear();
+	ui.firstNameLineEdit->clear();
+	ui.lastNameLineEdit->clear();
+	ui.usernameRLineEdit->clear();
+	ui.passwordRLineEdit->clear();
+	ui.confirmPasswordRLineEdit->clear();
+	ui.countryComboBox->setCurrentIndex(0);
+	ui.phoneLineEdit->clear();
+	ui.forgotPasswordEmailLineEdit->clear();
+	ui.keeploggedCheckBox->setChecked(false);
+	ui.termsAndConditonsCheckBox->setChecked(false);
+}
 
 void Startup::resizeToLoginPage()
 {
-	this->resize(QSize(800, 600));
-	ui.stackedWidget->resize(QSize(800, 600));
+	/*this->resize(QSize(800, 600));
+	ui.stackedWidget->resize(QSize(800, 600));*/
+	this->setFixedSize(QSize(800, 600));
+	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	this->clearGaps();
 }
 
 void Startup::resizeToRegisterPage()
 {
-	this->resize(QSize(1360, 768));
-	ui.stackedWidget->resize(QSize(1360, 768));
+	/*this->resize(QSize(1360, 768));
+	ui.stackedWidget->resize(QSize(1360, 768));*/
+	this->setFixedSize(QSize(1360, 768));
+	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
+	this->clearGaps();
 }
 
 void Startup::resizeToForgotPasswordPage()
 {
-	// TO BE DONE.
+	/*this->resize(QSize(800, 600));
+	ui.stackedWidget->resize(QSize(800, 600));*/
+	this->setFixedSize(QSize(800, 600));
+	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	this->clearGaps();
+}
+
+void Startup::resizeToTermsAndConditionsPage()
+{
+	/*this->resize(QSize(1360, 768));
+	ui.stackedWidget->resize(QSize(1360, 768));*/
+	this->setFixedSize(QSize(1360, 768));
+	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
 }
 
 bool Startup::tryLoginRemembered()
@@ -99,6 +133,42 @@ bool Startup::tryLoginRemembered()
 void Startup::on_alreadyRegisteredLinkButton_clicked()
 {
 	QObject::connect(ui.alreadyRegisteredLinkButton, SIGNAL(clicked()), this, SLOT(on_alreadyRegisteredLinkButton_clicked()));
+	ui.stackedWidget->setCurrentWidget(ui.loginPage);
+	this->resizeToLoginPage();
+}
+
+void Startup::on_forgotPasswordLinkButton_clicked()
+{
+	QObject::connect(ui.forgotPasswordLinkButton, SIGNAL(clicked()), this, SLOT(on_forgotPasswordLinkButton_clicked()));
+	ui.stackedWidget->setCurrentWidget(ui.forgotPasswordPage);
+	this->resizeToForgotPasswordPage();
+}
+
+void Startup::on_termsAndConditionsLinkButton_clicked()
+{
+	QObject::connect(ui.termsAndConditionsLinkButton, SIGNAL(clicked()), this, SLOT(on_termsAndConditionsLinkButton_clicked()));
+	ui.stackedWidget->setCurrentWidget(ui.termsAndConditionPage);
+	this->resizeToTermsAndConditionsPage();
+}
+
+void Startup::on_backToRegisterLinkButton_clicked()
+{
+	QObject::connect(ui.backToRegisterLinkButton, SIGNAL(clicked()), this, SLOT(on_backToRegisterLinkButton_clicked()));
+	ui.stackedWidget->setCurrentWidget(ui.registerPage);
+	this->resizeToRegisterPage();
+	
+}
+
+void Startup::on_registerNowLinkButton_clicked()
+{
+	QObject::connect(ui.registerNowLinkButton, SIGNAL(clicked()), this, SLOT(on_registerNowLinkButton_clicked()));
+	ui.stackedWidget->setCurrentWidget(ui.registerPage);
+	this->resizeToRegisterPage();
+}
+
+void Startup::on_backToLoginLinkButton_clicked()
+{
+	QObject::connect(ui.backToLoginLinkButton, SIGNAL(clicked()), this, SLOT(on_backToLoginLinkButton_clicked()));
 	ui.stackedWidget->setCurrentWidget(ui.loginPage);
 	this->resizeToLoginPage();
 }
