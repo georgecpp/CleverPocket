@@ -11,8 +11,7 @@ Startup::Startup(QWidget *parent)
 	ui.setupUi(this);
 	m_dshptr = new Dashboard();
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
-
-	// check if pat.txt file can be opened.
+	//check if pat.txt file can be opened.
 	if (tryLoginRemembered())
 	{
 		ui.stackedWidget->setCurrentWidget(m_dshptr);
@@ -20,13 +19,11 @@ Startup::Startup(QWidget *parent)
 	}
 	else
 	{
-		// if not, sure login form
+		 //if not, sure login form
 		ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
-		// SIZE FOR THE LOGIN PAGE
+		 //SIZE FOR THE LOGIN PAGE
 		this->resizeToLoginPage();
 	}
-	ui.stackedWidget->setCurrentWidget(ui.loginPage);
-	this->resizeToLoginPage();
 }
 
 Startup::~Startup()
@@ -87,21 +84,19 @@ void Startup::resizeToTermsAndConditionsPage()
 
 bool Startup::tryLoginRemembered()
 {
+	QMessageBox msgBox;
 	FILE* fin = fopen("PAT.txt", "r");
 	if (fin)
 	{
-		QMessageBox msgBox;
 		bool stillConnectedWaitingForAnswer = true;
-		// if it does, try to login with pat and set currentWidget to dashboard.
-		char buffer[21];
-		fgets(buffer, sizeof(buffer), fin);
-		std::string PAT = buffer;
 		Client& c = Client::getInstance();
-		c.Incoming().clear();
-		c.LoginUserRemembered(PAT);
+		if (!c.IsConnected())
+		{
+			c.Connect("6.tcp.ngrok.io", 12553);
+		}
 		while (c.Incoming().empty())
 		{
-			// do-wait.
+			//do-wait.
 			if (!c.IsConnected())
 			{
 				msgBox.setText("Server down! Client disconnected!");
@@ -110,7 +105,24 @@ bool Startup::tryLoginRemembered()
 				break;
 			}
 		}
-		if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+		// if it does, try to login with pat and set currentWidget to dashboard.
+		char buffer[21];
+		fgets(buffer, sizeof(buffer), fin);
+		std::string PAT = buffer;
+		auto msg = c.Incoming().front().msg;
+		c.Incoming().clear();
+		c.LoginUserRemembered(PAT);
+		while (c.Incoming().empty())
+		{
+			if (!c.IsConnected())
+			{
+				msgBox.setText("Server down! Client disconnected!");
+				msgBox.exec();
+				stillConnectedWaitingForAnswer = false;
+				break;
+			}
+		}
+		if (!c.Incoming().empty()&&stillConnectedWaitingForAnswer)
 		{
 			auto msg = c.Incoming().pop_front().msg;
 			if (msg.header.id == clever::MessageType::LoginRememeberedRequest)
@@ -123,6 +135,11 @@ bool Startup::tryLoginRemembered()
 					// login successfully -- proceed to dashboard with this account logged in.
 					fclose(fin);
 					return true;
+				}
+				else
+				{
+					fclose(fin);
+					return false;
 				}
 			}
 		}

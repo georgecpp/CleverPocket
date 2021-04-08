@@ -17,6 +17,7 @@ public:
 	static Client& getInstance();
 	static void destroyInstance();
 	static std::string generatePAT();
+	static bool ClientIsConnected();
 
 	void PingServer();
 	void MessageAll();

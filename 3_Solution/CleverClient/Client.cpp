@@ -26,11 +26,11 @@ Client& Client::getInstance()
 	{
 		instance = new Client();
 		//instance->setIpPortTo();
-		if (!instance->IsConnected())
-		{
-			// replace with credentials.
-			instance->Connect("0.tcp.ngrok.io", 19474);
-		}
+	}
+	if (!instance->IsConnected())
+	{
+		// replace with credentials.
+		instance->Connect("6.tcp.ngrok.io", 12553);
 	}
 	return *instance;
 }
@@ -47,6 +47,11 @@ void Client::destroyInstance()
 std::string Client::generatePAT()
 {
 	return std::string("12345");
+}
+
+bool Client::ClientIsConnected()
+{
+	return instance->IsConnected();
 }
 
 void Client::PingServer()

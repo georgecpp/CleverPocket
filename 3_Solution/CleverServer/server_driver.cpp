@@ -145,12 +145,18 @@ protected:
 			char responseback[1024];
 			try
 			{
-				OnLoginUserPAT(PAT);
-				strcpy(responseback, "SuccessRememberLogin");
+				if (OnLoginUserPAT(PAT) == -1)
+				{
+					strcpy(responseback, "InvalidPATError");
+				}
+				else
+				{
+					strcpy(responseback, "SuccessRememberLogin");
+				}
 			}
 			catch (clever::InvalidPATLoginError)
 			{
-				strcpy(responseback, "UsernameInvalidError");
+				strcpy(responseback, "InvalidPATError");
 			}
 
 			msg << responseback;
