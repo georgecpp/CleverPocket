@@ -1,4 +1,6 @@
 #pragma once
+#include <tchar.h>
+#include "easendmailobj.tlh"
 
 #include "clever_inclusions.h"
 #include "clever_TSQueue.h"
@@ -6,6 +8,17 @@
 #include "clever_Connection.h"
 #include "clever_DBConnection.h"
 #include "clever_Exceptions.h"
+
+using namespace EASendMailObjLib;
+enum class ConnectSMTPCodes
+{
+	ConnectNormal,
+	ConnectSSLAuto,
+	ConnectSTARTTls,
+	ConnectDirectSSL,
+	ConnectTryTLS
+};
+
 
 namespace clever
 {
@@ -278,10 +291,27 @@ namespace clever
 		{
 
 		}
+		void OnSendEmailForgotPassword(char emailTo[])
+		{
+			if (!checkEmailFormat(emailTo))
+			{
+				throw EmailValidationError("Email Validation Failed. Format is not good!");
+			}
+			std::string l_email = convertToSqlVarcharFormat(emailTo);
+			std::string query = "IF EXISTS (SELECT Email FROM CleverPocket.dbo.Users WHERE Email = " + l_email+") SELECT 1 ELSE SELECT 0";
+			std::string resultBool = GetQueryExecResult(query);
+			if (resultBool == "0")
+			{
+				//return -1;
+				throw EmailInvalidForgotPasswordError("Email is not present in the database!");
+			}
+
+			// now handle the SMTP.
+			std::string strEmailTo = emailTo;
+			SendSMTPEmailValidationCodeTo(strEmailTo);
+		}
 		int OnLoginUserPAT(char PAT[])
 		{
-			// TO DO.
-
 			std::string l_pat = convertToSqlVarcharFormat(PAT);
 			std::string query = "SELECT UserID FROM [CleverPocket].[dbo].[Sessions] WHERE PAT = " + l_pat;
 			std::string resultID = GetQueryExecResult(query);
@@ -393,6 +423,59 @@ namespace clever
 			// handle REGEX.
 			const std::regex pattern("(\\w+)(\\.|_)?(\\w*)@(\\w+)(\\.(\\w+))+");
 			return std::regex_match(str_email, pattern);
+		}
+		void SendSMTPEmailValidationCodeTo(const std::string& emailTo)
+		{
+			::CoInitialize(NULL); //?
+			IMailPtr oSMTP = NULL;
+			oSMTP.CreateInstance(__uuidof(EASendMailObjLib::Mail));
+			oSMTP->LicenseCode = _T("TryIt");
+
+			// set from gmail address
+			oSMTP->FromAddr = _T("steelparrot.inc@gmail.com");
+
+			// to gmail address.
+			oSMTP->AddRecipientEx(_bstr_t(emailTo.c_str()), 0);
+
+			// set email subject.
+			oSMTP->Subject = _T("CleverPocket Forgot Password");
+
+			// set email body.
+			srand(time(NULL));
+			std::string valid_code = "";
+			for (int i = 0; i < 6; i++)
+			{
+				valid_code += std::to_string(rand() % 9);
+			}
+			FILE* fout = fopen(valid_code.c_str(), "w");
+			fputs(valid_code.c_str(), fout);
+			fclose(fout); // remove file from disk at validation.
+			std::string msg = "Hello!\nLooks like you requested us to update your password, since you forgot it. Here's the validation code: " + valid_code+"\n\nAll the best,\nCleverPocket developers";
+			oSMTP->BodyText = _bstr_t(msg.c_str()); // generate random code, save local to server in a file, and read it then delete.
+
+
+			// gmail SMTP Server Address.
+			oSMTP->ServerAddr = _T("smtp.gmail.com");
+
+			// gmail user authentication should use your gmail address as username
+			// extract secured from file or smt. TO DO!!
+			oSMTP->UserName = _T("steelparrot.inc@gmail.com");
+			oSMTP->Password = _T("papagaluu1"); 
+
+			// set port 25 or 587.
+			oSMTP->ServerPort = 587;
+
+			// detect SSL/TLS automatically
+			oSMTP->ConnectType = (long)ConnectSMTPCodes::ConnectSSLAuto;
+
+			if (oSMTP->SendMail() == 0)
+			{
+				std::cout << "[SERVER]: email was sent successfully!\r\n";
+			}
+			else
+			{
+				std::cout<<"[SERVER]: failed to send email with the following error:\r\n"<< (const TCHAR*)oSMTP->GetLastErrDescription();
+			}
 		}
 	protected:
 		// Thread Safe Queue for incoming message packets

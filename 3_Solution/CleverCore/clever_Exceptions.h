@@ -75,7 +75,15 @@ namespace clever
 	class InvalidPATLoginError : public IException
 	{
 	public:
-		InvalidPATLoginError(std::string errr, int errcode = 7) : IException(err, errcode)
+		InvalidPATLoginError(std::string err, int errcode = 7) : IException(err, errcode)
+		{
+
+		}
+	};
+	class EmailInvalidForgotPasswordError : public IException
+	{
+	public:
+		EmailInvalidForgotPasswordError(std::string err, int errcode = 8) : IException(err, errcode)
 		{
 
 		}

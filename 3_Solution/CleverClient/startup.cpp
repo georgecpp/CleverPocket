@@ -11,6 +11,7 @@ Startup::Startup(QWidget *parent)
 	ui.setupUi(this);
 	m_dshptr = new Dashboard();
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
+	ui.validationCodeLineEdit->setVisible(false); ui.validatePushButton->setVisible(false);
 	//check if pat.txt file can be opened.
 	if (tryLoginRemembered())
 	{
@@ -92,7 +93,7 @@ bool Startup::tryLoginRemembered()
 		Client& c = Client::getInstance();
 		if (!c.IsConnected())
 		{
-			c.Connect("6.tcp.ngrok.io", 12553);
+			c.Connect("6.tcp.ngrok.io", 11873);
 		}
 		while (c.Incoming().empty())
 		{
@@ -183,9 +184,84 @@ void Startup::on_registerNowLinkButton_clicked()
 	this->resizeToRegisterPage();
 }
 
+void Startup::on_forgotPasswordSendPushButton_clicked()
+{
+	QString emailTo = ui.forgotPasswordEmailLineEdit->text();
+	QMessageBox* msgBox = new QMessageBox;
+	if (emailTo == "")
+	{
+		msgBox->setText("Please fill the email to send you the validation code!");
+		msgBox->exec();
+		return;
+	}
+	bool hasReceivedAnswer = true;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.SendEmailForgotPassword(emailTo.toStdString());
+	//while (c.Incoming().front().msg.header.id != clever::MessageType::SendEmailForgotPasswordRequest)
+	while(c.Incoming().empty())
+	{
+		// do-wait.
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			hasReceivedAnswer = false;
+			break;
+		}
+	}
+	if (hasReceivedAnswer)
+	{
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::SendEmailForgotPasswordRequest)
+			{
+				char responseBack[1024];
+				msg >> responseBack;
+				if (strcmp(responseBack, "SendEmailForgotPasswordSuccess") == 0)
+				{
+					// email
+					msgBox->setText("An email has been sent to this email address, open it and enter the validation code we sent to you!");
+					msgBox->show();
+					QTimer::singleShot(2500, msgBox, SLOT(close()));
+					ui.validationCodeLineEdit->setVisible(true); 
+					ui.validatePushButton->setVisible(true);
+				}
+				if (strcmp(responseBack, "InvalidEmailForgotPassword") == 0)
+				{
+					msgBox->setText("Invalid email! You are not registered to the database!");
+					msgBox->show();
+					QTimer::singleShot(2250, msgBox, SLOT(close()));
+				}
+				if (strcmp(responseBack, "InvalidFormatEmailForgotPassword") == 0)
+				{
+					msgBox->setText("Wrong Format Email! Re-enter again the email!");
+					msgBox->show();
+					QTimer::singleShot(2250, msgBox, SLOT(close()));
+				}
+				hasReceivedAnswer = false;
+			}
+		}
+	}
+	//delete msgBox; -- delete automatically on close!!
+}
+
+void Startup::on_validatePushButton_clicked()
+{
+	// TO DO - TAKE ME TO THE NEXT FORM WHERE I ENTER AND RE-ENTER NEW PASSWORD
+	// THUS UPDATING THE DATABASE WITH NEW PASSWORD.
+}
+
 void Startup::on_backToLoginLinkButton_clicked()
 {
 	QObject::connect(ui.backToLoginLinkButton, SIGNAL(clicked()), this, SLOT(on_backToLoginLinkButton_clicked()));
+	//
+	ui.validationCodeLineEdit->clear();
+	ui.validationCodeLineEdit->setVisible(false);
+	ui.validatePushButton->setVisible(false);
+	//
+	
 	ui.stackedWidget->setCurrentWidget(ui.loginPage);
 	this->resizeToLoginPage();
 }

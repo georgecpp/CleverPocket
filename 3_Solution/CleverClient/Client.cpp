@@ -30,7 +30,7 @@ Client& Client::getInstance()
 	if (!instance->IsConnected())
 	{
 		// replace with credentials.
-		instance->Connect("6.tcp.ngrok.io", 12553);
+		instance->Connect("6.tcp.ngrok.io", 11873);
 	}
 	return *instance;
 }
@@ -45,8 +45,10 @@ void Client::destroyInstance()
 }
 
 std::string Client::generatePAT()
-{
-	return std::string("12345");
+{	
+	std::random_device engine;
+	unsigned x = engine();
+	return std::to_string(x);
 }
 
 bool Client::ClientIsConnected()
@@ -127,6 +129,15 @@ void Client::RememberMe(const std::string& PAT, const std::string& username)
 	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
 	char l_username[1024]; strcpy(l_username, username.c_str());
 	msg << l_username << l_pat;
+	Send(msg);
+}
+
+void Client::SendEmailForgotPassword(const std::string& emailTo)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::SendEmailForgotPasswordRequest;
+	char l_email[1024]; strcpy(l_email, emailTo.c_str());
+	msg << l_email;
 	Send(msg);
 }
 

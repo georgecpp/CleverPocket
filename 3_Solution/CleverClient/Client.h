@@ -25,6 +25,7 @@ public:
 	void LoginUser(const std::string& username, const std::string& password);
 	void LoginUserRemembered(const std::string& PAT);
 	void RememberMe(const std::string& PAT, const std::string& username);
+	void SendEmailForgotPassword(const std::string& emailTo);
 
 public:
 	std::string getIpAddressTo();

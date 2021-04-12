@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <regex>
 #include <sstream>
+#include <random>
 
 
 #ifdef _WIN32

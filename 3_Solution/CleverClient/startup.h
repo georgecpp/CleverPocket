@@ -37,4 +37,6 @@ private slots:
 	void on_backToRegisterLinkButton_clicked();
 	void on_backToLoginLinkButton_clicked();
 	void on_registerNowLinkButton_clicked();
+	void on_forgotPasswordSendPushButton_clicked();
+	void on_validatePushButton_clicked();
 };

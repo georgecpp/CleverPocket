@@ -163,6 +163,40 @@ protected:
 			client->Send(msg);
 		}
 		break;
+
+		case clever::MessageType::SendEmailForgotPasswordRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Forgot Password Send Email Request\n";
+			char emailTo[1024];
+			msg >> emailTo;
+			char responseback[1024];
+			try
+			{
+				/*if (OnSendEmailForgotPassword(emailTo) == -1)
+				{
+					strcpy(responseback, "InvalidEmailForgotPassword");
+				}
+				else
+				{
+					strcpy(responseback, "SendEmailForgotPasswordSuccess");
+				}*/
+				OnSendEmailForgotPassword(emailTo);
+				strcpy(responseback, "SendEmailForgotPasswordSuccess");
+			}
+			catch (clever::EmailValidationError)
+			{
+				strcpy(responseback, "InvalidFormatEmailForgotPassword");
+			}
+			catch (clever::EmailInvalidForgotPasswordError)
+			{
+				strcpy(responseback, "InvalidEmailForgotPassword");
+			}
+
+			msg << responseback;
+			client->Send(msg);
+		}
+		break;
+
 		}
 	}
 };
