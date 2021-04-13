@@ -88,4 +88,12 @@ namespace clever
 
 		}
 	};
+	class SixDigitCodeInvalidError : public IException
+	{
+	public:
+		SixDigitCodeInvalidError(std::string err, int errcode = 9) : IException(err, errcode)
+		{
+
+		}
+	};
 }

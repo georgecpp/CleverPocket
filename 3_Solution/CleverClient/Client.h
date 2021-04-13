@@ -26,6 +26,8 @@ public:
 	void LoginUserRemembered(const std::string& PAT);
 	void RememberMe(const std::string& PAT, const std::string& username);
 	void SendEmailForgotPassword(const std::string& emailTo);
+	void ValidateMySixDigitCode(const std::string& validation_code);
+	void UpdatePasswordRequest(const std::string& newPassword, const std::string& userRequesting);
 
 public:
 	std::string getIpAddressTo();

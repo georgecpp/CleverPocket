@@ -291,6 +291,37 @@ namespace clever
 		{
 
 		}
+		void OnUpdatePassword(char newPassword[], char emailTo[])
+		{
+			std::string l_newPassword = convertToSqlVarcharFormat(newPassword);
+			std::string l_email = convertToSqlVarcharFormat(emailTo);
+			std::string testEmailExistQuery = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Email = " + l_email + ") SELECT 1 ELSE SELECT 0";
+			std::string result = GetQueryExecResult(testEmailExistQuery);
+			if (result == "0")
+			{
+				throw EmailInvalidForgotPasswordError("Email does not exist in the database! -- Tried to perform update password");
+			}
+			std::string query = "UPDATE CleverPocket.dbo.Users SET Password = " + l_newPassword + " WHERE Email = " + l_email;
+			ExecQuery(query);
+		}
+		void OnValidateSixDigitCode(char validation_code[])
+		{
+			// look up for files named like that, and try open it.
+			FILE* f = fopen(validation_code, "r");
+			if (!f)
+			{
+				throw SixDigitCodeInvalidError("Invalid 6 digit validation code!");
+			}
+			char buffer[256];
+			fgets(buffer, sizeof(buffer), f);
+			if (strcmp(buffer, validation_code) != 0)
+			{
+				throw SixDigitCodeInvalidError("Invalid 6 digit validation code!");
+			}
+			std::cout << "[SERVER]: 6 digit Validation Code -- Reset Password -- passed.\n";
+			fclose(f);
+			std::remove(validation_code);
+		}
 		void OnSendEmailForgotPassword(char emailTo[])
 		{
 			if (!checkEmailFormat(emailTo))

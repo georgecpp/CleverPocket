@@ -37,7 +37,7 @@
    <widget class="QStackedWidget" name="stackedWidget">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>10</x>
       <y>0</y>
       <width>1360</width>
       <height>768</height>
@@ -55,7 +55,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>3</number>
+     <number>4</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QGroupBox" name="loginGroupBox">
@@ -621,6 +621,59 @@ p, li { white-space: pre-wrap; }
         <width>0</width>
         <height>0</height>
        </size>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="newPasswordPage">
+     <widget class="QLineEdit" name="newPasswordLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>220</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>New Password</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="confirmNewPasswordLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>290</y>
+        <width>200</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Confirm new password</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="updatePasswordPushButton">
+      <property name="geometry">
+       <rect>
+        <x>460</x>
+        <y>370</y>
+        <width>191</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Update Password</string>
       </property>
      </widget>
     </widget>

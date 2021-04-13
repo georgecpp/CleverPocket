@@ -172,14 +172,6 @@ protected:
 			char responseback[1024];
 			try
 			{
-				/*if (OnSendEmailForgotPassword(emailTo) == -1)
-				{
-					strcpy(responseback, "InvalidEmailForgotPassword");
-				}
-				else
-				{
-					strcpy(responseback, "SendEmailForgotPasswordSuccess");
-				}*/
 				OnSendEmailForgotPassword(emailTo);
 				strcpy(responseback, "SendEmailForgotPasswordSuccess");
 			}
@@ -193,6 +185,51 @@ protected:
 			}
 
 			msg << responseback;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::VerifyCodeForgotPasswordRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Validate 6-digit update password request\n";
+			char validationCode[1024];
+			msg >> validationCode;
+			char responseBack[1024];
+			try
+			{
+				OnValidateSixDigitCode(validationCode);
+				strcpy(responseBack, "SuccessValidationCode");
+			}
+			catch (clever::SixDigitCodeInvalidError)
+			{
+				strcpy(responseBack, "InvalidValidationCode");
+			}
+			
+			// respond back to client, thus moving to update password form.
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::UpdatePasswordRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Update Password request\n";
+			char emailTo[1024];
+			char newPassword[1024];
+
+			msg >> emailTo >> newPassword;
+			char responseBack[1024];
+			try
+			{
+				OnUpdatePassword(newPassword, emailTo);
+				strcpy(responseBack, "SuccessUpdatePassword");
+			}
+			catch (clever::EmailInvalidForgotPasswordError)
+			{
+				strcpy(responseBack, "InvalidEmailUpdatePassword");
+			}
+			// respond back to client, thus moving back to login form.
+			msg << responseBack;
 			client->Send(msg);
 		}
 		break;

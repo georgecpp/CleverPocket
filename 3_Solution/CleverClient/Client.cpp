@@ -30,7 +30,7 @@ Client& Client::getInstance()
 	if (!instance->IsConnected())
 	{
 		// replace with credentials.
-		instance->Connect("6.tcp.ngrok.io", 11873);
+		instance->Connect("6.tcp.ngrok.io", 13244);
 	}
 	return *instance;
 }
@@ -138,6 +138,26 @@ void Client::SendEmailForgotPassword(const std::string& emailTo)
 	msg.header.id = clever::MessageType::SendEmailForgotPasswordRequest;
 	char l_email[1024]; strcpy(l_email, emailTo.c_str());
 	msg << l_email;
+	Send(msg);
+}
+
+void Client::ValidateMySixDigitCode(const std::string& validation_code)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::VerifyCodeForgotPasswordRequest;
+	char l_validCode[1024]; strcpy(l_validCode, validation_code.c_str());
+	msg << l_validCode;
+	Send(msg);
+}
+
+void Client::UpdatePasswordRequest(const std::string& newPassword, const std::string& userRequesting)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::UpdatePasswordRequest;
+	char l_email[1024]; strcpy(l_email, userRequesting.c_str());
+	char l_newPassword[1024]; strcpy(l_newPassword, newPassword.c_str());
+
+	msg << l_newPassword << l_email;
 	Send(msg);
 }
 

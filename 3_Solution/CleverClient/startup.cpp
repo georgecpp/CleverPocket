@@ -8,6 +8,7 @@
 Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
+	this->currEmail = "";
 	ui.setupUi(this);
 	m_dshptr = new Dashboard();
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
@@ -29,7 +30,7 @@ Startup::Startup(QWidget *parent)
 
 Startup::~Startup()
 {
-
+	this->currEmail = "";
 }
 //deletes all inputs that could remain while crossing pages
 void Startup::clearGaps()
@@ -75,6 +76,13 @@ void Startup::resizeToForgotPasswordPage()
 	this->clearGaps();
 }
 
+void Startup::resizeToUpdatePasswordPage()
+{
+	this->setFixedSize(QSize(800, 600));
+	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	this->clearGaps();
+}
+
 void Startup::resizeToTermsAndConditionsPage()
 {
 	/*this->resize(QSize(1360, 768));
@@ -93,7 +101,7 @@ bool Startup::tryLoginRemembered()
 		Client& c = Client::getInstance();
 		if (!c.IsConnected())
 		{
-			c.Connect("6.tcp.ngrok.io", 11873);
+			c.Connect("6.tcp.ngrok.io", 13244);
 		}
 		while (c.Incoming().empty())
 		{
@@ -227,6 +235,7 @@ void Startup::on_forgotPasswordSendPushButton_clicked()
 					QTimer::singleShot(2500, msgBox, SLOT(close()));
 					ui.validationCodeLineEdit->setVisible(true); 
 					ui.validatePushButton->setVisible(true);
+					this->currEmail = emailTo.toStdString();
 				}
 				if (strcmp(responseBack, "InvalidEmailForgotPassword") == 0)
 				{
@@ -251,6 +260,139 @@ void Startup::on_validatePushButton_clicked()
 {
 	// TO DO - TAKE ME TO THE NEXT FORM WHERE I ENTER AND RE-ENTER NEW PASSWORD
 	// THUS UPDATING THE DATABASE WITH NEW PASSWORD.
+	QString validationCode = ui.validationCodeLineEdit->text();
+	bool stillHasConnectedForAnswer = true;
+	Client& c = Client::getInstance();
+
+	QMessageBox* msgBox = new QMessageBox;
+	if (validationCode == "")
+	{
+		msgBox->setText("Please fill the 6 digit code we sent over email.");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	if (validationCode.length() != 6)
+	{
+		msgBox->setText("Enter a 6-digit code!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+
+	c.Incoming().clear();
+	c.ValidateMySixDigitCode(validationCode.toStdString());
+	while (c.Incoming().empty())
+	{
+		// do-wait.
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillHasConnectedForAnswer = false;
+			break;
+		}
+	}
+
+	if (stillHasConnectedForAnswer)
+	{
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::VerifyCodeForgotPasswordRequest)
+			{
+				char responseBack[1024];
+				msg >> responseBack;
+
+				if (strcmp(responseBack, "SuccessValidationCode") == 0)
+				{
+					ui.stackedWidget->setCurrentWidget(ui.newPasswordPage);
+					this->resizeToUpdatePasswordPage();
+				}
+				if (strcmp(responseBack, "InvalidValidationCode") == 0)
+				{
+					msgBox->setText("Wrong 6-Digit Validation Code! Try again.");
+					msgBox->show();
+					QTimer::singleShot(2250, msgBox, SLOT(close()));
+				}
+				stillHasConnectedForAnswer = false;
+			}
+		}
+	}
+}
+
+void Startup::on_updatePasswordPushButton_clicked()
+{
+	bool stillHasConnectedForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+
+	// check if boxes are filled
+	QString newPassword = ui.newPasswordLineEdit->text();
+	QString confirmNewPassword = ui.confirmNewPasswordLineEdit->text();
+
+	if (newPassword == "" || confirmNewPassword == "")
+	{
+		msgBox->setText("Please fill all the boxes!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+
+	// check if password are the same
+
+	if (newPassword != confirmNewPassword)
+	{
+		msgBox->setText("Passwords do not match! Re-enter again.");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+
+	// perform update password request to server.
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UpdatePasswordRequest(newPassword.toStdString(), this->currEmail);
+	while (c.Incoming().empty())
+	{
+		// do-wait.
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillHasConnectedForAnswer = false;
+			break;
+		}
+	}
+
+	if (stillHasConnectedForAnswer)
+	{
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::UpdatePasswordRequest)
+			{
+				char responseBack[1024];
+				msg >> responseBack;
+
+				if (strcmp(responseBack, "SuccessUpdatePassword") == 0)
+				{
+					msgBox->setText("Successfully updated password for this account! Redirecting to login page...");
+					msgBox->show();
+					QTimer::singleShot(2500, msgBox, SLOT(close()));
+					ui.stackedWidget->setCurrentWidget(ui.loginPage);
+					this->resizeToLoginPage();
+				}
+				if (strcmp(responseBack, "InvalidEmailUpdatePassword") == 0)
+				{
+					msgBox->setText("We couldn't update password for account with this email. Try again!");
+					msgBox->show();
+					QTimer::singleShot(2500, msgBox, SLOT(close()));
+				}
+				stillHasConnectedForAnswer = false;
+			}
+		}
+	}
+
 }
 
 void Startup::on_backToLoginLinkButton_clicked()

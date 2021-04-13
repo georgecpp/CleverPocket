@@ -19,13 +19,12 @@ private:
 	void resizeToLoginPage();
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
-//<<<<<<< HEAD
+	void resizeToUpdatePasswordPage();
 	bool tryLoginRemembered();
-//=======
 	void resizeToTermsAndConditionsPage();
 	void clearGaps();
-//>>>>>>> 6209784ede7ee667c0c300728228464234eeb775
 	Dashboard* m_dshptr;
+	std::string currEmail;
 
 private slots:
 	void on_registerLinkButton_clicked();
@@ -39,4 +38,5 @@ private slots:
 	void on_registerNowLinkButton_clicked();
 	void on_forgotPasswordSendPushButton_clicked();
 	void on_validatePushButton_clicked();
+	void on_updatePasswordPushButton_clicked();
 };
