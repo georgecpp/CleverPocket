@@ -8,3 +8,4 @@
 #include "clever_Connection.h"
 #include "clever_Exceptions.h"
 #include "clever_MessageType.h"
+#include "clever_Credentials.h"

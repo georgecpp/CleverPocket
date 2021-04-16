@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="clever_Connection.h" />
     <ClInclude Include="clever_core.h" />
+    <ClInclude Include="clever_Credentials.h" />
     <ClInclude Include="clever_DBConnection.h" />
     <ClInclude Include="clever_Exceptions.h" />
     <ClInclude Include="clever_IClient.h" />

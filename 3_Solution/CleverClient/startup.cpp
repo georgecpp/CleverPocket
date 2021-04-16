@@ -11,6 +11,8 @@ Startup::Startup(QWidget *parent)
 	this->currEmail = "";
 	ui.setupUi(this);
 	m_dshptr = new Dashboard();
+	connect(ui.countryComboBox, SIGNAL(activated(int)), this, SLOT(on_countrySelected(int)));
+	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 	ui.validationCodeLineEdit->setVisible(false); ui.validatePushButton->setVisible(false);
 	//check if pat.txt file can be opened.
@@ -49,6 +51,44 @@ void Startup::clearGaps()
 	ui.termsAndConditonsCheckBox->setChecked(false);
 }
 
+void Startup::fillCountries()
+{
+	if (ui.countryComboBox->count()>1)
+	{
+		return;
+	}
+	FILE* fin = fopen("Countries.txt", "r");
+	if (fin)
+	{
+		char buffer[512];
+		while (fgets(buffer, sizeof(buffer), fin))
+		{
+			std::string line;
+			if (buffer[strlen(buffer) - 1] != '\n')
+			{
+				line = buffer;
+			}
+			else
+			{
+				line.assign(buffer, strlen(buffer) - 1);
+			}
+			std::stringstream ss(line);
+			std::string countryName;
+			std::string phoneCode;
+			std::getline(ss, countryName, ',');
+			std::getline(ss, phoneCode, ',');
+			this->countries.insert(std::pair<std::string, std::string>(countryName, phoneCode));
+		}
+		fclose(fin);
+
+		ui.countryComboBox->clear();
+		for (std::map<std::string, std::string>::iterator it = countries.begin(); it != countries.end(); it++)
+		{
+			ui.countryComboBox->addItem(QString(it->first.c_str()));
+		}
+	}
+}
+
 void Startup::resizeToLoginPage()
 {
 	/*this->resize(QSize(800, 600));
@@ -64,7 +104,7 @@ void Startup::resizeToRegisterPage()
 	ui.stackedWidget->resize(QSize(1360, 768));*/
 	this->setFixedSize(QSize(1360, 768));
 	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
-	this->clearGaps();
+	//this->clearGaps();
 }
 
 void Startup::resizeToForgotPasswordPage()
@@ -101,7 +141,7 @@ bool Startup::tryLoginRemembered()
 		Client& c = Client::getInstance();
 		if (!c.IsConnected())
 		{
-			c.Connect("6.tcp.ngrok.io", 13244);
+			c.Connect("4.tcp.ngrok.io", 14750);
 		}
 		while (c.Incoming().empty())
 		{
@@ -187,6 +227,7 @@ void Startup::on_backToRegisterLinkButton_clicked()
 
 void Startup::on_registerNowLinkButton_clicked()
 {
+	fillCountries();
 	QObject::connect(ui.registerNowLinkButton, SIGNAL(clicked()), this, SLOT(on_registerNowLinkButton_clicked()));
 	ui.stackedWidget->setCurrentWidget(ui.registerPage);
 	this->resizeToRegisterPage();
@@ -395,6 +436,27 @@ void Startup::on_updatePasswordPushButton_clicked()
 
 }
 
+void Startup::on_countrySelected(int index)
+{
+	std::string t = std::to_string(index);
+	QString countryName = ui.countryComboBox->currentText();
+
+	// match the phone code from the map.
+	std::string phoneCode = "(+";
+	phoneCode += this->countries[countryName.toStdString()];
+	phoneCode += ") ";
+	ui.phoneLineEdit->setText(QString(phoneCode.c_str()));
+}
+
+void Startup::on_phoneNumberEdited()
+{
+	std::string currText = ui.phoneLineEdit->text().toStdString();
+	if (currText[ui.phoneLineEdit->cursorPosition()-1] == ')')
+	{
+		ui.phoneLineEdit->undo();
+	}
+}
+
 void Startup::on_backToLoginLinkButton_clicked()
 {
 	QObject::connect(ui.backToLoginLinkButton, SIGNAL(clicked()), this, SLOT(on_backToLoginLinkButton_clicked()));
@@ -413,19 +475,48 @@ void Startup::on_registerPushButton_clicked()
 	QMessageBox msgBox;
 	bool stillConnectedWaitingForAnswer = true;
 	Client& c = Client::getInstance(); // handles connection too, if it is not connected.!!
-
+	
+	QString firstname = ui.firstNameLineEdit->text();
+	QString lastname = ui.lastNameLineEdit->text();
 	QString username = ui.usernameRLineEdit->text();
 	QString password = ui.passwordRLineEdit->text();
 	QString email = ui.emailLineEdit->text();
-
-	if (username == "" || password == "" || email == "")
+	QString country = ui.countryComboBox->currentText();
+	QString phoneNumber = ui.phoneLineEdit->text();
+	
+	if (username == "" || password == "" || email == "" || firstname == "" || lastname =="" || country=="")
 	{
 		msgBox.setText("Please fill all the boxes!");
 		msgBox.exec();
 		return;
 	}
+	if (password != ui.confirmPasswordRLineEdit->text())
+	{
+		msgBox.setText("Passwords do not match!!");
+		msgBox.exec();
+		return;
+	}
+
+	// check if cursor has been modified for phone number. + TO DO: REGEX VALIDATION
+	int phoneNumberSize = ui.phoneLineEdit->text().size() - (this->countries[country.toStdString()].size() + 2);
+	if (phoneNumberSize < 4)
+	{
+		msgBox.setText("Phone number size is too small!");
+		msgBox.exec();
+		return;
+	}
+
+	// check if agreed terms and conditions.
+	clever::CredentialHandler credentials;
+	credentials.setFirstName(firstname.toStdString());
+	credentials.setLastName(lastname.toStdString());
+	credentials.setUsername(username.toStdString());
+	credentials.setPassword(password.toStdString());
+	credentials.setEmail(email.toStdString());
+	credentials.setCountryID(country.toStdString()); // ID == Country name, since it is unique...
+	credentials.setPhoneNumber(phoneNumber.toStdString());
 	c.Incoming().clear();
-	c.Register(username.toStdString(), password.toStdString(), email.toStdString());
+	c.Register(credentials);
 	while (c.Incoming().empty())
 	{
 		// do-wait.
@@ -538,6 +629,7 @@ void Startup::on_loginPushButton_clicked()
 
 void Startup::on_registerLinkButton_clicked()
 {
+	fillCountries();
 	QObject::connect(ui.registerLinkButton, SIGNAL(clicked()), this, SLOT(on_registerLinkButton_clicked()));
 	ui.stackedWidget->setCurrentWidget(ui.registerPage);
 

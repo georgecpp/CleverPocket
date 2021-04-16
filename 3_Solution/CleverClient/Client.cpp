@@ -30,7 +30,7 @@ Client& Client::getInstance()
 	if (!instance->IsConnected())
 	{
 		// replace with credentials.
-		instance->Connect("6.tcp.ngrok.io", 13244);
+		instance->Connect("4.tcp.ngrok.io", 14750);
 	}
 	return *instance;
 }
@@ -75,32 +75,22 @@ void Client::MessageAll()
 		// simply send the message.
 		Send(msg);
 }
-
-void Client::Register(const std::string& username, const std::string& password, const std::string& email)
+void Client::Register(const clever::CredentialHandler& credentials)
 {
-		clever::message<clever::MessageType> msg;
-		msg.header.id = clever::MessageType::RegisterRequest;
-		char l_username[1024];
-		char l_password[1024];
-		char l_email[1024];
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::RegisterRequest;
+	char l_firstname[1024]; strcpy(l_firstname, credentials.getFirstName());
+	char l_lastname[1024]; strcpy(l_lastname, credentials.getLastName());
+	char l_username[1024]; strcpy(l_username, credentials.getUsername());
+	char l_password[1024]; strcpy(l_password, credentials.getPassword());
+	char l_email[1024]; strcpy(l_email, credentials.getEmail());
+	char l_countryid[1024]; strcpy(l_countryid, credentials.getCountryID());
+	char l_phoneNumber[1024]; strcpy(l_phoneNumber, credentials.getPhoneNumber());
 
-		if (username == "" && password == "" && email == "")
-		{
-			strcpy(l_username, username.c_str());
-			strcpy(l_password, password.c_str());
-			strcpy(l_email, email.c_str());
-		}
-		else
-		{
-			strcpy(l_username, username.c_str());
-			strcpy(l_password, password.c_str());
-			strcpy(l_email, email.c_str());
-		}
+	msg << l_phoneNumber << l_countryid << l_email << l_password << l_username << l_lastname << l_firstname;
+	Send(msg);
 
-		msg << l_username << l_password << l_email;
-		Send(msg);
 }
-
 void Client::LoginUser(const std::string& username, const std::string& password)
 {
 	clever::message<clever::MessageType> msg;

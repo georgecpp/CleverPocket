@@ -5,6 +5,7 @@
 #include <qstackedwidget.h>
 #include <QtGui>
 #include "dashboard.h"
+#include <map>
 
 
 class Startup : public QWidget
@@ -23,8 +24,10 @@ private:
 	bool tryLoginRemembered();
 	void resizeToTermsAndConditionsPage();
 	void clearGaps();
+	void fillCountries();
 	Dashboard* m_dshptr;
 	std::string currEmail;
+	std::map<std::string, std::string> countries; // countryName - phoneCode
 
 private slots:
 	void on_registerLinkButton_clicked();
@@ -39,4 +42,6 @@ private slots:
 	void on_forgotPasswordSendPushButton_clicked();
 	void on_validatePushButton_clicked();
 	void on_updatePasswordPushButton_clicked();
+	void on_countrySelected(int index);
+	void on_phoneNumberEdited();
 };

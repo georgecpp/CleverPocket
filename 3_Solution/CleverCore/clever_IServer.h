@@ -8,6 +8,7 @@
 #include "clever_Connection.h"
 #include "clever_DBConnection.h"
 #include "clever_Exceptions.h"
+#include "clever_Credentials.h"
 
 using namespace EASendMailObjLib;
 enum class ConnectSMTPCodes
@@ -388,7 +389,7 @@ namespace clever
 			}
 
 			std::string l_password = convertToSqlVarcharFormat(password);
-			query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Password = " + l_password + ") " + "SELECT 1 ELSE SELECT 0";
+			query = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Users WHERE Password = " + l_password + " AND Username = "+l_username+") " + "SELECT 1 ELSE SELECT 0";
 			result = GetQueryExecResult(query);
 			if (result == "0")
 			{
@@ -396,29 +397,31 @@ namespace clever
 			}
 		}
 
-		void RegisterUserToDatabase(char username[], char password[], char email[])
+		void RegisterUserToDatabase(const CredentialHandler& credentials)
 		{
 			// build query with those credentials.
-			if (!checkEmailFormat(email))
+			if (!checkEmailFormat(credentials.getEmail()))
 			{
 				throw EmailValidationError("Email Validation Failed. Format is not good!");
 			}
 
-			if (checkUserAlreadyRegistered(username, email))
+			if (checkUserAlreadyRegistered(credentials.getUsername(),credentials.getEmail()))
 			{
 				throw UserAlreadyRegisteredError("A user with this username is already registered to the database!");
 			}
-			std::string l_username = convertToSqlVarcharFormat(username);
-			std::string l_password = convertToSqlVarcharFormat(password);
-			std::string l_email = convertToSqlVarcharFormat(email);
-			std::string query = "INSERT INTO [CleverPocket].[dbo].[Users] (Username, Password, Email) VALUES ( " + l_username + ", " + l_password + ", " + l_email + ")";
-			//std::string query = "SELECT * FROM [CleverPocket].[dbo].[Users]";
-			// exec query
+			std::string l_firstname = convertToSqlVarcharFormat(credentials.getFirstName());
+			std::string l_lastname = convertToSqlVarcharFormat(credentials.getLastName());
+			std::string l_username = convertToSqlVarcharFormat(credentials.getUsername());
+			std::string l_password = convertToSqlVarcharFormat(credentials.getPassword());
+			std::string l_email = convertToSqlVarcharFormat(credentials.getEmail());
+			std::string l_countryid = convertToSqlVarcharFormat(credentials.getCountryID());
+			std::string l_phoneNumber = convertToSqlVarcharFormat(credentials.getPhoneNumber());
+			std::string query = "INSERT INTO [CleverPocket].[dbo].[Users] (FirstName, LastName, Username, Password, Email, Country, PhoneNumber) VALUES ( " + l_firstname + ", " + l_lastname + ", " + l_username + ", " + l_password + ", " + l_email + ", " + l_countryid+", "+l_phoneNumber+")";
 			ExecQuery(query);
 		}
 
 	private:
-		std::string convertToSqlVarcharFormat(char field[])
+		std::string convertToSqlVarcharFormat(const char* field)
 		{
 			std::string str;
 			str = "'";
@@ -426,7 +429,7 @@ namespace clever
 			str += "'";
 			return str;
 		}
-		bool checkUserAlreadyRegistered(char username[], char email[])
+		bool checkUserAlreadyRegistered(const char* username, const char* email)
 		{
 			// first check if the username is already there.
 			std::string l_username = convertToSqlVarcharFormat(username);
@@ -448,7 +451,7 @@ namespace clever
 
 			return false;
 		}
-		bool checkEmailFormat(char email[])
+		bool checkEmailFormat(const char* email)
 		{
 			std::string str_email = email;
 			// handle REGEX.

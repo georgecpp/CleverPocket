@@ -55,16 +55,28 @@ protected:
 		{
 			// the message contains the data for registration.
 			std::cout << "[" << client->GetID() << "]: Register to DB request\n";
+			char firstname[1024];
+			char lastname[1024];
 			char username[1024];
 			char password[1024];
 			char email[1024];
+			char countryID[1024];
+			char phonenumber[1024];
 
-			msg >> email >> password >> username;
+			msg >> firstname >> lastname >> username >> password >> email >> countryID >> phonenumber;
+			clever::CredentialHandler credentials;
+			credentials.setFirstName(firstname);
+			credentials.setLastName(lastname);
+			credentials.setUsername(username);
+			credentials.setPassword(password);
+			credentials.setEmail(email);
+			credentials.setCountryID(countryID);
+			credentials.setPhoneNumber(phonenumber);
 			char responseback[1024];
 
 			try
 			{
-				RegisterUserToDatabase(username, password, email);
+				RegisterUserToDatabase(credentials);
 				strcpy(responseback, "Success");
 			}
 			catch (clever::EmailValidationError)

@@ -45,6 +45,9 @@
     <ClInclude Include="clever_TSQueue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="clever_Credentials.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

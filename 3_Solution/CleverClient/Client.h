@@ -21,7 +21,7 @@ public:
 
 	void PingServer();
 	void MessageAll();
-	void Register(const std::string& username, const std::string& password, const std::string& email);
+	void Register(const clever::CredentialHandler& credentials);
 	void LoginUser(const std::string& username, const std::string& password);
 	void LoginUserRemembered(const std::string& PAT);
 	void RememberMe(const std::string& PAT, const std::string& username);
