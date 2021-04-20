@@ -141,7 +141,7 @@ bool Startup::tryLoginRemembered()
 		Client& c = Client::getInstance();
 		if (!c.IsConnected())
 		{
-			c.Connect("4.tcp.ngrok.io", 14750);
+			c.ConnectToServer();
 		}
 		while (c.Incoming().empty())
 		{

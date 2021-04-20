@@ -19,6 +19,7 @@ public:
 	static std::string generatePAT();
 	static bool ClientIsConnected();
 
+	void ConnectToServer();
 	void PingServer();
 	void MessageAll();
 	void Register(const clever::CredentialHandler& credentials);
