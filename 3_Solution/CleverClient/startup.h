@@ -21,6 +21,7 @@ private:
 	void resizeToRegisterPage();
 	void resizeToForgotPasswordPage();
 	void resizeToUpdatePasswordPage();
+	void resizeToDashboard();
 	bool tryLoginRemembered();
 	void resizeToTermsAndConditionsPage();
 	void clearGaps();

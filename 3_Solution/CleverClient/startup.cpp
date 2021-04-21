@@ -123,6 +123,12 @@ void Startup::resizeToUpdatePasswordPage()
 	this->clearGaps();
 }
 
+void Startup::resizeToDashboard()
+{
+	this->setFixedSize(QSize(1360, 768));
+	ui.stackedWidget->setFixedSize(QSize(1360, 768));
+}
+
 void Startup::resizeToTermsAndConditionsPage()
 {
 	/*this->resize(QSize(1360, 768));
@@ -620,7 +626,8 @@ void Startup::on_loginPushButton_clicked()
 				}
 
 				// finally, go to dashboard.
-				ui.stackedWidget->setCurrentWidget(m_dshptr); 
+				ui.stackedWidget->setCurrentWidget(m_dshptr);
+				this->resizeToDashboard();
 				// and resize this to dashboard.
 			}
 		}

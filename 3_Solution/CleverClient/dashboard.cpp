@@ -1,9 +1,10 @@
 #include "dashboard.h"
 
-Dashboard::Dashboard(QWidget *parent)
+Dashboard::Dashboard(QWidget* parent)
 	: QWidget(parent)
 {
-	setupUi(this);
+	ui.setupUi(this);
+	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 }
 
 Dashboard::~Dashboard()
