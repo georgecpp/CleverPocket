@@ -292,6 +292,19 @@ namespace clever
 		{
 
 		}
+		void OnLogoutRemembered(char pat[])
+		{
+			std::string PAT = convertToSqlVarcharFormat(pat);
+			std::string testPATExistenceQuery = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Sessions WHERE PAT = " + PAT + ") SELECT 1 ELSE SELECT 0";
+			std::string result = GetQueryExecResult(testPATExistenceQuery);
+			if (result == "0")
+			{
+				throw InvalidPATLogoutError("PAT does not correspond to any user in the database.");
+			}
+			std::cout << PAT;
+			std::string query = "DELETE FROM CleverPocket.dbo.Sessions WHERE PAT = "+PAT;
+			ExecQuery(query);
+		}
 		void OnUpdatePassword(char newPassword[], char emailTo[])
 		{
 			std::string l_newPassword = convertToSqlVarcharFormat(newPassword);

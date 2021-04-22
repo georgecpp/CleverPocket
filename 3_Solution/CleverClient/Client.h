@@ -29,7 +29,7 @@ public:
 	void SendEmailForgotPassword(const std::string& emailTo);
 	void ValidateMySixDigitCode(const std::string& validation_code);
 	void UpdatePasswordRequest(const std::string& newPassword, const std::string& userRequesting);
-
+	void LogoutWithRememberMe(const std::string& PAT);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

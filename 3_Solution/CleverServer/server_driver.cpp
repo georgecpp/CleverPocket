@@ -245,7 +245,27 @@ protected:
 			client->Send(msg);
 		}
 		break;
+		
+		case clever::MessageType::LogoutRememberedRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Logout remembered request\n";
+			char PAT[1024];
+			msg >> PAT;
+			char responseBack[1024];
+			try
+			{
+				OnLogoutRemembered(PAT);
+				strcpy(responseBack, "LogoutRememberedSuccess");
+			}
+			catch (clever::InvalidPATLogoutError)
+			{
+				strcpy(responseBack, "InvalidPATLogout");
+			}
 
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
 		}
 	}
 };

@@ -16,5 +16,6 @@ namespace clever
 		SendEmailForgotPasswordRequest,
 		VerifyCodeForgotPasswordRequest,
 		UpdatePasswordRequest,
+		LogoutRememberedRequest,
 	};
 }

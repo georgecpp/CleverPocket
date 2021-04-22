@@ -4,13 +4,12 @@
 #include "stdafx.h"
 #include <qmessagebox.h>
 
-
 Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
 	this->currEmail = "";
 	ui.setupUi(this);
-	m_dshptr = new Dashboard();
+	m_dshptr = new Dashboard(ui.stackedWidget);
 	connect(ui.countryComboBox, SIGNAL(activated(int)), this, SLOT(on_countrySelected(int)));
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
@@ -616,18 +615,29 @@ void Startup::on_loginPushButton_clicked()
 				// TO DO
 				if (ui.keeploggedCheckBox->isChecked())
 				{
-					FILE* fpat = fopen("PAT.txt", "w");
-					std::string PAT = Client::generatePAT();
-					fputs(PAT.c_str(), fpat);
-					fclose(fpat);
-
-					// request to update the database with this new PAT for this user.
-					c.RememberMe(PAT, username.toStdString());
+					FILE* fin = fopen("PAT.txt", "r");
+					if (!fin)
+					{
+						FILE* fpat = fopen("PAT.txt", "w");
+						std::string PAT = Client::generatePAT();
+						fputs(PAT.c_str(), fpat);
+						fclose(fpat);
+						// request to update the database with this new PAT for this user.
+						c.RememberMe(PAT, username.toStdString());
+					}
+					// else, make sure to delete session from DB -- request to server, get rid of PAT.txt too!
+				
 				}
 
 				// finally, go to dashboard.
+				if (m_dshptr==Q_NULLPTR)
+				{
+					m_dshptr = new Dashboard(ui.stackedWidget);
+					ui.stackedWidget->addWidget(m_dshptr);
+				}
 				ui.stackedWidget->setCurrentWidget(m_dshptr);
 				this->resizeToDashboard();
+				m_dshptr = Q_NULLPTR; // reset pointer to dashboard for further log in attempt after sign out!!
 				// and resize this to dashboard.
 			}
 		}

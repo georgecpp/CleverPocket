@@ -156,6 +156,15 @@ void Client::UpdatePasswordRequest(const std::string& newPassword, const std::st
 	Send(msg);
 }
 
+void Client::LogoutWithRememberMe(const std::string& PAT)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::LogoutRememberedRequest;
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	msg << l_pat;
+	Send(msg);
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;
