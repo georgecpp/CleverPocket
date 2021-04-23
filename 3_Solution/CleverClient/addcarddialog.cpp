@@ -180,7 +180,7 @@ void AddCardDialog::on_addCardPushButton_clicked()
 				// ALL GOOD.
 				msgBox->setText("Card added with success!");
 				msgBox->show();
-				QTimer::singleShot(1000, msgBox, SLOT(close()));
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
 			}
 			else
 			{
@@ -191,10 +191,6 @@ void AddCardDialog::on_addCardPushButton_clicked()
 			}
 			stillConnectedWaitingAnswer = false;
 		}
-	}
-	if (msgBox)
-	{
-		delete msgBox;
 	}
 	this->done(QDialog::Accepted);
 }

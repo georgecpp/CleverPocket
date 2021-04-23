@@ -285,9 +285,9 @@ protected:
 			}
 			catch (...)
 			{
-
+				strcpy(responseBack, "FailAddCard");
 			}
-			msg.header.id == clever::MessageType::ServerAddCardResponse;
+			msg.header.id = clever::MessageType::ServerAddCardResponse;
 			msg << responseBack;
 			client->Send(msg);
 		}
@@ -311,9 +311,9 @@ protected:
 			}
 			catch (...)
 			{
-
+				strcpy(responseBack, "FailAddCard");
 			}
-			msg.header.id == clever::MessageType::ServerAddCardResponse;
+			msg.header.id = clever::MessageType::ServerAddCardResponse;
 			msg << responseBack;
 			client->Send(msg);
 		}
