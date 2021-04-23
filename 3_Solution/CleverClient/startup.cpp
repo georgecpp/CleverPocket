@@ -7,16 +7,19 @@
 Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
+	this->currPAT = "";
 	this->currEmail = "";
 	ui.setupUi(this);
-	m_dshptr = new Dashboard(ui.stackedWidget);
+	//m_dshptr = new Dashboard(ui.stackedWidget);
 	connect(ui.countryComboBox, SIGNAL(activated(int)), this, SLOT(on_countrySelected(int)));
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
-	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
+	//ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 	ui.validationCodeLineEdit->setVisible(false); ui.validatePushButton->setVisible(false);
 	//check if pat.txt file can be opened.
 	if (tryLoginRemembered())
 	{
+		m_dshptr = new Dashboard(QString(this->currPAT.c_str()),ui.stackedWidget);
+		ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 		ui.stackedWidget->setCurrentWidget(m_dshptr);
 		// and resize for the dashboard.
 	}
@@ -188,6 +191,7 @@ bool Startup::tryLoginRemembered()
 				{
 					// login successfully -- proceed to dashboard with this account logged in.
 					fclose(fin);
+					this->currPAT = PAT;
 					return true;
 				}
 				else
@@ -632,7 +636,7 @@ void Startup::on_loginPushButton_clicked()
 				// finally, go to dashboard.
 				if (m_dshptr==Q_NULLPTR)
 				{
-					m_dshptr = new Dashboard(ui.stackedWidget);
+					m_dshptr = new Dashboard(username,ui.stackedWidget);
 					ui.stackedWidget->addWidget(m_dshptr);
 				}
 				ui.stackedWidget->setCurrentWidget(m_dshptr);

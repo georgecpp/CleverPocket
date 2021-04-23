@@ -30,6 +30,8 @@ public:
 	void ValidateMySixDigitCode(const std::string& validation_code);
 	void UpdatePasswordRequest(const std::string& newPassword, const std::string& userRequesting);
 	void LogoutWithRememberMe(const std::string& PAT);
+	void UserPATAddCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler);
+	void UsernameAddCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

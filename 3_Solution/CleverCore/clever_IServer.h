@@ -105,28 +105,6 @@ namespace clever
 			std::cout << "\n[SERVER] Query Result:\n\n\n";
 			m_dbconnector.ExecuteQuery(query); // throws Query exception!
 			std::cout << "\n";
-			//}
-
-
-			//else
-			//{
-			//	std::cout << "\n[SERVER] Query Result:\n\n\n";
-			//	m_dbconnector.ExecuteQuery(query); // throws int exception!
-			//	std::cout << "\n";
-			//}
-
-			//if (m_dbconnector.OnAttemptToConnect())
-			//{
-			//	//SQLCHAR query_res = m_dbconnector.ExecuteQuery(query);
-			//	std::cout << "\n[SERVER] Query Result:\n\n\n";
-			//	m_dbconnector.ExecuteQuery(query); // throws int exception!
-			//	std::cout << "\n";
-			//}
-			//else
-			//{
-			//	std::cout << "\n[SERVER] Couldn't connect to database anymore! :\n\n\n";
-			//	throw - 1;
-			//}
 		}
 
 
@@ -291,6 +269,46 @@ namespace clever
 		virtual void OnMessage(std::shared_ptr<connection<T>> client, message<T>& msg)
 		{
 
+		}
+		void OnAddCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler)
+		{
+			// obtain the user ID from this username and insert in Cards with this user ID.
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string cardName = convertToSqlVarcharFormat(cardCredHandler.getCardName());
+			std::string cardHolder = convertToSqlVarcharFormat(cardCredHandler.getCardHolder());
+			std::string cardNumber = convertToSqlVarcharFormat(cardCredHandler.getCardNumber());
+			std::string cardCurrencyISO = convertToSqlVarcharFormat(cardCredHandler.getCardCurrencyISO());
+			std::string cardValidUntil = convertToSqlVarcharFormat(cardCredHandler.getCardValidUntil());
+
+			std::string query = "INSERT INTO [CleverPocket].[dbo].[Cards] (UserID, CardName, CardHolder, CardNumber, ValidUntil, CurrencyISO) VALUES(" + userID + ", " + cardName + ", " + cardHolder + ", " + cardNumber + ", " + cardValidUntil + ", " + cardCurrencyISO + ")";
+			ExecQuery(query);
+		}
+		void OnAddCardPAT(char pat[], const clever::CardCredentialHandler& cardCredHandler)
+		{
+			// obtain the user ID from this PAT and insert in Cards table with this user ID.
+			std::string l_pat = convertToSqlVarcharFormat(pat);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string cardName = convertToSqlVarcharFormat(cardCredHandler.getCardName());
+			std::string cardHolder = convertToSqlVarcharFormat(cardCredHandler.getCardHolder());
+			std::string cardNumber = convertToSqlVarcharFormat(cardCredHandler.getCardNumber());
+			std::string cardCurrencyISO = convertToSqlVarcharFormat(cardCredHandler.getCardCurrencyISO());
+			std::string cardValidUntil = convertToSqlVarcharFormat(cardCredHandler.getCardValidUntil());
+
+			std::string query = "INSERT INTO [CleverPocket].[dbo].[Cards] (UserID, CardName, CardHolder, CardNumber, ValidUntil, CurrencyISO) VALUES(" + userID + ", " + cardName + ", " + cardHolder + ", " + cardNumber + ", " + cardValidUntil + ", " + cardCurrencyISO + ")";
+			ExecQuery(query);
 		}
 		void OnLogoutRemembered(char pat[])
 		{

@@ -37,7 +37,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -207,26 +207,6 @@
        <item>
         <property name="text">
          <string>Nu exista carduri adaugate la acest cont</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Card1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Card2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Card3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Card4</string>
         </property>
        </item>
       </widget>

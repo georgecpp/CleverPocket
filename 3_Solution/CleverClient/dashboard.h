@@ -2,6 +2,7 @@
 #include <QWidget>
 #include "ui_dashboard.h"
 #include <qstackedwidget.h>
+#include <addcarddialog.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -9,11 +10,17 @@ class Dashboard : public QWidget, public Ui::Dashboard
 
 public:
 	Dashboard(QStackedWidget* parentStackedWidget = Q_NULLPTR, QWidget* parent = Q_NULLPTR);
+	Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget = Q_NULLPTR, QWidget* parent = Q_NULLPTR);
+	Dashboard(const std::string& username, QStackedWidget* parentStackedWidget = Q_NULLPTR, QWidget* parent = Q_NULLPTR);
 	~Dashboard();
 private:
 	Ui::Dashboard ui;
 	QStackedWidget* fromStackedWidget;
+	QString PATLoggedIn;
+	std::string usernameLoggedIn;
 	void logout();
+	void loadCards();
+	void addCardExec(AddCardDialog& adc);
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);

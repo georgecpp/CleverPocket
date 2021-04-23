@@ -17,5 +17,8 @@ namespace clever
 		VerifyCodeForgotPasswordRequest,
 		UpdatePasswordRequest,
 		LogoutRememberedRequest,
+		AddCardUsernameRequest,
+		AddCardPATRequest,
+		ServerAddCardResponse,
 	};
 }

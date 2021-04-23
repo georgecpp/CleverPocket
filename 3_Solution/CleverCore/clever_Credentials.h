@@ -101,4 +101,62 @@ namespace clever
 		std::string m_CountryID;
 		std::string m_PhoneNumber;
 	};
+
+	class CardCredentialHandler
+	{
+	public:
+		CardCredentialHandler(std::string CardName, std::string CardHolder, std::string CardNumber, std::string CurrencyISO, std::string ValidUntil)
+			: m_CardName(CardName), m_CardHolder(CardHolder), m_CardNumber(CardNumber), m_CurrencyISO(CurrencyISO), m_ValidUntil(ValidUntil)
+		{
+
+		}
+
+		const char* getCardName() const
+		{
+			if (m_CardName != "")
+			{
+				return m_CardName.c_str();
+			}
+			return NULL;
+		}
+		const char* getCardHolder() const
+		{
+			if (m_CardHolder != "")
+			{
+				return m_CardHolder.c_str();
+			}
+			return NULL;
+		}
+		const char* getCardNumber() const
+		{
+			if (m_CardNumber != "")
+			{
+				return m_CardNumber.c_str();
+			}
+			return NULL;
+		}
+		const char* getCardCurrencyISO() const
+		{
+			if (m_CurrencyISO != "")
+			{
+				return m_CurrencyISO.c_str();
+			}
+			return NULL;
+		}
+		const char* getCardValidUntil() const
+		{
+			if (m_ValidUntil!="")
+			{
+				return m_ValidUntil.c_str();
+			}
+			return NULL;
+		}
+	private:
+		std::string m_CardName;
+		std::string m_CardHolder;
+		std::string m_CardNumber;
+		std::string m_CurrencyISO;
+		std::string m_ValidUntil;
+	};
+
 }

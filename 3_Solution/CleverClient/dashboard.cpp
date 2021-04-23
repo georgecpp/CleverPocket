@@ -2,7 +2,6 @@
 #include "Client.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
-#include <addcarddialog.h>
 
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
@@ -13,6 +12,21 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
+	loadCards();
+}
+
+Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
+	: Dashboard(parentStackedWidget, parent)
+{
+	this->PATLoggedIn = PAT;
+	this->usernameLoggedIn = "";
+}
+
+Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
+	: Dashboard(parentStackedWidget, parent)
+{
+	this->usernameLoggedIn = username;
+	this->PATLoggedIn = "";
 }
 
 Dashboard::~Dashboard()
@@ -88,6 +102,28 @@ void Dashboard::logout()
 	}
 }
 
+void Dashboard::loadCards()
+{
+	// TO DO.
+	// loads all cards for this USER LOGGED IN into cardPicker.
+}
+
+void Dashboard::addCardExec(AddCardDialog& adc)
+{
+	if (adc.exec())
+	{
+		// request to db in dialog add button.
+		if (adc.result() == QDialog::Accepted)
+		{
+			if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont")
+			{
+				ui.cardPicker->removeItem(0);
+			}
+			loadCards();
+		}
+	}
+}
+
 void Dashboard::on_menuItemSelected(int index)
 {
 	// index 0 is reserved for header : Avatar + "Andronache George" -- current user logged in.
@@ -127,6 +163,15 @@ void Dashboard::on_financesCommandLinkButton_clicked()
 
 void Dashboard::on_addCardPushButton_clicked()
 {
-	AddCardDialog addcarddialog(this);
-	addcarddialog.exec();
+	if (this->PATLoggedIn == "")
+	{
+		AddCardDialog addcarddialog(usernameLoggedIn,this);
+		addCardExec(addcarddialog);
+		
+	}
+	else
+	{
+		AddCardDialog addcarddialog(PATLoggedIn, this);
+		addCardExec(addcarddialog);
+	}
 }

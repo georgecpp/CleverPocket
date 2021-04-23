@@ -27,6 +27,7 @@ private:
 	void fillCountries();
 	Dashboard* m_dshptr;
 	std::string currEmail;
+	std::string currPAT;
 	std::map<std::string, std::string> countries; // countryName - phoneCode
 
 private slots:
