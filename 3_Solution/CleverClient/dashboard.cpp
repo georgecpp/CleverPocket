@@ -2,6 +2,7 @@
 #include "Client.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
+#include <addcarddialog.h>
 
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
@@ -122,4 +123,10 @@ void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 void Dashboard::on_financesCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.financesPage);
+}
+
+void Dashboard::on_addCardPushButton_clicked()
+{
+	AddCardDialog addcarddialog(this);
+	addcarddialog.exec();
 }
