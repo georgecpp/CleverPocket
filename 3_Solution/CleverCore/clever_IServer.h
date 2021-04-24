@@ -292,6 +292,60 @@ namespace clever
 		{
 
 		}
+<<<<<<< Updated upstream
+=======
+
+		void OnGetCurrencyCardPAT(char pat[], char cardname[], std::string currency)
+		{
+			std::string l_pat = convertToSqlVarcharFormat(pat);
+			std::string l_cardname = convertToSqlVarcharFormat(cardname);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+
+			std::string queryGetCurrencyCardUser = "SELECT [CurrencyISO] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID + "AND dbo.Cards.CardName = " + l_cardname;
+			// will contain all data separated each row with \n.
+			std::string resultQueryGetCurrencyCard = GetQueryExecRowsetResult(queryGetCurrencyCardUser, 1, 1);
+
+			currency = resultQueryGetCurrencyCard;
+		}
+
+		void OnGetCurrencyCardUsername(char username[], char cardname[], std::string currency)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string l_cardname = convertToSqlVarcharFormat(cardname);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+
+			std::string queryGetCurrencyCardUser = "SELECT [CurrencyISO] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID + "AND dbo.Cards.CardName = " + l_cardname;
+			// will contain all data separated each row with \n.
+			std::string resultQueryGetCurrencyCard = GetQueryExecRowsetResult(queryGetCurrencyCardUser, 1, 1);
+
+			currency = resultQueryGetCurrencyCard;
+		}
+
+
+		void OnLogoutRemembered(char pat[])
+		{
+			std::string PAT = convertToSqlVarcharFormat(pat);
+			std::string testPATExistenceQuery = "IF EXISTS(SELECT 1 FROM CleverPocket.dbo.Sessions WHERE PAT = " + PAT + ") SELECT 1 ELSE SELECT 0";
+			std::string result = GetQueryExecResult(testPATExistenceQuery);
+			if (result == "0")
+			{
+				throw InvalidPATLogoutError("PAT does not correspond to any user in the database.");
+			}
+			std::cout << PAT;
+			std::string query = "DELETE FROM CleverPocket.dbo.Sessions WHERE PAT = "+PAT;
+			ExecQuery(query);
+		}
+>>>>>>> Stashed changes
 		void OnUpdatePassword(char newPassword[], char emailTo[])
 		{
 			std::string l_newPassword = convertToSqlVarcharFormat(newPassword);

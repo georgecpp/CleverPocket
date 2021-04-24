@@ -246,6 +246,62 @@ protected:
 		}
 		break;
 
+<<<<<<< Updated upstream
+=======
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::PATGetCurrencyRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_pat[1024]; msg >> l_pat;
+			std::string currencyISO;
+			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
+			try
+			{
+				OnGetCurrencyCardPAT(l_pat, l_cardname, currencyISO);
+
+					//
+					client->Send(msg);
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCurrencyCard");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+		case clever::MessageType::UserGetCurrencyRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_username[1024]; msg >> l_username;
+			std::string currencyISO;
+			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
+			try
+			{
+				OnGetCurrencyCardUsername(l_username, l_cardname, currencyISO);
+
+				//
+				client->Send(msg);
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCurrencyCard");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+>>>>>>> Stashed changes
 		}
 	}
 };

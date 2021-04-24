@@ -16,5 +16,12 @@ namespace clever
 		SendEmailForgotPasswordRequest,
 		VerifyCodeForgotPasswordRequest,
 		UpdatePasswordRequest,
+<<<<<<< Updated upstream
+=======
+		LogoutRememberedRequest,
+		UserGetCurrencyRequest,
+		PATGetCurrencyRequest,
+		ServerGetCurrencyResponse,
+>>>>>>> Stashed changes
 	};
 }

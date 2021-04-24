@@ -15,19 +15,21 @@ Startup::Startup(QWidget *parent)
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 	ui.validationCodeLineEdit->setVisible(false); ui.validatePushButton->setVisible(false);
-	//check if pat.txt file can be opened.
-	if (tryLoginRemembered())
-	{
-		ui.stackedWidget->setCurrentWidget(m_dshptr);
-		// and resize for the dashboard.
-	}
-	else
-	{
-		 //if not, sure login form
-		ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
-		 //SIZE FOR THE LOGIN PAGE
-		this->resizeToLoginPage();
-	}
+	////check if pat.txt file can be opened.
+	//if (tryLoginRemembered())
+	//{
+	//	ui.stackedWidget->setCurrentWidget(m_dshptr);
+	//	// and resize for the dashboard.
+	//}
+	//else
+	//{
+	//	 //if not, sure login form
+	//	ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
+	//	 //SIZE FOR THE LOGIN PAGE
+	//	this->resizeToLoginPage();
+	//}
+	ui.stackedWidget->setCurrentWidget(m_dshptr);
+	this->resizeToDashboard();
 }
 
 Startup::~Startup()
