@@ -12,7 +12,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
-	loadCards();
+	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
 }
 
 Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -106,6 +106,79 @@ void Dashboard::loadCards()
 {
 	// TO DO.
 	// loads all cards for this USER LOGGED IN into cardPicker.
+	ui.cardPicker->clear();
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	if (this->PATLoggedIn == "") // it means user-login
+	{
+		c.UsernameGetCardsDetails(usernameLoggedIn);
+	}
+	else // else PAT-login
+	{
+		c.PATGetCardsDetails(PATLoggedIn.toStdString());
+	}
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int cardsToCome=0;
+	int cardsIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetCardsResponse)
+		{
+			msg >> cardsToCome;
+		}
+	}
+	if (cardsToCome > 0)
+	{
+		if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont")
+		{
+			ui.cardPicker->removeItem(0);
+		}
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (cardsIndex == cardsToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetCardsResponse)
+			{
+				char cardName[1024]; msg >> cardName;
+				char cardHolder[1024]; msg >> cardHolder;
+				char cardNumber[1024]; msg >> cardNumber;
+				char cardValidUntil[1024]; msg >> cardValidUntil;
+				char cardCurrencyISO[1024]; msg >> cardCurrencyISO;
+				
+				clever::CardCredentialHandler newCard(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil);
+				//this->cards.push_back(newCard);
+				map_cards.insert(std::pair<std::string, clever::CardCredentialHandler>(cardName, newCard));
+				ui.cardPicker->addItem(newCard.getCardName());
+				cardsIndex++;
+			}
+		}
+	}
 }
 
 void Dashboard::addCardExec(AddCardDialog& adc)
@@ -159,6 +232,8 @@ void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 void Dashboard::on_financesCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.financesPage);
+	loadCards();
+	on_cardSelected();
 }
 
 void Dashboard::on_addCardPushButton_clicked()
@@ -174,4 +249,13 @@ void Dashboard::on_addCardPushButton_clicked()
 		AddCardDialog addcarddialog(PATLoggedIn, this);
 		addCardExec(addcarddialog);
 	}
+}
+
+void Dashboard::on_cardSelected()
+{
+	QString cardName = ui.cardPicker->currentText();
+	ui.cardNameDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardName());
+	ui.holderDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardHolder());
+	ui.cardNumberDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardNumber());
+	ui.validUntilDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardValidUntil());
 }

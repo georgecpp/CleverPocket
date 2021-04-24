@@ -318,6 +318,76 @@ protected:
 			client->Send(msg);
 		}
 		break;
+		
+		case clever::MessageType::PATGetCardRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Cards (PAT) request\n";
+			char l_pat[1024]; msg >> l_pat;
+			std::vector<clever::CardCredentialHandler> cards;
+			msg.header.id = clever::MessageType::ServerGetCardsResponse;
+			try
+			{
+				OnGetCardsPAT(l_pat, cards);
+				// now cards is filled.
+				int cardsToCome = cards.size();
+				msg << cardsToCome;
+				client->Send(msg);
+
+				for (std::vector<clever::CardCredentialHandler>::iterator iter = cards.begin(); iter != cards.end(); iter++)
+				{
+					char cardName[1024]; strcpy(cardName, iter->getCardName());
+					char cardHolder[1024]; strcpy(cardHolder, iter->getCardHolder());
+					char cardNumber[1024]; strcpy(cardNumber, iter->getCardNumber());
+					char cardValidUntil[1024]; strcpy(cardValidUntil, iter->getCardValidUntil());
+					char cardCurrencyISO[1024]; strcpy(cardCurrencyISO, iter->getCardCurrencyISO());
+					msg << cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
+					client->Send(msg);
+				}
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCards");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+		case clever::MessageType::UserGetCardRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Cards (Username) request\n";
+			char l_username[1024]; msg >> l_username;
+			std::vector<clever::CardCredentialHandler> cards;
+			msg.header.id = clever::MessageType::ServerGetCardsResponse;
+			try
+			{
+				OnGetCardsUsername(l_username, cards);
+				// now cards is filled.
+				int cardsToCome = cards.size();
+				msg << cardsToCome;
+				client->Send(msg);
+
+				for (std::vector<clever::CardCredentialHandler>::iterator iter = cards.begin(); iter != cards.end(); iter++)
+				{
+					char cardName[1024]; strcpy(cardName, iter->getCardName());
+					char cardHolder[1024]; strcpy(cardHolder, iter->getCardHolder());
+					char cardNumber[1024]; strcpy(cardNumber, iter->getCardNumber());
+					char cardValidUntil[1024]; strcpy(cardValidUntil, iter->getCardValidUntil());
+					char cardCurrencyISO[1024]; strcpy(cardCurrencyISO, iter->getCardCurrencyISO());
+					msg << cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
+					client->Send(msg);
+				}
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCards");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
 
 		}
 	}

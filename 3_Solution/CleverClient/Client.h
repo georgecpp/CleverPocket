@@ -32,6 +32,8 @@ public:
 	void LogoutWithRememberMe(const std::string& PAT);
 	void UserPATAddCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler);
 	void UsernameAddCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler);
+	void PATGetCardsDetails(const std::string& PAT);
+	void UsernameGetCardsDetails(const std::string& username);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

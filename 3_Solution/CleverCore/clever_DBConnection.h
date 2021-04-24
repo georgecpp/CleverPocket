@@ -127,7 +127,7 @@ namespace clever
 			SQLDisconnect(sqlConnHandle);
 		}
 
-		std::string GetResultFromExecuteQuery(const std::string& query)
+		std::string GetResultFromExecuteQuery(const std::string& query, int columnIndex=1)
 		{
 			//SQLCHAR queryResult[SQL_RESULT_LEN];
 
@@ -151,9 +151,49 @@ namespace clever
 				SQLLEN ptrQueryResult;
 				if (SQLFetch(sqlStmtHandle) == SQL_SUCCESS)
 				{
-					SQLGetData(sqlStmtHandle, 1, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
+					SQLGetData(sqlStmtHandle, columnIndex, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
 					std::string str((const char*)queryResult);
 					resultString += str;
+				}
+			}
+			// finish the query and disconnect. Expect connect attempt in Server.ExecQuery()
+			SQLDisconnect(sqlConnHandle);
+
+			return resultString;
+		}
+
+		std::string GetResultFromRowsetExecuteQuery(const std::string& query,int columnStart=1, int columnEnd = 1)
+		{
+			//SQLCHAR queryResult[SQL_RESULT_LEN];
+
+			std::string resultString = "";
+			std::cout << "\n";
+			std::cout << "[DBCONNECTION] Executing SQL query...";
+			std::cout << "\n";
+
+			if (SQLPrepareA(sqlStmtHandle, (SQLCHAR*)query.c_str(), SQL_NTS) != SQL_SUCCESS)
+			{
+				std::cout << "[DBCONNECTION] Error querying SQL Server";
+				std::cout << "\n";
+				throw DatabaseQueryError("Error querying SQL Server");
+			}
+			else
+			{
+				SQLExecute(sqlStmtHandle);
+				std::cout << "[DBCONNECTION] Query executed successfully!\n";
+				//declare output variable and pointer
+				SQLCHAR queryResult[SQL_RESULT_LEN];
+				SQLLEN ptrQueryResult;
+				while(SQLFetchScroll(sqlStmtHandle,SQL_FETCH_NEXT,0) == SQL_SUCCESS)
+				{
+					for (int i = columnStart; i <= columnEnd; i++)
+					{
+						SQLGetData(sqlStmtHandle, i, SQL_CHAR, queryResult, SQL_RESULT_LEN, &ptrQueryResult);
+						std::string str((const char*)queryResult);
+						resultString += str;
+						resultString += ";";
+					}
+					resultString += "\n";
 				}
 			}
 			// finish the query and disconnect. Expect connect attempt in Server.ExecQuery()

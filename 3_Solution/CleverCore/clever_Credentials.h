@@ -1,5 +1,6 @@
 #pragma once
-#include "clever_inclusions.h"
+#include <iostream>
+#include <string>
 
 namespace clever
 {
@@ -105,6 +106,7 @@ namespace clever
 	class CardCredentialHandler
 	{
 	public:
+		CardCredentialHandler() {}
 		CardCredentialHandler(std::string CardName, std::string CardHolder, std::string CardNumber, std::string CurrencyISO, std::string ValidUntil)
 			: m_CardName(CardName), m_CardHolder(CardHolder), m_CardNumber(CardNumber), m_CurrencyISO(CurrencyISO), m_ValidUntil(ValidUntil)
 		{

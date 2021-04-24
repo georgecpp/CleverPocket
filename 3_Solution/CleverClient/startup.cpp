@@ -7,6 +7,7 @@
 Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
+	this->m_dshptr = Q_NULLPTR;
 	this->currPAT = "";
 	this->currEmail = "";
 	ui.setupUi(this);
@@ -636,7 +637,7 @@ void Startup::on_loginPushButton_clicked()
 				// finally, go to dashboard.
 				if (m_dshptr==Q_NULLPTR)
 				{
-					m_dshptr = new Dashboard(username,ui.stackedWidget);
+					m_dshptr = new Dashboard(username.toStdString(), ui.stackedWidget);
 					ui.stackedWidget->addWidget(m_dshptr);
 				}
 				ui.stackedWidget->setCurrentWidget(m_dshptr);

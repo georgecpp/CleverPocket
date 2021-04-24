@@ -195,6 +195,25 @@ void Client::UsernameAddCard(const std::string& username, const clever::CardCred
 	Send(msg);
 }
 
+void Client::PATGetCardsDetails(const std::string& PAT)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::PATGetCardRequest;
+
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	msg << l_pat;
+	Send(msg);
+}
+
+void Client::UsernameGetCardsDetails(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::UserGetCardRequest;
+
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
 
 std::string Client::getIpAddressTo()
 {
