@@ -2,6 +2,7 @@
 #include "Client.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
+#include <qfiledialog.h>
 
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
@@ -12,6 +13,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
+	this->prepareOptionsComboBox(ui.preferencesOptions);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
 }
 
@@ -247,13 +249,13 @@ void Dashboard::on_menuItemSelected(int index)
 	switch (index)
 	{
 	case 1:
-		// to do - go to your profile
+		ui.stackedWidget->setCurrentWidget(ui.yourProfilePage);
 		break;
 	case 2:
 		ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 		break;
 	case 3:
-		// to do - go to preferences.
+		ui.stackedWidget->setCurrentWidget(ui.preferencesOptions);
 		break;
 	case 4:
 		logout();
@@ -351,4 +353,27 @@ void Dashboard::on_cardSelected()
 	ui.financeNameWallLabel->setText(this->map_cards[cardName.toStdString()].getCardName());
 	ui.currencyWallLabel->setText(this->map_cards[cardName.toStdString()].getCardCurrencyISO());
 	ui.soldWallLabel->setText(std::to_string(this->map_cards[cardName.toStdString()].getCardSold()).c_str());
+}
+
+void Dashboard::on_choseImagePushButton_clicked()
+{
+	QString filename = QFileDialog::getOpenFileName(this, tr("Chose"), "", tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)")); // title of file dialog-default folder-file format
+
+	if (QString::compare(filename, QString()) != 0)
+	{
+		QImage image;
+		bool valid = image.load(filename);
+
+		if (valid)
+		{
+			image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
+			ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+		}
+		else
+		{
+			//Error handling
+		}
+
+	}
+
 }

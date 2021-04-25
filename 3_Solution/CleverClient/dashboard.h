@@ -34,6 +34,7 @@ private slots:
 	void on_addFundsPushButton_clicked();
 	void on_editCardPushButton_clicked();
 	void on_cardSelected();
+	void on_choseImagePushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };
