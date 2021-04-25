@@ -293,7 +293,10 @@ namespace clever
 
 		}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
 
 		void OnGetCurrencyCardPAT(char pat[], char cardname[], std::string currency)
 		{
@@ -331,6 +334,58 @@ namespace clever
 			currency = resultQueryGetCurrencyCard;
 		}
 
+<<<<<<< Updated upstream
+=======
+		void OnAddCardFundsUsername(char username[], char cardFunds[], char cardName[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string l_cardFunds = convertToSqlVarcharFormat(cardFunds);
+			std::string l_cardName = convertToSqlVarcharFormat(cardName);
+
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string cardIDQuery = "SELECT IDCard from CleverPocket.dbo.Cards WHERE UserID = " + resultID + "AND CardName = " + l_cardName;
+			std::string resultCardID = GetQueryExecResult(cardIDQuery);
+			if (resultCardID == "")
+			{
+				// TO DO NEW EXCEPTION
+			}
+			std::string resultCardID = convertToSqlVarcharFormat(resultCardID.c_str());
+			std::string query = "UPDATE INTO [CleverPocket].[dbo].[Solds] SET Sold += " + l_cardFunds + "WHERE IDCard = " + resultCardID;
+			ExecQuery(query);
+
+		}
+
+		void OnAddCardFundsPAT(char pat[], char cardFunds[], char cardName[])
+		{
+			std::string l_pat = convertToSqlVarcharFormat(pat);
+			std::string l_cardFunds = convertToSqlVarcharFormat(cardFunds);
+			std::string l_cardName = convertToSqlVarcharFormat(cardName);
+
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE PAT = " + l_pat;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string cardIDQuery = "SELECT IDCard from CleverPocket.dbo.Cards WHERE UserID = " + resultID + "AND CardName = " + l_cardName;
+			std::string resultCardID = GetQueryExecResult(cardIDQuery);
+			if (resultCardID == "")
+			{
+				// TO DO NEW EXCEPTION
+			}
+			std::string resultCardID = convertToSqlVarcharFormat(resultCardID.c_str());
+			std::string query = "UPDATE INTO [CleverPocket].[dbo].[Solds] SET Sold += " + l_cardFunds + "WHERE IDCard = " + resultCardID;
+			ExecQuery(query);
+		}
+
+>>>>>>> Stashed changes
 
 		void OnLogoutRemembered(char pat[])
 		{

@@ -35,6 +35,11 @@ public:
 	void LogoutWithRememberMe(const std::string& PAT);
 	void PATGetSelectedCardCurrency(const std::string& PAT, const std::string& cardName);
 	void UsernameGetSelectedCardCurrency(const std::string& username, const std::string& cardName);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+	void UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue);
+	void UsernameAddCardFunds(const std::string& username, const std::string& currCardName, const std::string& fundsValue);
 >>>>>>> Stashed changes
 public:
 	std::string getIpAddressTo();

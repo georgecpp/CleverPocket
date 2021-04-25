@@ -6,6 +6,9 @@
 #include <qtimer.h>
 #include <addcarddialog.h>
 #include <addfundsdialog.h>
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 Dashboard::Dashboard(QWidget* parent)
@@ -20,6 +23,9 @@ Dashboard::Dashboard(QWidget* parent)
 	this->prepareOptionsComboBox(ui.profileOptions);
 	//this->prepareOptionsComboBox(ui.preferencesOptions);
 	
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 
@@ -112,6 +118,7 @@ void Dashboard::addFundsExec(AddFundsDialog& adc)
 	
 }
 
+<<<<<<< Updated upstream
 void Dashboard::loadCardCurrencyISO(const std::string& cardName)
 {
 	bool stillConnectedWaitingForAnswer = true;
@@ -157,6 +164,8 @@ void Dashboard::loadCardCurrencyISO(const std::string& cardName)
 	}
 		
 }
+=======
+>>>>>>> Stashed changes
 
 void Dashboard::on_menuItemSelected(int index)
 {
@@ -243,4 +252,7 @@ void Dashboard::on_addFundsPushButton_clicked()
 	}
 	
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

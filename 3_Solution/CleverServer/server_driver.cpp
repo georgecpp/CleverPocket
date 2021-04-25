@@ -301,6 +301,106 @@ protected:
 		}
 		break;
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+		case clever::MessageType::PATGetCurrencyRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_pat[1024]; msg >> l_pat;
+			std::string currencyISO;
+			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
+			try
+			{
+				OnGetCurrencyCardPAT(l_pat, l_cardname, currencyISO);
+
+					//
+					client->Send(msg);
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCurrencyCard");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+		case clever::MessageType::UserGetCurrencyRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_username[1024]; msg >> l_username;
+			std::string currencyISO;
+			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
+			try
+			{
+				OnGetCurrencyCardUsername(l_username, l_cardname, currencyISO);
+
+				//
+				client->Send(msg);
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetCurrencyCard");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+		case clever::MessageType::AddCardFundsPATRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add funds card request\n";
+			char l_username[1024]; msg >> l_username;
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_fundValue[1024]; msg >> l_fundValue;
+			char responseBack[1024];
+			try
+			{
+				
+				OnAddCardFundsPAT(l_username, l_fundValue, l_cardname);
+				strcpy(responseBack, "SuccessAddFunds");
+			}
+			catch (...)
+			{
+				
+				strcpy(responseBack, "FailAddFunds");
+				
+			}
+			msg.header.id = clever::MessageType::ServerAddFundsResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddCardFundsUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add funds card request\n";
+			char l_username[1024]; msg >> l_username;
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_fundValue[1024]; msg >> l_fundValue;;
+			char responseBack[1024];
+			try
+			{
+				OnAddCardFundsUsername(l_username, l_fundValue, l_cardname);
+				strcpy(responseBack, "SuccessAddFunds");
+			
+			}
+			catch (...)
+			{
+				
+				strcpy(responseBack, "FailAddFunds");
+			}
+			msg.header.id = clever::MessageType::ServerAddFundsResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 >>>>>>> Stashed changes
 		}
 	}

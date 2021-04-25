@@ -22,6 +22,13 @@ namespace clever
 		UserGetCurrencyRequest,
 		PATGetCurrencyRequest,
 		ServerGetCurrencyResponse,
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+		AddCardFundsPATRequest,
+		AddCardFundsUsernameRequest,
+		ServerAddFundsResponse,
+		
 >>>>>>> Stashed changes
 	};
 }
