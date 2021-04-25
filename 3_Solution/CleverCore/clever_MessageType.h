@@ -23,5 +23,8 @@ namespace clever
 		UserGetCardRequest,
 		PATGetCardRequest,
 		ServerGetCardsResponse,
+		ServerAddFundsResponse,
+		AddCardFundsPATRequest,
+		AddCardFundsUsernameRequest,
 	};
 }

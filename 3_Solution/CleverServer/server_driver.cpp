@@ -391,6 +391,51 @@ protected:
 		}
 		break;
 
+		case clever::MessageType::AddCardFundsPATRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add funds card request\n";
+			char l_pat[1024]; msg >> l_pat;
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_fundValue[1024]; msg >> l_fundValue;
+			char responseBack[1024];
+			try
+			{
+
+				OnAddCardFundsPAT(l_pat, l_fundValue, l_cardname);
+				strcpy(responseBack, "SuccessAddFunds");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddFunds");
+			}
+			msg.header.id = clever::MessageType::ServerAddFundsResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddCardFundsUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add funds card request\n";
+			char l_username[1024]; msg >> l_username;
+			char l_cardname[1024]; msg >> l_cardname;
+			char l_fundValue[1024]; msg >> l_fundValue;;
+			char responseBack[1024];
+			try
+			{
+				OnAddCardFundsUsername(l_username, l_fundValue, l_cardname);
+				strcpy(responseBack, "SuccessAddFunds");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddFunds");
+			}
+			msg.header.id = clever::MessageType::ServerAddFundsResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 		}
 	}
 };

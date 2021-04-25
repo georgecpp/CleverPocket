@@ -145,6 +145,7 @@ void Dashboard::loadCards()
 		{
 			ui.cardPicker->removeItem(0);
 		}
+		map_cards.clear();
 	}
 	while (stillConnectedWaitingForAnswer)
 	{
@@ -173,7 +174,6 @@ void Dashboard::loadCards()
 				float cardSold; msg >> cardSold;
 				
 				clever::CardCredentialHandler newCard(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil,cardSold);
-				//this->cards.push_back(newCard);
 				map_cards.insert(std::pair<std::string, clever::CardCredentialHandler>(cardName, newCard));
 				ui.cardPicker->addItem(newCard.getCardName());
 				cardsIndex++;
@@ -194,6 +194,20 @@ void Dashboard::addCardExec(AddCardDialog& adc)
 				ui.cardPicker->removeItem(0);
 			}
 			loadCards();
+		}
+	}
+}
+
+void Dashboard::addFundsExec(AddFundsDialog& adf)
+{
+	if (adf.exec())
+	{
+		if (adf.result() == QDialog::Accepted)
+		{
+			float soldFromWall = std::stof(ui.soldWallLabel->text().toStdString());
+			soldFromWall += std::stof(adf.fundValueLineEdit->text().toStdString());
+			ui.soldWallLabel->setText(std::to_string(soldFromWall).c_str());
+			this->map_cards[adf.cardNameLineEdit->text().toStdString()].setCardSold(soldFromWall);
 		}
 	}
 }
@@ -249,6 +263,28 @@ void Dashboard::on_addCardPushButton_clicked()
 	{
 		AddCardDialog addcarddialog(PATLoggedIn, this);
 		addCardExec(addcarddialog);
+	}
+}
+
+void Dashboard::on_addFundsPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont")
+	{
+		msgBox->setText("First add cards!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->PATLoggedIn == "")
+	{
+		AddFundsDialog addfundsdialog(ui.cardPicker->currentText(), ui.currencyWallLabel->text(), this->usernameLoggedIn);
+		addFundsExec(addfundsdialog);
+	}
+	else
+	{
+		AddFundsDialog addfundsdialog(ui.cardPicker->currentText(), ui.currencyWallLabel->text(), this->PATLoggedIn);
+		addFundsExec(addfundsdialog);
 	}
 }
 

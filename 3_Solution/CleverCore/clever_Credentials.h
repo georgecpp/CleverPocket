@@ -156,6 +156,10 @@ namespace clever
 		float getCardSold() const {
 			return m_Sold;
 		}
+		void setCardSold(float newCardSold)
+		{
+			this->m_Sold = newCardSold;
+		}
 	private:
 		std::string m_CardName;
 		std::string m_CardHolder;

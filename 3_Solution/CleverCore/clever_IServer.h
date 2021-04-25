@@ -276,6 +276,38 @@ namespace clever
 
 		}
 
+		void OnAddCardFundsPAT(char pat[], char cardFunds[], char cardName[])
+		{
+			std::string l_pat = convertToSqlVarcharFormat(pat);
+			std::string l_cardFunds = convertToSqlVarcharFormat(cardFunds);
+			std::string l_cardName = convertToSqlVarcharFormat(cardName);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold += " + l_cardFunds + " WHERE CardName = " + l_cardName+" AND UserID = "+resultID;
+			ExecQuery(query);
+		}
+
+		void OnAddCardFundsUsername(char username[], char cardFunds[], char cardName[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string l_cardFunds = convertToSqlVarcharFormat(cardFunds);
+			std::string l_cardName = convertToSqlVarcharFormat(cardName);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold += " + l_cardFunds + " WHERE CardName = " + l_cardName + " AND UserID = " + resultID;
+			ExecQuery(query);
+		}
+
 		void OnGetCardsUsername(char username[], std::vector<clever::CardCredentialHandler>& cards)
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);

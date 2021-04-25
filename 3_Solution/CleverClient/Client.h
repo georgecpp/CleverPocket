@@ -34,6 +34,9 @@ public:
 	void UsernameAddCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler);
 	void PATGetCardsDetails(const std::string& PAT);
 	void UsernameGetCardsDetails(const std::string& username);
+	void UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue);
+	void UsernameAddCardFunds(const std::string& username, const std::string& currCardName, const std::string& fundsValue);
+
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

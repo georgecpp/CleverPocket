@@ -215,6 +215,28 @@ void Client::UsernameGetCardsDetails(const std::string& username)
 	Send(msg);
 }
 
+void Client::UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddCardFundsPATRequest;
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	char l_cardname[1024]; strcpy(l_cardname, currCardName.c_str());
+	char l_fundsValue[1024]; strcpy(l_fundsValue, fundsValue.c_str());
+	msg << l_fundsValue << l_cardname << l_pat;
+	Send(msg);
+}
+
+void Client::UsernameAddCardFunds(const std::string& username, const std::string& currCardName, const std::string& fundsValue)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddCardFundsUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_cardname[1024]; strcpy(l_cardname, currCardName.c_str());
+	char l_fundsValue[1024]; strcpy(l_fundsValue, fundsValue.c_str());
+	msg << l_fundsValue << l_cardname << l_username;
+	Send(msg);
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;
