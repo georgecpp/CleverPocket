@@ -14,6 +14,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
 	this->prepareOptionsComboBox(ui.preferencesOptions);
+	this->prepareOptionsComboBox(ui.profileOptions);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
 }
 
@@ -255,7 +256,7 @@ void Dashboard::on_menuItemSelected(int index)
 		ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 		break;
 	case 3:
-		ui.stackedWidget->setCurrentWidget(ui.preferencesOptions);
+		ui.stackedWidget->setCurrentWidget(ui.preferencesPage);
 		break;
 	case 4:
 		logout();
