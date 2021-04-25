@@ -20,6 +20,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 {
 	this->PATLoggedIn = PAT;
 	this->usernameLoggedIn = "";
+	loadCards();
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -27,6 +28,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 {
 	this->usernameLoggedIn = username;
 	this->PATLoggedIn = "";
+	loadCards();
 }
 
 Dashboard::~Dashboard()
@@ -247,7 +249,6 @@ void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 void Dashboard::on_financesCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.financesPage);
-	loadCards();
 	on_cardSelected();
 }
 
