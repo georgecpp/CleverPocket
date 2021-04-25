@@ -289,6 +289,11 @@ void Dashboard::on_addFundsPushButton_clicked()
 	}
 }
 
+void Dashboard::on_editFundsPushButton_clicked()
+{
+
+}
+
 void Dashboard::on_cardSelected()
 {
 	QString cardName = ui.cardPicker->currentText();

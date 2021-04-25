@@ -61,7 +61,7 @@
     <string>Card number</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="cancelAddCardPushButton">
+  <widget class="QPushButton" name="cancelEditCardPushButton">
    <property name="geometry">
     <rect>
      <x>490</x>

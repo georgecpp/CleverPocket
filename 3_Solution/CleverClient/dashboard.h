@@ -30,6 +30,7 @@ private slots:
 	void on_menuItemSelected(int index);
 	void on_addCardPushButton_clicked();
 	void on_addFundsPushButton_clicked();
+	void on_editFundsPushButton_clicked();
 	void on_cardSelected();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);

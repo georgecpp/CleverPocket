@@ -318,6 +318,59 @@ protected:
 			client->Send(msg);
 		}
 		break;
+
+		case clever::MessageType::EditCardUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Edit card (username) request\n";
+			char l_cardName[1024]; msg >> l_cardName;
+			char l_cardHolder[1024]; msg >> l_cardHolder;
+			char l_cardNumber[1024]; msg >> l_cardNumber;
+			char l_cardCurrencyISO[1024];  msg >> l_cardCurrencyISO;
+			char l_cardValidUntil[1024]; msg >> l_cardValidUntil;
+			char l_username[1024]; msg >> l_username;
+			clever::CardCredentialHandler cardCredHandler(l_cardName, l_cardHolder, l_cardNumber, l_cardCurrencyISO, l_cardValidUntil);
+			char responseBack[1024];
+			try
+			{
+				OnEditCardUsername(l_username, cardCredHandler);
+				strcpy(responseBack, "SuccessEditCard");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailEditCard");
+			}
+			msg.header.id = clever::MessageType::ServerEditCardResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::EditCardPATRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Edit card (PAT) request\n";
+			char l_cardName[1024]; msg >> l_cardName;
+			char l_cardHolder[1024]; msg >> l_cardHolder;
+			char l_cardNumber[1024]; msg >> l_cardNumber;
+			char l_cardCurrencyISO[1024];  msg >> l_cardCurrencyISO;
+			char l_cardValidUntil[1024]; msg >> l_cardValidUntil;
+			char l_pat[1024]; msg >> l_pat;
+			clever::CardCredentialHandler cardCredHandler(l_cardName, l_cardHolder, l_cardNumber, l_cardCurrencyISO, l_cardValidUntil);
+			char responseBack[1024];
+			try
+			{
+				OnEditCardPAT(l_pat, cardCredHandler);
+				strcpy(responseBack, "SuccessEditCard");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailEditCard");
+			}
+			msg.header.id = clever::MessageType::ServerEditCardResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 		
 		case clever::MessageType::PATGetCardRequest:
 		{
