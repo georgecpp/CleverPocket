@@ -107,8 +107,8 @@ namespace clever
 	{
 	public:
 		CardCredentialHandler() {}
-		CardCredentialHandler(std::string CardName, std::string CardHolder, std::string CardNumber, std::string CurrencyISO, std::string ValidUntil)
-			: m_CardName(CardName), m_CardHolder(CardHolder), m_CardNumber(CardNumber), m_CurrencyISO(CurrencyISO), m_ValidUntil(ValidUntil)
+		CardCredentialHandler(std::string CardName, std::string CardHolder, std::string CardNumber, std::string CurrencyISO, std::string ValidUntil, float Sold=0.0f)
+			: m_CardName(CardName), m_CardHolder(CardHolder), m_CardNumber(CardNumber), m_CurrencyISO(CurrencyISO), m_ValidUntil(ValidUntil), m_Sold(Sold)
 		{
 
 		}
@@ -153,12 +153,16 @@ namespace clever
 			}
 			return NULL;
 		}
+		float getCardSold() const {
+			return m_Sold;
+		}
 	private:
 		std::string m_CardName;
 		std::string m_CardHolder;
 		std::string m_CardNumber;
 		std::string m_CurrencyISO;
 		std::string m_ValidUntil;
+		float m_Sold;
 	};
 
 }

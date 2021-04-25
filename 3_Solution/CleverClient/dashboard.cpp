@@ -170,8 +170,9 @@ void Dashboard::loadCards()
 				char cardNumber[1024]; msg >> cardNumber;
 				char cardValidUntil[1024]; msg >> cardValidUntil;
 				char cardCurrencyISO[1024]; msg >> cardCurrencyISO;
+				float cardSold; msg >> cardSold;
 				
-				clever::CardCredentialHandler newCard(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil);
+				clever::CardCredentialHandler newCard(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil,cardSold);
 				//this->cards.push_back(newCard);
 				map_cards.insert(std::pair<std::string, clever::CardCredentialHandler>(cardName, newCard));
 				ui.cardPicker->addItem(newCard.getCardName());
@@ -262,4 +263,5 @@ void Dashboard::on_cardSelected()
 	// update wall as well.
 	ui.financeNameWallLabel->setText(this->map_cards[cardName.toStdString()].getCardName());
 	ui.currencyWallLabel->setText(this->map_cards[cardName.toStdString()].getCardCurrencyISO());
+	ui.soldWallLabel->setText(std::to_string(this->map_cards[cardName.toStdString()].getCardSold()).c_str());
 }

@@ -144,7 +144,7 @@ void AddCardDialog::on_addCardPushButton_clicked()
 	}
 
 	// request to server to register this card belonging to this user currently logged in.
-	clever::CardCredentialHandler cardCredHandler(cardName.toStdString(), cardHolder.toStdString(), cardNumber.toStdString(),currencyISO.toStdString(),validUntil.toStdString());
+	clever::CardCredentialHandler cardCredHandler(cardName.toStdString(), cardHolder.toStdString(), cardNumber.toStdString(),currencyISO.toStdString(),validUntil.toStdString(),0.0f);
 	Client& c = Client::getInstance();
 	c.Incoming().clear();
 	if (this->currUsernameLogged == "")

@@ -286,9 +286,9 @@ namespace clever
 				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
 			}
 
-			std::string queryGetAllCardsUser = "SELECT [CardName],[CardHolder],[CardNumber],[ValidUntil],[CurrencyISO] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID;
+			std::string queryGetAllCardsUser = "SELECT [CardName],[CardHolder],[CardNumber],[ValidUntil],[CurrencyISO],[Sold] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID;
 			// will contain all data separated each row with \n.
-			std::string resultQueryGetCards = GetQueryExecRowsetResult(queryGetAllCardsUser, 1, 5);
+			std::string resultQueryGetCards = GetQueryExecRowsetResult(queryGetAllCardsUser, 1, 6);
 			//std::cout << resultQueryGetCards;
 
 			std::stringstream ss(resultQueryGetCards);
@@ -301,14 +301,16 @@ namespace clever
 				std::string cardNumber;
 				std::string cardValidUntil;
 				std::string cardCurrencyISO;
+				std::string cardSold;
 
 				std::getline(ssfields, cardName, ';');
 				std::getline(ssfields, cardHolder, ';');
 				std::getline(ssfields, cardNumber, ';');
 				std::getline(ssfields, cardValidUntil, ';');
 				std::getline(ssfields, cardCurrencyISO, ';');
+				std::getline(ssfields, cardSold, ';');
 
-				cards.push_back(clever::CardCredentialHandler(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil));
+				cards.push_back(clever::CardCredentialHandler(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil, std::stof(cardSold)));
 			}
 		}
 		void OnGetCardsPAT(char pat[], std::vector<clever::CardCredentialHandler>& cards)
@@ -321,9 +323,9 @@ namespace clever
 				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
 			}
 
-			std::string queryGetAllCardsUser = "SELECT [CardName],[CardHolder],[CardNumber],[ValidUntil],[CurrencyISO] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID;
+			std::string queryGetAllCardsUser = "SELECT [CardName],[CardHolder],[CardNumber],[ValidUntil],[CurrencyISO],[Sold] FROM [CleverPocket].[dbo].[Cards] WHERE dbo.Cards.UserID = " + resultUserID;
 			// will contain all data separated each row with \n.
-			std::string resultQueryGetCards = GetQueryExecRowsetResult(queryGetAllCardsUser,1,5); 
+			std::string resultQueryGetCards = GetQueryExecRowsetResult(queryGetAllCardsUser,1,6); 
 			//std::cout << resultQueryGetCards;
 
 			std::stringstream ss(resultQueryGetCards);
@@ -336,14 +338,16 @@ namespace clever
 				std::string cardNumber;
 				std::string cardValidUntil;
 				std::string cardCurrencyISO;
+				std::string cardSold;
 
 				std::getline(ssfields, cardName, ';');
 				std::getline(ssfields, cardHolder, ';');
 				std::getline(ssfields, cardNumber, ';');
 				std::getline(ssfields, cardValidUntil, ';');
 				std::getline(ssfields, cardCurrencyISO, ';');
+				std::getline(ssfields, cardSold, ';');
 
-				cards.push_back(clever::CardCredentialHandler(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil));
+				cards.push_back(clever::CardCredentialHandler(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil,std::stof(cardSold)));
 			}
 		}
 		void OnAddCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler)

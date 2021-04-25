@@ -340,7 +340,8 @@ protected:
 					char cardNumber[1024]; strcpy(cardNumber, iter->getCardNumber());
 					char cardValidUntil[1024]; strcpy(cardValidUntil, iter->getCardValidUntil());
 					char cardCurrencyISO[1024]; strcpy(cardCurrencyISO, iter->getCardCurrencyISO());
-					msg << cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
+					float cardSold = iter->getCardSold();
+					msg << cardSold<<cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
 					client->Send(msg);
 				}
 			}
@@ -375,7 +376,8 @@ protected:
 					char cardNumber[1024]; strcpy(cardNumber, iter->getCardNumber());
 					char cardValidUntil[1024]; strcpy(cardValidUntil, iter->getCardValidUntil());
 					char cardCurrencyISO[1024]; strcpy(cardCurrencyISO, iter->getCardCurrencyISO());
-					msg << cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
+					float cardSold = iter->getCardSold();
+					msg << cardSold<<cardCurrencyISO << cardValidUntil << cardNumber << cardHolder << cardName;
 					client->Send(msg);
 				}
 			}
