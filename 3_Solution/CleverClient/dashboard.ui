@@ -37,7 +37,11 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
+<<<<<<< Updated upstream
     <number>3</number>
+=======
+    <number>1</number>
+>>>>>>> Stashed changes
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -191,7 +195,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="cardsTab">
       <attribute name="title">
@@ -396,14 +400,20 @@
       <widget class="QLabel" name="currentCashSoldLabel">
        <property name="geometry">
         <rect>
-         <x>180</x>
-         <y>230</y>
-         <width>91</width>
+         <x>140</x>
+         <y>220</y>
+         <width>171</width>
          <height>31</height>
         </rect>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::Box</enum>
+       </property>
        <property name="text">
         <string>Sold current</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
        </property>
       </widget>
       <widget class="QPushButton" name="addCashPushButton">
@@ -416,7 +426,7 @@
         </rect>
        </property>
        <property name="text">
-        <string>Realimenteaza</string>
+        <string>Recharge</string>
        </property>
       </widget>
      </widget>

@@ -7,6 +7,11 @@
 Startup::Startup(QWidget *parent)
 	: QWidget(parent)
 {
+<<<<<<< Updated upstream
+=======
+	//this->m_dshptr = Q_NULLPTR;
+	this->currPAT = "";
+>>>>>>> Stashed changes
 	this->currEmail = "";
 	ui.setupUi(this);
 	m_dshptr = new Dashboard(ui.stackedWidget);
@@ -14,6 +19,7 @@ Startup::Startup(QWidget *parent)
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
 	ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
 	ui.validationCodeLineEdit->setVisible(false); ui.validatePushButton->setVisible(false);
+<<<<<<< Updated upstream
 	////check if pat.txt file can be opened.
 	//if (tryLoginRemembered())
 	//{
@@ -29,6 +35,24 @@ Startup::Startup(QWidget *parent)
 	//}
 	ui.stackedWidget->setCurrentWidget(m_dshptr);
 	this->resizeToDashboard();
+=======
+	//check if pat.txt file can be opened.
+	if (tryLoginRemembered())
+	{
+		m_dshptr = new Dashboard(QString(this->currPAT.c_str()),ui.stackedWidget);
+		ui.stackedWidget->addWidget(m_dshptr); // add dashboard reference widget to stackedwidget.
+		ui.stackedWidget->setCurrentWidget(m_dshptr);
+		// and resize for the dashboard.
+	}
+	else
+	{
+		 //if not, sure login form
+		ui.stackedWidget->setCurrentWidget(ui.loginPage); // login page appears on construction of startup.
+		 //SIZE FOR THE LOGIN PAGE
+		this->resizeToLoginPage();
+	}
+	
+>>>>>>> Stashed changes
 }
 
 Startup::~Startup()

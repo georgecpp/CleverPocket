@@ -92,7 +92,11 @@ void Dashboard::logout()
 	}
 }
 
+<<<<<<< Updated upstream
 void Dashboard::addFundsExec(AddFundsDialog& adc)
+=======
+void Dashboard()
+>>>>>>> Stashed changes
 {
 		
 			//if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont") //right one
@@ -105,6 +109,62 @@ void Dashboard::addFundsExec(AddFundsDialog& adc)
 	
 }
 
+<<<<<<< Updated upstream
+=======
+void Dashboard::addFundsExec(AddFundsDialog& adf)
+{
+	if (adf.exec())
+	{
+		if (adf.result() == QDialog::Accepted)
+		{
+			float soldFromWall = std::stof(ui.soldWallLabel->text().toStdString());
+			soldFromWall += std::stof(adf.fundValueLineEdit->text().toStdString());
+			ui.soldWallLabel->setText(std::to_string(soldFromWall).c_str());
+			this->map_cards[adf.cardNameLineEdit->text().toStdString()].setCardSold(soldFromWall);
+		}
+	}
+}
+
+
+void Dashboard::editCardExec(EditCardDialog& edc)
+{
+	edc.cardNameLineEdit->setText(ui.cardPicker->currentText());
+	edc.cardHolderLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardHolder());
+	edc.cardNumberLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardNumber());
+	edc.validUntilLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardValidUntil());
+	edc.isoCurrencyComboBox->setCurrentText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardCurrencyISO());
+	edc.setOldCardName(ui.cardPicker->currentText().toStdString());
+	std::string oldcardname = ui.cardPicker->currentText().toStdString();
+	float oldSold = this->map_cards[oldcardname].getCardSold();
+	if (edc.exec())
+	{
+		clever::CardCredentialHandler newCard(edc.cardNameLineEdit->text().toStdString(), edc.cardHolderLineEdit->text().toStdString(), edc.cardNumberLineEdit->text().toStdString(), edc.isoCurrencyComboBox->currentText().toStdString(), edc.validUntilLineEdit->text().toStdString(), oldSold);
+		if (edc.result() == QDialog::Accepted)
+		{
+			// handle map cards.
+			this->map_cards.erase(oldcardname);
+			ui.cardPicker->removeItem(ui.cardPicker->currentIndex());
+			this->map_cards.insert(std::pair<std::string, clever::CardCredentialHandler>(edc.cardNameLineEdit->text().toStdString(), newCard));
+			ui.cardPicker->addItem(newCard.getCardName());
+			//ui.cardPicker->setCurrentIndex(ui.cardPicker->count() - 1);
+			ui.cardPicker->setCurrentText(newCard.getCardName());
+			on_cardSelected();
+		}
+	}
+}
+>>>>>>> Stashed changes
+
+void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
+{
+	if (rcd.exec())
+	{
+		if (rcd.result() == QDialog::Accepted)
+		{
+
+		}
+
+	}
+}
 
 void Dashboard::on_menuItemSelected(int index)
 {
@@ -172,6 +232,7 @@ void Dashboard::on_choseImagePushButton_clicked()
 
 }
 
+<<<<<<< Updated upstream
 void Dashboard::on_addFundsPushButton_clicked()
 {
 	if (this->PATLoggedIn == "")
@@ -191,3 +252,42 @@ void Dashboard::on_addFundsPushButton_clicked()
 	}
 	
 }
+=======
+void Dashboard::on_financesTabWidget_currentChanged(int index)
+{
+	//to do wall things
+	// se face interogarea bd pt numerar
+	// se actualizeaza datele din tab / wallet
+}
+
+void Dashboard::on_addCashPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont")
+	{
+		msgBox->setText("First add cards!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->userCurrencyISO.empty()) //nu este selectata moneda implicita de la preferences 
+	{
+		msgBox->setText("Please complete the preferences options first!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->PATLoggedIn == "")
+	{
+		RechargeCashDialog rechargeCashDialog(map_cards, usernameLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+	else
+	{
+		RechargeCashDialog rechargeCashDialog(map_cards, usernameLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+}
+
+
+>>>>>>> Stashed changes
