@@ -1,40 +1,27 @@
 #include "dashboard.h"
-<<<<<<< Updated upstream
-=======
 #include "Client.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
 #include <addcarddialog.h>
 #include <addfundsdialog.h>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
-Dashboard::Dashboard(QWidget* parent)
+Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
 {
+
+	this->fromStackedWidget = parentStackedWidget;
 	ui.setupUi(this);
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
-<<<<<<< Updated upstream
-=======
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
 	this->prepareOptionsComboBox(ui.profileOptions);
 	//this->prepareOptionsComboBox(ui.preferencesOptions);
 	
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }
 
 Dashboard::~Dashboard()
 {
 
-<<<<<<< Updated upstream
-}
-=======
 }
 
 void Dashboard::logout()
@@ -118,54 +105,6 @@ void Dashboard::addFundsExec(AddFundsDialog& adc)
 	
 }
 
-<<<<<<< Updated upstream
-void Dashboard::loadCardCurrencyISO(const std::string& cardName)
-{
-	bool stillConnectedWaitingForAnswer = true;
-	QMessageBox* msgBox = new QMessageBox;
-	Client& c = Client::getInstance();
-	c.Incoming().clear();
-	if (this->PATLoggedIn == "") // it means user-login
-	{
-		c.UsernameGetSelectedCardCurrency(usernameLoggedIn, cardName);
-	}
-	else // else PAT-login
-	{
-		c.PATGetSelectedCardCurrency(PATLoggedIn.toStdString(), cardName);
-	}
-	while (c.Incoming().empty())
-	{
-		if (!c.IsConnected())
-		{
-			msgBox->setText("Server down! Client disconnected!");
-			msgBox->show();
-			stillConnectedWaitingForAnswer = false;
-			break;
-		}
-	}
-	while (stillConnectedWaitingForAnswer)
-	{
-		if (!c.IsConnected())
-		{
-			msgBox->setText("Server down! Client disconnected!");
-			msgBox->show();
-			stillConnectedWaitingForAnswer = false;
-			break;
-		}
-		if (!c.Incoming().empty())
-		{
-			auto msg = c.Incoming().pop_front().msg;
-			if (msg.header.id == clever::MessageType::ServerGetCurrencyResponse)
-			{
-				char cardCurrencyISO[1024]; msg >> cardCurrencyISO;
-				
-			}
-		}
-	}
-		
-}
-=======
->>>>>>> Stashed changes
 
 void Dashboard::on_menuItemSelected(int index)
 {
@@ -252,7 +191,3 @@ void Dashboard::on_addFundsPushButton_clicked()
 	}
 	
 }
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes

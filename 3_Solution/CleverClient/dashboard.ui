@@ -168,31 +168,6 @@
      <property name="currentText">
       <string/>
      </property>
-     <item>
-      <property name="text">
-       <string/>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Your profile</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Dashboard</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Preferences</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Log out</string>
-      </property>
-     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="financesPage">
@@ -205,31 +180,6 @@
        <height>30</height>
       </rect>
      </property>
-     <item>
-      <property name="text">
-       <string/>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Your profile</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Dashboard</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Preferences</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Log out</string>
-      </property>
-     </item>
     </widget>
     <widget class="QTabWidget" name="financesTabWidget">
      <property name="geometry">
@@ -241,7 +191,7 @@
       </rect>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="cardsTab">
       <attribute name="title">

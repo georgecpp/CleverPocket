@@ -1,38 +1,24 @@
 #pragma once
 #include <QWidget>
 #include "ui_dashboard.h"
-<<<<<<< Updated upstream
-
-=======
 #include <qstackedwidget.h>
 #include <qfiledialog.h>
 #include<addfundsdialog.h>
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
 	Q_OBJECT
 
 public:
-	Dashboard(QWidget* parent = Q_NULLPTR);
+	Dashboard(QStackedWidget* parentStackedWidget = Q_NULLPTR, QWidget* parent = Q_NULLPTR);
 	~Dashboard();
 private:
 	Ui::Dashboard ui;
-<<<<<<< Updated upstream
-private slots:
-=======
 	QStackedWidget* fromStackedWidget;
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
 	void logout();
 	void addFundsExec(AddFundsDialog& adc);
-<<<<<<< Updated upstream
-	void loadCardCurrencyISO(const std::string& cardName);
-=======
->>>>>>> Stashed changes
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
@@ -42,5 +28,4 @@ private slots:
 	
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
->>>>>>> Stashed changes
 };

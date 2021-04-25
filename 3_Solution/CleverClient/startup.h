@@ -7,7 +7,6 @@
 #include "dashboard.h"
 #include <map>
 
-
 class Startup : public QWidget
 {
 	Q_OBJECT

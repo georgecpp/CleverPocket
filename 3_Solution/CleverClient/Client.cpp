@@ -156,8 +156,6 @@ void Client::UpdatePasswordRequest(const std::string& newPassword, const std::st
 	Send(msg);
 }
 
-<<<<<<< Updated upstream
-=======
 void Client::LogoutWithRememberMe(const std::string& PAT)
 {
 	clever::message<clever::MessageType> msg;
@@ -167,29 +165,7 @@ void Client::LogoutWithRememberMe(const std::string& PAT)
 	Send(msg);
 }
 
-void Client::PATGetSelectedCardCurrency(const std::string& PAT, const std::string& cardName)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::PATGetCurrencyRequest;
-	char l_cardname[1024]; strcpy(l_cardname, cardName.c_str());
-	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
-	msg << l_pat << l_cardname;
-	Send(msg);
-}
 
-void Client::UsernameGetSelectedCardCurrency(const std::string& username, const std::string& cardName)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::UserGetCurrencyRequest;
-	char l_cardname[1024]; strcpy(l_cardname, cardName.c_str());
-	char l_username[1024]; strcpy(l_username, username.c_str());
-	msg << l_username << l_cardname;
-	Send(msg);
-}
-
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
 void Client::UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue)
 {
 	clever::message<clever::MessageType> msg;
@@ -215,7 +191,6 @@ void Client::UsernameAddCardFunds(const std::string& username, const std::string
 	Send(msg);
 }
 
->>>>>>> Stashed changes
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;

@@ -15,29 +15,15 @@ public:
 
 private slots:
 	void on_addFundsPushButton_clicked();
-<<<<<<< Updated upstream
-
-
-=======
 	void on_cancelAddFundsPushButton_clicked();
 	// care - cancel - push button -ul de la addfundsdialog
 
 private:
-	void loadCardCurrencyISO();
->>>>>>> Stashed changes
-
-private:
 	std::string currCardName;
 	std::string currencyISO;
-<<<<<<< Updated upstream
-	std::string fundsValue;
-	std::string currUsernameLogged;
-	std::string currPATLogged;
-=======
 	QString fundsValue;
 	std::string currUsernameLogged;
 	QString currPATLogged;
->>>>>>> Stashed changes
 
 	
 };

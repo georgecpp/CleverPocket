@@ -55,15 +55,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\CleverCore;C:\Users\Andronache\Desktop\_George\sdk\asio-1.18.1\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\CleverCore;C:\Users\Teo\Desktop\asio-1.18.1\include</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\CleverCore;C:\Users\Andronache\Desktop\_George\sdk\asio-1.18.1\include</IncludePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);..\CleverCore;C:\Users\Teo\Desktop\asio-1.18.1\include</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\;.\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
@@ -72,7 +72,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\;.\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
@@ -116,11 +116,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtMoc Include="startup.h" />
+    <QtMoc Include="addcarddialog.h" />
+    <QtMoc Include="addfundsdialog.h" />
     <ClInclude Include="Client.h" />
     <QtMoc Include="dashboard.h" />
+    <QtMoc Include="editcarddialog.h" />
     <ClInclude Include="stdafx.h" />
+    <ClCompile Include="addcarddialog.cpp" />
+    <ClCompile Include="addfundsdialog.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="dashboard.cpp" />
+    <ClCompile Include="editcarddialog.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="startup.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -129,7 +135,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="addcarddialog.ui" />
+    <QtUic Include="addfundsdialog.ui" />
     <QtUic Include="dashboard.ui" />
+    <QtUic Include="editcarddialog.ui" />
     <QtUic Include="startup.ui" />
   </ItemGroup>
   <ItemGroup>

@@ -245,110 +245,25 @@ protected:
 			client->Send(msg);
 		}
 		break;
+		
+		case clever::MessageType::LogoutRememberedRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Logout remembered request\n";
+			char PAT[1024];
+			msg >> PAT;
+			char responseBack[1024];
+			try
+			{
+				OnLogoutRemembered(PAT);
+				strcpy(responseBack, "LogoutRememberedSuccess");
+			}
+			catch (clever::InvalidPATLogoutError)
+			{
+				strcpy(responseBack, "InvalidPATLogout");
+			}
 
-<<<<<<< Updated upstream
-=======
 			msg << responseBack;
 			client->Send(msg);
-		}
-		break;
-
-		case clever::MessageType::PATGetCurrencyRequest:
-		{
-			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
-			char l_cardname[1024]; msg >> l_cardname;
-			char l_pat[1024]; msg >> l_pat;
-			std::string currencyISO;
-			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
-			try
-			{
-				OnGetCurrencyCardPAT(l_pat, l_cardname, currencyISO);
-
-					//
-					client->Send(msg);
-			}
-			catch (...)
-			{
-				char responseBack[1024];
-				strcpy(responseBack, "FailGetCurrencyCard");
-				msg << responseBack;
-				client->Send(msg);
-			}
-		}
-		break;
-
-		case clever::MessageType::UserGetCurrencyRequest:
-		{
-			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
-			char l_cardname[1024]; msg >> l_cardname;
-			char l_username[1024]; msg >> l_username;
-			std::string currencyISO;
-			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
-			try
-			{
-				OnGetCurrencyCardUsername(l_username, l_cardname, currencyISO);
-
-				//
-				client->Send(msg);
-			}
-			catch (...)
-			{
-				char responseBack[1024];
-				strcpy(responseBack, "FailGetCurrencyCard");
-				msg << responseBack;
-				client->Send(msg);
-			}
-		}
-		break;
-
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
-		case clever::MessageType::PATGetCurrencyRequest:
-		{
-			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
-			char l_cardname[1024]; msg >> l_cardname;
-			char l_pat[1024]; msg >> l_pat;
-			std::string currencyISO;
-			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
-			try
-			{
-				OnGetCurrencyCardPAT(l_pat, l_cardname, currencyISO);
-
-					//
-					client->Send(msg);
-			}
-			catch (...)
-			{
-				char responseBack[1024];
-				strcpy(responseBack, "FailGetCurrencyCard");
-				msg << responseBack;
-				client->Send(msg);
-			}
-		}
-		break;
-
-		case clever::MessageType::UserGetCurrencyRequest:
-		{
-			std::cout << "[" << client->GetID() << "]: Get Currency Card (PAT) request\n";
-			char l_cardname[1024]; msg >> l_cardname;
-			char l_username[1024]; msg >> l_username;
-			std::string currencyISO;
-			msg.header.id = clever::MessageType::ServerGetCurrencyResponse;
-			try
-			{
-				OnGetCurrencyCardUsername(l_username, l_cardname, currencyISO);
-
-				//
-				client->Send(msg);
-			}
-			catch (...)
-			{
-				char responseBack[1024];
-				strcpy(responseBack, "FailGetCurrencyCard");
-				msg << responseBack;
-				client->Send(msg);
-			}
 		}
 		break;
 
@@ -401,7 +316,6 @@ protected:
 		}
 		break;
 
->>>>>>> Stashed changes
 		}
 	}
 };

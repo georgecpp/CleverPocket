@@ -2,10 +2,7 @@
 #include "addfundsdialog.h"
 #include "Client.h"
 #include <qmessagebox.h>
-<<<<<<< Updated upstream
-=======
 #include <qtimer.h>
->>>>>>> Stashed changes
 
 AddFundsDialog::AddFundsDialog(QWidget *parent)
 	: QDialog(parent)
@@ -19,16 +16,11 @@ AddFundsDialog::AddFundsDialog(const QString& cardName, const QString& PAT, QWid
 	: AddFundsDialog(parent)
 {
 	this->currCardName = cardName.toStdString();
-<<<<<<< Updated upstream
-	this->currPATLogged = PAT.toStdString();
-	this->currUsernameLogged = "";
-=======
 	this->currPATLogged = PAT;
 	this->currUsernameLogged = "";
 	this->cardNameLineEdit->setText(cardName);
 	this->loadCardCurrencyISO();
 
->>>>>>> Stashed changes
 }
 
 AddFundsDialog::AddFundsDialog(const QString& cardName, const std::string& username, QWidget* parent)
@@ -37,79 +29,24 @@ AddFundsDialog::AddFundsDialog(const QString& cardName, const std::string& usern
 	this->currCardName = cardName.toStdString();
 	this->currUsernameLogged = username;
 	this->currPATLogged = "";
-<<<<<<< Updated upstream
-=======
 	this->cardNameLineEdit->setText(cardName);
 	this->loadCardCurrencyISO();
->>>>>>> Stashed changes
 }
 
 AddFundsDialog::~AddFundsDialog()
 {
 }
 
-<<<<<<< Updated upstream
-=======
 void AddFundsDialog::on_cancelAddFundsPushButton_clicked()
 {
 	this->done(QDialog::Accepted);
 }
 
-void AddFundsDialog::loadCardCurrencyISO()
-{
-	bool stillConnectedWaitingForAnswer = true;
-	QMessageBox* msgBox = new QMessageBox;
-	Client& c = Client::getInstance();
-	c.Incoming().clear();
-	if (this->currPATLogged == "") // it means user-login
-	{
-		c.UsernameGetSelectedCardCurrency(currUsernameLogged, currCardName);
-	}
-	else // else PAT-login
-	{
-		c.PATGetSelectedCardCurrency(currPATLogged.toStdString(), currCardName);
-	}
-	while (c.Incoming().empty())
-	{
-		if (!c.IsConnected())
-		{
-			msgBox->setText("Server down! Client disconnected!");
-			msgBox->show();
-			stillConnectedWaitingForAnswer = false;
-			break;
-		}
-	}
-	while (stillConnectedWaitingForAnswer)
-	{
-		if (!c.IsConnected())
-		{
-			msgBox->setText("Server down! Client disconnected!");
-			msgBox->show();
-			stillConnectedWaitingForAnswer = false;
-			break;
-		}
-		if (!c.Incoming().empty())
-		{
-			auto msg = c.Incoming().pop_front().msg;
-			if (msg.header.id == clever::MessageType::ServerGetCurrencyResponse)
-			{
-				char cardCurrencyISO[1024]; msg >> cardCurrencyISO;
-				this->currencyLineEdit->setText(QString(cardCurrencyISO));
-
-			}
-		}
-	}
-
-}
-
->>>>>>> Stashed changes
 
 void AddFundsDialog::on_addFundsPushButton_clicked()
 {
 	bool stillConnectedWaitingAnswer = true;
 	QMessageBox* msgBox = new QMessageBox();
-<<<<<<< Updated upstream
-=======
 	fundsValue = this->fundValueLineEdit->text();
 
 	if (fundsValue == "")
@@ -169,6 +106,5 @@ void AddFundsDialog::on_addFundsPushButton_clicked()
 	}
 	this->done(QDialog::Accepted);
 
->>>>>>> Stashed changes
 }
 
