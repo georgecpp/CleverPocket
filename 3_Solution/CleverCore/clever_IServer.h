@@ -423,7 +423,7 @@ namespace clever
 			ExecQuery(query);
 		}
 
-		void OnEditCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler)
+		void OnEditCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler, char oldcardname[])
 		{
 			// obtain the user ID from this username and insert in Cards with this user ID.
 			std::string l_username = convertToSqlVarcharFormat(username);
@@ -439,12 +439,13 @@ namespace clever
 			std::string cardNumber = convertToSqlVarcharFormat(cardCredHandler.getCardNumber());
 			std::string cardCurrencyISO = convertToSqlVarcharFormat(cardCredHandler.getCardCurrencyISO());
 			std::string cardValidUntil = convertToSqlVarcharFormat(cardCredHandler.getCardValidUntil());
+			std::string oldcardname2 = convertToSqlVarcharFormat(oldcardname);
 
-			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET CardName = " + cardName + ", CardHolder = " + cardHolder + ", CardNumber = " + cardNumber + ", ValidUntil = " + cardValidUntil + ",CurrencyISO = " + cardCurrencyISO + " WHERE UserID = " + userID;
+			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET CardName = " + cardName + ", CardHolder = " + cardHolder + ", CardNumber = " + cardNumber + ", ValidUntil = " + cardValidUntil + ",CurrencyISO = " + cardCurrencyISO + " WHERE UserID = " + userID + " AND CardName = "+oldcardname2;
 			ExecQuery(query);
 		}
 
-		void OnEditCardPAT(char pat[], const clever::CardCredentialHandler& cardCredHandler)
+		void OnEditCardPAT(char pat[], const clever::CardCredentialHandler& cardCredHandler, char oldcardname[])
 		{
 			// obtain the user ID from this PAT and insert in Cards table with this user ID.
 			std::string l_pat = convertToSqlVarcharFormat(pat);
@@ -460,8 +461,9 @@ namespace clever
 			std::string cardNumber = convertToSqlVarcharFormat(cardCredHandler.getCardNumber());
 			std::string cardCurrencyISO = convertToSqlVarcharFormat(cardCredHandler.getCardCurrencyISO());
 			std::string cardValidUntil = convertToSqlVarcharFormat(cardCredHandler.getCardValidUntil());
+			std::string oldcardname2 = convertToSqlVarcharFormat(oldcardname);
 
-			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET CardName = " + cardName + ", CardHolder = " + cardHolder + ", CardNumber = " + cardNumber + ", ValidUntil = " + cardValidUntil + ",CurrencyISO = " + cardCurrencyISO + " WHERE UserID = " + userID;
+			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET CardName = " + cardName + ", CardHolder = " + cardHolder + ", CardNumber = " + cardNumber + ", ValidUntil = " + cardValidUntil + ",CurrencyISO = " + cardCurrencyISO + " WHERE UserID = " + userID +" AND CardName = "+oldcardname2;
 			ExecQuery(query);
 		}
 

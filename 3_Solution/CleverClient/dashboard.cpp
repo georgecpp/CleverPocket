@@ -214,6 +214,33 @@ void Dashboard::addFundsExec(AddFundsDialog& adf)
 	}
 }
 
+void Dashboard::editCardExec(EditCardDialog& edc)
+{
+	edc.cardNameLineEdit->setText(ui.cardPicker->currentText());
+	edc.cardHolderLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardHolder());
+	edc.cardNumberLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardNumber());
+	edc.validUntilLineEdit->setText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardValidUntil());
+	edc.isoCurrencyComboBox->setCurrentText(this->map_cards[ui.cardPicker->currentText().toStdString()].getCardCurrencyISO());
+	edc.setOldCardName(ui.cardPicker->currentText().toStdString());
+	std::string oldcardname = ui.cardPicker->currentText().toStdString();
+	float oldSold = this->map_cards[oldcardname].getCardSold();
+	if (edc.exec())
+	{
+		clever::CardCredentialHandler newCard(edc.cardNameLineEdit->text().toStdString(), edc.cardHolderLineEdit->text().toStdString(), edc.cardNumberLineEdit->text().toStdString(), edc.isoCurrencyComboBox->currentText().toStdString(), edc.validUntilLineEdit->text().toStdString(), oldSold);
+		if (edc.result() == QDialog::Accepted)
+		{
+			// handle map cards.
+			this->map_cards.erase(oldcardname);
+			ui.cardPicker->removeItem(ui.cardPicker->currentIndex());
+			this->map_cards.insert(std::pair<std::string, clever::CardCredentialHandler>(edc.cardNameLineEdit->text().toStdString(), newCard));
+			ui.cardPicker->addItem(newCard.getCardName());
+			//ui.cardPicker->setCurrentIndex(ui.cardPicker->count() - 1);
+			ui.cardPicker->setCurrentText(newCard.getCardName());
+			on_cardSelected();
+		}
+	}
+}
+
 void Dashboard::on_menuItemSelected(int index)
 {
 	// index 0 is reserved for header : Avatar + "Andronache George" -- current user logged in.
@@ -289,8 +316,26 @@ void Dashboard::on_addFundsPushButton_clicked()
 	}
 }
 
-void Dashboard::on_editFundsPushButton_clicked()
+void Dashboard::on_editCardPushButton_clicked()
 {
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont")
+	{
+		msgBox->setText("First add cards!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->PATLoggedIn == "")
+	{
+		EditCardDialog editcarddialog(usernameLoggedIn, this);
+		editCardExec(editcarddialog);
+	}
+	else
+	{
+		EditCardDialog editcarddialog(PATLoggedIn, this);
+		editCardExec(editcarddialog);
+	}
 
 }
 

@@ -328,11 +328,12 @@ protected:
 			char l_cardCurrencyISO[1024];  msg >> l_cardCurrencyISO;
 			char l_cardValidUntil[1024]; msg >> l_cardValidUntil;
 			char l_username[1024]; msg >> l_username;
+			char l_oldcardname[1024]; msg >> l_oldcardname;
 			clever::CardCredentialHandler cardCredHandler(l_cardName, l_cardHolder, l_cardNumber, l_cardCurrencyISO, l_cardValidUntil);
 			char responseBack[1024];
 			try
 			{
-				OnEditCardUsername(l_username, cardCredHandler);
+				OnEditCardUsername(l_username, cardCredHandler, l_oldcardname);
 				strcpy(responseBack, "SuccessEditCard");
 			}
 			catch (...)
@@ -354,11 +355,12 @@ protected:
 			char l_cardCurrencyISO[1024];  msg >> l_cardCurrencyISO;
 			char l_cardValidUntil[1024]; msg >> l_cardValidUntil;
 			char l_pat[1024]; msg >> l_pat;
+			char l_oldcardname[1024]; msg >> l_oldcardname;
 			clever::CardCredentialHandler cardCredHandler(l_cardName, l_cardHolder, l_cardNumber, l_cardCurrencyISO, l_cardValidUntil);
 			char responseBack[1024];
 			try
 			{
-				OnEditCardPAT(l_pat, cardCredHandler);
+				OnEditCardPAT(l_pat, cardCredHandler, l_oldcardname);
 				strcpy(responseBack, "SuccessEditCard");
 			}
 			catch (...)

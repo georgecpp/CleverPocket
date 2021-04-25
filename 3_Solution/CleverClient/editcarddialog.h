@@ -12,7 +12,7 @@ public:
 	EditCardDialog(QWidget *parent = Q_NULLPTR);
 	EditCardDialog(const QString& PAT, QWidget* parent = Q_NULLPTR);
 	EditCardDialog(const std::string& username, QWidget* parent = Q_NULLPTR);
-	
+	void setOldCardName(std::string oldcardname);
 	~EditCardDialog();
 
 private slots:
@@ -26,6 +26,7 @@ private:
 	std::vector<std::string> currencyISOS;
 	std::string currUsernameLogged;
 	std::string currPATLogged;
+	std::string oldCardName;
 	QRegExp reg;
 	QRegExpValidator val;
 };

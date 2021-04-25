@@ -160,6 +160,26 @@ namespace clever
 		{
 			this->m_Sold = newCardSold;
 		}
+		void setCardName(std::string cardName)
+		{
+			this->m_CardName = cardName;
+		}
+		void setCardHolder(std::string cardHolder)
+		{
+			this->m_CardHolder = cardHolder;
+		}
+		void setCardNumber(std::string cardNumber)
+		{
+			this->m_CardNumber = cardNumber;
+		}
+		void setCardCurrencyISO(std::string cardCurrencyISO)
+		{
+			this->m_CurrencyISO = cardCurrencyISO;
+		}
+		void setCardValidUntil(std::string validUntil)
+		{
+			this->m_ValidUntil = validUntil;
+		}
 	private:
 		std::string m_CardName;
 		std::string m_CardHolder;

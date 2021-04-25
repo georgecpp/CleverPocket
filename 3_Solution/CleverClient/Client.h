@@ -36,8 +36,8 @@ public:
 	void UsernameGetCardsDetails(const std::string& username);
 	void UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue);
 	void UsernameAddCardFunds(const std::string& username, const std::string& currCardName, const std::string& fundsValue);
-	void UserPATEditCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler);
-	void UsernameEditCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler);
+	void UserPATEditCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname);
+	void UsernameEditCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname);
 
 public:
 	std::string getIpAddressTo();

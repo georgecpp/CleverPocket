@@ -34,6 +34,11 @@ EditCardDialog::EditCardDialog(const std::string& username, QWidget* parent)
 	this->currPATLogged = "";
 }
 
+void EditCardDialog::setOldCardName(std::string oldcardname)
+{
+	this->oldCardName = oldcardname;
+}
+
 EditCardDialog::~EditCardDialog()
 {
 }
@@ -102,11 +107,11 @@ void EditCardDialog::on_editCardPushButton_clicked()
 	c.Incoming().clear();
 	if (this->currUsernameLogged == "")
 	{
-		c.UserPATEditCard(this->currPATLogged, cardCredHandler);
+		c.UserPATEditCard(this->currPATLogged, cardCredHandler, this->oldCardName);
 	}
 	else
 	{
-		c.UsernameEditCard(this->currUsernameLogged, cardCredHandler);
+		c.UsernameEditCard(this->currUsernameLogged, cardCredHandler, this->oldCardName);
 	}
 	while (c.Incoming().empty())
 	{
@@ -128,16 +133,16 @@ void EditCardDialog::on_editCardPushButton_clicked()
 			// server has responded back to add card request.
 			char responseBack[1024];
 			msg >> responseBack;
-			if (strcmp(responseBack, "SuccessAddCard") == 0)
+			if (strcmp(responseBack, "SuccessEditCard") == 0)
 			{
 				// ALL GOOD.
-				msgBox->setText("Card added with success!");
+				msgBox->setText("Card edited with success!");
 				msgBox->show();
 				QTimer::singleShot(2500, msgBox, SLOT(close()));
 			}
 			else
 			{
-				msgBox->setText("Couldn't add the card! Server problem. Try again.");
+				msgBox->setText("Couldn't edit the card! Server problem. Try again.");
 				msgBox->show();
 				QTimer::singleShot(2500, msgBox, SLOT(close()));
 				return;

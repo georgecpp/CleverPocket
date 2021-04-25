@@ -237,7 +237,7 @@ void Client::UsernameAddCardFunds(const std::string& username, const std::string
 	Send(msg);
 }
 
-void Client::UserPATEditCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler)
+void Client::UserPATEditCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname)
 {
 	clever::message<clever::MessageType> msg;
 	msg.header.id = clever::MessageType::EditCardPATRequest;
@@ -247,12 +247,13 @@ void Client::UserPATEditCard(const std::string& PAT, const clever::CardCredentia
 	char l_cardCurrencyISO[1024]; strcpy(l_cardCurrencyISO, cardCredHandler.getCardCurrencyISO());
 	char l_cardValidUntil[1024]; strcpy(l_cardValidUntil, cardCredHandler.getCardValidUntil());
 	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	char l_oldcardname[1024]; strcpy(l_oldcardname, oldcardname.c_str());
 
-	msg << l_pat << l_cardValidUntil << l_cardCurrencyISO << l_cardNumber << l_cardHolder << l_cardName;
+	msg << l_oldcardname<< l_pat << l_cardValidUntil << l_cardCurrencyISO << l_cardNumber << l_cardHolder << l_cardName;
 	Send(msg);
 }
 
-void Client::UsernameEditCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler)
+void Client::UsernameEditCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname)
 {
 	clever::message<clever::MessageType> msg;
 	msg.header.id = clever::MessageType::EditCardUsernameRequest;
@@ -262,8 +263,9 @@ void Client::UsernameEditCard(const std::string& username, const clever::CardCre
 	char l_cardCurrencyISO[1024]; strcpy(l_cardCurrencyISO, cardCredHandler.getCardCurrencyISO());
 	char l_cardValidUntil[1024]; strcpy(l_cardValidUntil, cardCredHandler.getCardValidUntil());
 	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_oldcardname[1024]; strcpy(l_oldcardname, oldcardname.c_str());
 
-	msg << l_username << l_cardValidUntil << l_cardCurrencyISO << l_cardNumber << l_cardHolder << l_cardName;
+	msg << l_oldcardname << l_username << l_cardValidUntil << l_cardCurrencyISO << l_cardNumber << l_cardHolder << l_cardName;
 	Send(msg);
 }
 
