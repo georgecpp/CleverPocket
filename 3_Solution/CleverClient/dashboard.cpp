@@ -258,4 +258,8 @@ void Dashboard::on_cardSelected()
 	ui.holderDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardHolder());
 	ui.cardNumberDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardNumber());
 	ui.validUntilDetailsLabel->setText(this->map_cards[cardName.toStdString()].getCardValidUntil());
+
+	// update wall as well.
+	ui.financeNameWallLabel->setText(this->map_cards[cardName.toStdString()].getCardName());
+	ui.currencyWallLabel->setText(this->map_cards[cardName.toStdString()].getCardCurrencyISO());
 }

@@ -22,7 +22,6 @@ private:
 	void logout();
 	void loadCards();
 	void addCardExec(AddCardDialog& adc);
-	std::vector<clever::CardCredentialHandler> cards;
 	std::map<std::string, clever::CardCredentialHandler> map_cards;
 private slots:
 	void on_financesCommandLinkButton_clicked();
