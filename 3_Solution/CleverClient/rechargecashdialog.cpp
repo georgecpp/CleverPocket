@@ -51,5 +51,12 @@ void RechargeCashDialog::on_rechargePushButton_clicked()
 		QTimer::singleShot(2000, msgBox, SLOT(close()));
 		return;
 	}
+<<<<<<< Updated upstream
+=======
+	//
+	//insert funds cash
+	// 
+	//
+>>>>>>> Stashed changes
 	this->done(QDialog::Accepted);
 }

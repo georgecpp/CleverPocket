@@ -166,6 +166,19 @@ void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
 	}
 }
 
+void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
+{
+	rcd.cashCurrencyISO->setText(QString(userCashCurrencyISO.c_str()));
+	if (rcd.exec())
+	{
+		if (rcd.result() == QDialog::Accepted)
+		{
+
+		}
+
+	}
+}
+
 void Dashboard::on_menuItemSelected(int index)
 {
 	// index 0 is reserved for header : Avatar + "Andronache George" -- current user logged in.
@@ -285,6 +298,75 @@ void Dashboard::on_addCashPushButton_clicked()
 	else
 	{
 		RechargeCashDialog rechargeCashDialog(map_cards, usernameLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+}
+
+
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
+void Dashboard::on_choseImagePushButton_clicked()
+{
+	QString filename = QFileDialog::getOpenFileName(this, tr("Chose"), "", tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)")); // title of file dialog-default folder-file format
+
+	if (QString::compare(filename, QString()) != 0)
+	{
+		QImage image;
+		bool valid = image.load(filename);
+
+		if (valid)
+		{
+			image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
+			ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+		}
+		else
+		{
+			//Error handling
+		}
+
+	}
+
+}
+
+void Dashboard::on_financesTabWidget_currentChanged(int index)		//changing wall infos for cash instead of cards
+{
+	//to do wall things
+	// se face interogarea bd pt numerar
+	// se actualizeaza datele din tab / wallet
+	if (ui.financesTabWidget->currentWidget() == ui.cashTab)
+	{
+		ui.currencyWallLabel->setText(QString(userCashCurrencyISO.c_str()));
+		ui.financeNameWallLabel->setText(QString("Cash"));
+		ui.soldWallLabel->setText(QString(currUserCash.c_str()));
+	}
+}
+
+void Dashboard::on_addCashPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont!")
+	{
+		msgBox->setText("First add cards!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->userCashCurrencyISO == "---") //nu este selectata moneda implicita de la preferences 
+	{
+		msgBox->setText("Please complete the preferences options first!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->PATLoggedIn == "")
+	{
+		RechargeCashDialog rechargeCashDialog(userCashCurrencyISO, map_cards, usernameLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+	else
+	{
+		RechargeCashDialog rechargeCashDialog(userCashCurrencyISO, map_cards, usernameLoggedIn, this);
 		rechargeCashExec(rechargeCashDialog);
 	}
 }

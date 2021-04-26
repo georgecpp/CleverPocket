@@ -13,6 +13,12 @@
   <property name="windowTitle">
    <string>RechargeCashDialog</string>
   </property>
+<<<<<<< Updated upstream
+=======
+  <property name="inputMethodHints">
+   <set>Qt::ImhFormattedNumbersOnly</set>
+  </property>
+>>>>>>> Stashed changes
   <widget class="QLineEdit" name="cashFundsLIneEdit">
    <property name="geometry">
     <rect>
@@ -25,6 +31,12 @@
    <property name="inputMethodHints">
     <set>Qt::ImhFormattedNumbersOnly</set>
    </property>
+<<<<<<< Updated upstream
+=======
+   <property name="text">
+    <string/>
+   </property>
+>>>>>>> Stashed changes
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
@@ -86,6 +98,38 @@
     <string>Cancel</string>
    </property>
   </widget>
+<<<<<<< Updated upstream
+=======
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>310</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cash Currency:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="cashCurrencyISO">
+   <property name="geometry">
+    <rect>
+     <x>420</x>
+     <y>310</y>
+     <width>71</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>CurrencyISO</string>
+   </property>
+  </widget>
+>>>>>>> Stashed changes
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>

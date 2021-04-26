@@ -52,6 +52,9 @@ Startup::Startup(QWidget *parent)
 		this->resizeToLoginPage();
 	}
 	
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 }
 

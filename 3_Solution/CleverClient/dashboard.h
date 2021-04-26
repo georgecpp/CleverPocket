@@ -25,13 +25,19 @@ private:
 	QStackedWidget* fromStackedWidget;
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
+<<<<<<< Updated upstream
 	std::string userCurrencyISO;
+=======
+	std::string userCashCurrencyISO = "---";
+	std::string currUserCash = "0";
+>>>>>>> Stashed changes
 	//TO DO - preferences
 	void logout();
 <<<<<<< Updated upstream
 	void addFundsExec(AddFundsDialog& adc);
 =======
 	void loadCards();
+	//void loadCash();
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
@@ -44,8 +50,13 @@ private slots:
 	void on_addCardPushButton_clicked();
 	void on_choseImagePushButton_clicked();
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	void on_addFundsPushButton_clicked();
 	
+=======
+	void on_financesTabWidget_currentChanged(int index);
+	void on_addCashPushButton_clicked();
+>>>>>>> Stashed changes
 =======
 	void on_financesTabWidget_currentChanged(int index);
 	void on_addCashPushButton_clicked();
