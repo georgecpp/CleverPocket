@@ -5,6 +5,7 @@
 #include <addcarddialog.h>
 #include <addfundsdialog.h>
 #include <editcarddialog.h>
+#include <rechargecashdialog.h>
 #include <clever_Credentials.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
@@ -21,8 +22,11 @@ private:
 	QStackedWidget* fromStackedWidget;
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
+	std::string userCashCurrencyISO;
+	std::string currUserCash;
 	void logout();
 	void loadCards();
+	void loadCash();
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
@@ -35,6 +39,9 @@ private slots:
 	void on_editCardPushButton_clicked();
 	void on_cardSelected();
 	void on_choseImagePushButton_clicked();
+	void on_financesTabWidget_currentChanged(int index);
+	void on_addCashPushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
+	void rechargeCashExec(RechargeCashDialog& rcd);
 };
