@@ -12,11 +12,9 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	this->fromStackedWidget = parentStackedWidget;
 	ui.setupUi(this);
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
-	this->prepareOptionsComboBox(ui.dashboardOptions);
-	this->prepareOptionsComboBox(ui.financesOptions);
-	this->prepareOptionsComboBox(ui.preferencesOptions);
-	this->prepareOptionsComboBox(ui.profileOptions);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
+	connect(ui.tranzactionTypePicker, SIGNAL(activated(int)), this, SLOT(on_TranzactionTypeSelected()));
+	toggleTranzactionsButtons(0);
 }
 
 Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -25,6 +23,12 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->PATLoggedIn = PAT;
 	this->usernameLoggedIn = "";
 	loadCash();
+	this->prepareOptionsComboBox(ui.dashboardOptions);
+	this->prepareOptionsComboBox(ui.financesOptions);
+	this->prepareOptionsComboBox(ui.preferencesOptions);
+	this->prepareOptionsComboBox(ui.profileOptions);
+	this->prepareOptionsComboBox(ui.tranzactionsOptions);
+	this->prepareOptionsComboBox(ui.categoriesOptions);
 	loadCards();
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
@@ -37,6 +41,12 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->PATLoggedIn = "";
 	loadCards();
 	loadCash();
+	this->prepareOptionsComboBox(ui.dashboardOptions);
+	this->prepareOptionsComboBox(ui.financesOptions);
+	this->prepareOptionsComboBox(ui.preferencesOptions);
+	this->prepareOptionsComboBox(ui.profileOptions);
+	this->prepareOptionsComboBox(ui.tranzactionsOptions);
+	this->prepareOptionsComboBox(ui.categoriesOptions);
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 }
@@ -148,12 +158,14 @@ void Dashboard::loadCash()
 			char responseBack[1024];
 			char userCash[1024];
 			char userCurrencyISO[1024];
+			char usernameLogged[1024];
 			msg >> responseBack;
 			if (strcmp(responseBack, "SuccesGetCashDetails") == 0)
 			{
-				msg >> userCurrencyISO >> userCash;
+				msg >> userCurrencyISO >> userCash >> usernameLogged;
 				this->currUserCash = userCash;
 				this->userCashCurrencyISO = userCurrencyISO;
+				this->usernameLoggedIn = usernameLogged;
 			}
 			if (strcmp(responseBack, "FailGetCashDetails") == 0)
 			{
@@ -324,6 +336,49 @@ void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
 	}
 }
 
+void Dashboard::toggleTranzactionsButtons(int state)
+{
+	switch (state)
+	{
+	case 0:
+		// means we're not in this page OR select'All Tranzactions', so both buttons invisible.
+		ui.periodicallyIncomePushButton->setVisible(false);
+		ui.periodicallyIncomePushButton->setEnabled(false);
+		ui.spendingsCategoriesPushButton->setVisible(false);
+		ui.spendingsCategoriesPushButton->setEnabled(false);
+		break;
+	case 1: 
+		// means we selected Income
+		ui.periodicallyIncomePushButton->setEnabled(true);
+		ui.periodicallyIncomePushButton->setVisible(true);
+		ui.spendingsCategoriesPushButton->setVisible(false);
+		ui.spendingsCategoriesPushButton->setEnabled(false);
+		break;
+
+	case 2:
+		// means Spendings selected.
+		ui.periodicallyIncomePushButton->setEnabled(false);
+		ui.periodicallyIncomePushButton->setVisible(false);
+		ui.spendingsCategoriesPushButton->setVisible(true);
+		ui.spendingsCategoriesPushButton->setEnabled(true);
+		break;
+	}
+}
+
+void Dashboard::populateTranzactionsFinanceType()
+{
+	ui.financeTypePicker->clear();
+	ui.financeTypePicker->addItem("All Finances");
+	
+	// get all cards from map and push them.
+	for (auto it : this->map_cards)
+	{
+		ui.financeTypePicker->addItem(it.second.getCardName());
+	}
+
+	ui.financeTypePicker->addItem("Cash");
+}
+
 void Dashboard::loadCurrencyISOS()
 {
 	// load CurrencyISO from resource text file into combobox.
@@ -394,7 +449,10 @@ void Dashboard::on_financesTabWidget_currentChanged(int index)
 
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 {
-	comboBoxToPrepare->addItem("Currently logged in:");
+	if (this->usernameLoggedIn != "")
+	{
+		comboBoxToPrepare->addItem(this->usernameLoggedIn.c_str());
+	}
 	comboBoxToPrepare->addItem("Your profile");
 	comboBoxToPrepare->addItem("Dashboard");
 	comboBoxToPrepare->addItem("Preferences");
@@ -533,8 +591,66 @@ void Dashboard::on_addCashPushButton_clicked()
 		rechargeCashExec(rechargeCashDialog);
 	}
 }
+void Dashboard::on_transactionsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+	ui.tranzactionTypePicker->setCurrentIndex(0); // All tranzactions.
+	populateTranzactionsFinanceType();
+	ui.dateLineEdit->setText(QDate::currentDate().toString());
+	toggleTranzactionsButtons(0);
+}
 
-void Dashboard::on_preferenceCurrencyComboBox_currentTextChanged(const QString& arg1)
+void Dashboard::on_pickDatePushButton_clicked()
+{
+	DatePickerDialog datePicker(this);
+	if (datePicker.exec())
+	{
+		if (datePicker.result() == QDialog::Accepted)
+		{
+			// update DATE line edit. YYYY-MM-DD.
+			ui.dateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+		}
+	}
+}
+
+void Dashboard::on_TranzactionTypeSelected()
+{
+	//
+	if (ui.tranzactionTypePicker->currentText() == "All Tranzactions")
+	{
+		toggleTranzactionsButtons(0);
+	}
+	if (ui.tranzactionTypePicker->currentText() == "Income")
+	{
+		toggleTranzactionsButtons(1);
+	}
+	if (ui.tranzactionTypePicker->currentText() == "Spendings")
+	{
+		toggleTranzactionsButtons(2);
+	}
+}
+
+void Dashboard::on_spendingsCategoriesPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+}
+
+void Dashboard::on_backToTranzactionsPushButtton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+}
+
+void Dashboard::on_showFinanceHistory_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+	ui.tranzactionTypePicker->setCurrentIndex(0); // All tranzactions.
+	toggleTranzactionsButtons(0);
+	ui.dateLineEdit->setText(QDate::currentDate().toString());
+	populateTranzactionsFinanceType();
+	ui.financeTypePicker->setCurrentText(ui.financeNameWallLabel->text());
+}
+
+void Dashboard::loadTranzactionsHistory()
 {
 
 }

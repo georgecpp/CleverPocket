@@ -6,6 +6,7 @@
 #include <addfundsdialog.h>
 #include <editcarddialog.h>
 #include <rechargecashdialog.h>
+#include <datepickerdialog.h>
 #include <clever_Credentials.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
@@ -31,10 +32,13 @@ private:
 	void loadCash();
 	void loadCards();
 	void loadCurrencyISOS();
+	void loadTranzactionsHistory();
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
 	void rechargeCashExec(RechargeCashDialog& rcd);
+	void toggleTranzactionsButtons(int state);
+	void populateTranzactionsFinanceType();
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
@@ -45,7 +49,12 @@ private slots:
 	void on_cardSelected();
 	void on_choseImagePushButton_clicked();
 	void on_addCashPushButton_clicked();
-	void on_preferenceCurrencyComboBox_currentTextChanged(const QString& arg1);
+	void on_transactionsCommandLinkButton_clicked();
+	void on_pickDatePushButton_clicked();
+	void on_TranzactionTypeSelected();
+	void on_spendingsCategoriesPushButton_clicked();
+	void on_backToTranzactionsPushButtton_clicked();
+	void on_showFinanceHistory_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };

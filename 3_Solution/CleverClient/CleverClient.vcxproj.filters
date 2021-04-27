@@ -61,6 +61,9 @@
     <ClCompile Include="rechargecashdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="datepickerdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="startup.h">
@@ -81,6 +84,9 @@
     <QtMoc Include="rechargecashdialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="datepickerdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="startup.ui">
@@ -99,6 +105,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="rechargecashdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="datepickerdialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

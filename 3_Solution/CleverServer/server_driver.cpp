@@ -498,21 +498,25 @@ protected:
 			char l_cashValue[1024];
 			char l_currencyCashISO[1024];
 			char responseBack[1024];
+			char l_username[1024];
+
+			std::string s_username="";
 			std::string s_cashValue;
 			std::string s_currencyISO;
 			try
 			{
-				OnGetCashPAT(l_pat, s_cashValue, s_currencyISO);
+				OnGetCashPAT(l_pat, s_cashValue, s_currencyISO, s_username);
 				strcpy(responseBack, "SuccesGetCashDetails");
 				strcpy(l_cashValue, s_cashValue.c_str());
 				strcpy(l_currencyCashISO, s_currencyISO.c_str());
+				strcpy(l_username, s_username.c_str());
 			}
 			catch (...)
 			{
 				strcpy(responseBack, "FailGetCashDetails");
 			}
 			msg.header.id = clever::MessageType::ServerGetCashResponse;
-			msg << l_cashValue << l_currencyCashISO<< responseBack;
+			msg << l_username << l_cashValue << l_currencyCashISO<< responseBack;
 			client->Send(msg);
 		}
 		break;

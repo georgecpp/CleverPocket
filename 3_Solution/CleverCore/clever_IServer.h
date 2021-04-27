@@ -326,7 +326,7 @@ namespace clever
 			query = "SELECT CurrencyISO FROM CleverPocket.dbo.Numerar WHERE UserID = " + userID;
 			cashCurrencyISO = GetQueryExecResult(query);
 		}
-		void OnGetCashPAT(char pat[], std::string& cashValue, std::string& cashCurrencyISO)
+		void OnGetCashPAT(char pat[], std::string& cashValue, std::string& cashCurrencyISO, std::string& username)
 		{
 			std::string l_pat = convertToSqlVarcharFormat(pat);
 			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
@@ -340,6 +340,8 @@ namespace clever
 			cashValue = GetQueryExecResult(query);
 			query = "SELECT CurrencyISO FROM CleverPocket.dbo.Numerar WHERE UserID = " + userID;
 			cashCurrencyISO = GetQueryExecResult(query);
+			query = "SELECT Username FROM CleverPocket.dbo.Users WHERE UserID = " + userID;
+			username = GetQueryExecResult(query);
 		}
 		void OnAddCardFundsPAT(char pat[], char cardFunds[], char cardName[])
 		{
