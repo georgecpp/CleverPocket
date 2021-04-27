@@ -29,7 +29,11 @@ namespace clever
 		ServerEditCardResponse,
 		EditCardUsernameRequest,
 		EditCardPATRequest,
-		
-
+		UsernameGetCashRequest,
+		PATGetCashRequest,
+		ServerGetCashResponse,
+		AddCashPATRequest,
+		AddCashUsernameRequest,
+		ServerAddCashResponse,
 	};
 }

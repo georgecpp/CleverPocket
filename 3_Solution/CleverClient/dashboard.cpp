@@ -7,7 +7,8 @@
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
 {
-
+	this->userCashCurrencyISO = "";
+	this->currUserCash = "";
 	this->fromStackedWidget = parentStackedWidget;
 	ui.setupUi(this);
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
@@ -23,7 +24,10 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 {
 	this->PATLoggedIn = PAT;
 	this->usernameLoggedIn = "";
+	loadCash();
 	loadCards();
+	loadCurrencyISOS();
+	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -32,6 +36,9 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->usernameLoggedIn = username;
 	this->PATLoggedIn = "";
 	loadCards();
+	loadCash();
+	loadCurrencyISOS();
+	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 }
 
 Dashboard::~Dashboard()
@@ -104,6 +111,58 @@ void Dashboard::logout()
 	{
 		this->fromStackedWidget->removeWidget(this);
 		this->fromStackedWidget->setCurrentIndex(0);
+	}
+}
+
+void Dashboard::loadCash()
+{
+	// TO DO.
+		// loads all cards for this USER LOGGED IN into cardPicker.
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	if (this->PATLoggedIn == "") // it means user-login
+	{
+		c.UsernameGetCashDetails(usernameLoggedIn);
+	}
+	else // else PAT-login
+	{
+		c.PATGetCashDetails(PATLoggedIn.toStdString());
+	}
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetCashResponse)
+		{
+			char responseBack[1024];
+			char userCash[1024];
+			char userCurrencyISO[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccesGetCashDetails") == 0)
+			{
+				msg >> userCurrencyISO >> userCash;
+				this->currUserCash = userCash;
+				this->userCashCurrencyISO = userCurrencyISO;
+			}
+			if (strcmp(responseBack, "FailGetCashDetails") == 0)
+			{
+				msgBox->setText("An error occured while getting cash details out...");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+				return;
+			}
+		}
 	}
 }
 
@@ -244,6 +303,56 @@ void Dashboard::editCardExec(EditCardDialog& edc)
 	}
 }
 
+void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
+{
+	rcd.cashCurrencyISOLabel->setText(QString(userCashCurrencyISO.c_str()));
+	if (rcd.exec())
+	{
+		if (rcd.result() == QDialog::Accepted)
+		{
+			this->map_cards = rcd.getCardMap();
+			float currUserCashFloat = std::stof(currUserCash);
+			currUserCashFloat += rcd.cashFundsLIneEdit->text().toFloat();
+			this->currUserCash = std::to_string(currUserCashFloat);
+
+
+			ui.financeNameWallLabel->setText(QString("Cash"));
+			ui.currencyWallLabel->setText(QString(userCashCurrencyISO.c_str()));
+			ui.soldWallLabel->setText(QString(currUserCash.c_str()));
+			ui.currentCashSoldLabel->setText(QString(currUserCash.c_str()));
+		}
+	}
+}
+
+void Dashboard::loadCurrencyISOS()
+{
+	// load CurrencyISO from resource text file into combobox.
+	FILE* fin = fopen("currencyISO.txt", "r");
+	if (fin)
+	{
+		char buffer[256];
+		while (fgets(buffer, sizeof(buffer), fin))
+		{
+			std::string line;
+			if (buffer[strlen(buffer) - 1] != '\n')
+			{
+				line = buffer;
+			}
+			else
+			{
+				line.assign(buffer, strlen(buffer) - 1);
+			}
+			this->currencyISOS.push_back(line);
+		}
+		fclose(fin);
+		ui.preferenceCurrencyComboBox->clear();
+		for (std::vector<std::string>::iterator it = currencyISOS.begin(); it != currencyISOS.end(); it++)
+		{
+			ui.preferenceCurrencyComboBox->addItem(it->c_str());
+		}
+	}
+}
+
 void Dashboard::on_menuItemSelected(int index)
 {
 	// index 0 is reserved for header : Avatar + "Andronache George" -- current user logged in.
@@ -266,6 +375,21 @@ void Dashboard::on_menuItemSelected(int index)
 	}
 
 
+}
+
+void Dashboard::on_financesTabWidget_currentChanged(int index)
+{
+	if (ui.financesTabWidget->currentWidget() == ui.cashTab)
+	{
+		ui.financeNameWallLabel->setText(QString("Cash"));
+		ui.currencyWallLabel->setText(QString(userCashCurrencyISO.c_str()));
+		ui.soldWallLabel->setText(QString(currUserCash.c_str()));
+		ui.currentCashSoldLabel->setText(QString(currUserCash.c_str()));
+	}
+	if (ui.financesTabWidget->currentWidget() == ui.cardsTab)
+	{
+		on_cardSelected();
+	}
 }
 
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
@@ -378,5 +502,39 @@ void Dashboard::on_choseImagePushButton_clicked()
 		}
 
 	}
+
+}
+
+void Dashboard::on_addCashPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.cardPicker->itemText(0) == "Nu exista carduri adaugate la acest cont!")
+	{
+		msgBox->setText("First add cards!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->userCashCurrencyISO=="0") //nu este selectata moneda implicita de la preferences //TESTAT EMPTY
+	{
+		msgBox->setText("Please complete the preferences options first!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (this->PATLoggedIn == "")
+	{
+		RechargeCashDialog rechargeCashDialog(userCashCurrencyISO, map_cards, usernameLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+	else
+	{
+		RechargeCashDialog rechargeCashDialog(userCashCurrencyISO, map_cards, this->PATLoggedIn, this);
+		rechargeCashExec(rechargeCashDialog);
+	}
+}
+
+void Dashboard::on_preferenceCurrencyComboBox_currentTextChanged(const QString& arg1)
+{
 
 }

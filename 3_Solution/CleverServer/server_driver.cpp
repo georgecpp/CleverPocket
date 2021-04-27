@@ -491,6 +491,102 @@ protected:
 		}
 		break;
 
+		case clever::MessageType::PATGetCashRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Cash (PAT) request\n";
+			char l_pat[1024]; msg >> l_pat;
+			char l_cashValue[1024];
+			char l_currencyCashISO[1024];
+			char responseBack[1024];
+			std::string s_cashValue;
+			std::string s_currencyISO;
+			try
+			{
+				OnGetCashPAT(l_pat, s_cashValue, s_currencyISO);
+				strcpy(responseBack, "SuccesGetCashDetails");
+				strcpy(l_cashValue, s_cashValue.c_str());
+				strcpy(l_currencyCashISO, s_currencyISO.c_str());
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailGetCashDetails");
+			}
+			msg.header.id = clever::MessageType::ServerGetCashResponse;
+			msg << l_cashValue << l_currencyCashISO<< responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::UsernameGetCashRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Cash (Username) request\n";
+			char l_pat[1024]; msg >> l_pat;
+			char l_cashValue[1024];
+			char l_currencyCashISO[1024];
+			char responseBack[1024];
+			std::string s_cashValue;
+			std::string s_currencyISO;
+			try
+			{
+				OnGetCashUsername(l_pat, s_cashValue, s_currencyISO);
+				strcpy(responseBack, "SuccesGetCashDetails");
+				strcpy(l_cashValue, s_cashValue.c_str());
+				strcpy(l_currencyCashISO, s_currencyISO.c_str());
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailGetCashDetails");
+			}
+			msg.header.id = clever::MessageType::ServerGetCashResponse;
+			msg << l_cashValue << l_currencyCashISO << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddCashPATRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add cash (PAT) request\n";
+			char l_pat[1024]; msg >> l_pat;
+			char l_cashValue[1024]; msg >> l_cashValue;
+			char l_cardname[1024]; msg >> l_cardname;
+			char responseBack[1024];
+			try
+			{
+				OnAddCashPAT(l_pat, l_cashValue, l_cardname);
+				strcpy(responseBack, "SuccessAddCash");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddCash");
+			}
+			msg.header.id = clever::MessageType::ServerAddCashResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddCashUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add cash (username) request\n";
+			char l_username[1024]; msg >> l_username;
+			char l_cashValue[1024]; msg >> l_cashValue;
+			char l_cardname[1024]; msg >> l_cardname;
+			char responseBack[1024];
+			try
+			{
+
+				OnAddCashUsername(l_username, l_cashValue,l_cardname);
+				strcpy(responseBack, "SuccessAddCash");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddCash");
+			}
+			msg.header.id = clever::MessageType::ServerAddCashResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
 		}
 	}
 };

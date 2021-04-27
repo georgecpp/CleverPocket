@@ -37,7 +37,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>6</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -684,7 +684,7 @@
      <property name="title">
       <string>GroupBox</string>
      </property>
-     <widget class="QComboBox" name="comboBox">
+     <widget class="QComboBox" name="preferenceCurrencyComboBox">
       <property name="geometry">
        <rect>
         <x>270</x>

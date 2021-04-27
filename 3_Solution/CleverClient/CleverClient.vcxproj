@@ -121,6 +121,7 @@
     <ClInclude Include="Client.h" />
     <QtMoc Include="dashboard.h" />
     <QtMoc Include="editcarddialog.h" />
+    <QtMoc Include="rechargecashdialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClCompile Include="addcarddialog.cpp" />
     <ClCompile Include="addfundsdialog.cpp" />
@@ -128,6 +129,7 @@
     <ClCompile Include="dashboard.cpp" />
     <ClCompile Include="editcarddialog.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="rechargecashdialog.cpp" />
     <ClCompile Include="startup.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">Create</PrecompiledHeader>
@@ -139,6 +141,7 @@
     <QtUic Include="addfundsdialog.ui" />
     <QtUic Include="dashboard.ui" />
     <QtUic Include="editcarddialog.ui" />
+    <QtUic Include="rechargecashdialog.ui" />
     <QtUic Include="startup.ui" />
   </ItemGroup>
   <ItemGroup>
