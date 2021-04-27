@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <ui version="4.0">
   <class>RechargeCashDialog</class>
   <widget class="QDialog" name="RechargeCashDialog">
@@ -13,10 +13,9 @@
     <property name="windowTitle">
       <string>RechargeCashDialog</string>
     </property>
-  <property name="inputMethodHints">
+    <property name="inputMethodHints">
       <set>Qt::ImhFormattedNumbersOnly</set>
     </property>
-    >>>>>>> Stashed changes
     <widget class="QLineEdit" name="cashFundsLIneEdit">
       <property name="geometry">
         <rect>
@@ -29,10 +28,9 @@
       <property name="inputMethodHints">
         <set>Qt::ImhFormattedNumbersOnly</set>
       </property>
-   <property name="text">
+      <property name="text">
         <string/>
       </property>
-      >>>>>>> Stashed changes
       <property name="alignment">
         <set>Qt::AlignCenter</set>
       </property>
@@ -94,7 +92,7 @@
         <string>Cancel</string>
       </property>
     </widget>
-  <widget class="QLabel" name="label_2">
+    <widget class="QLabel" name="label_2">
       <property name="geometry">
         <rect>
           <x>260</x>

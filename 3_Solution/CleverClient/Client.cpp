@@ -195,26 +195,6 @@ void Client::UsernameAddCard(const std::string& username, const clever::CardCred
 	Send(msg);
 }
 
-void Client::PATGetCashDetails(const std::string& PAT)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::PATGetCashRequest;
-
-	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
-	msg << l_pat;
-	Send(msg);
-}
-
-void Client::UsernameGetCashDetails(const std::string& PAT)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::UsernameGetCashRequest;
-
-	char l_username[1024]; strcpy(l_username, PAT.c_str());
-	msg << l_username;
-	Send(msg);
-}
-
 void Client::PATGetCardsDetails(const std::string& PAT)
 {
 	clever::message<clever::MessageType> msg;
@@ -232,26 +212,6 @@ void Client::UsernameGetCardsDetails(const std::string& username)
 
 	char l_username[1024]; strcpy(l_username, username.c_str());
 	msg << l_username;
-	Send(msg);
-}
-
-void Client::UserPATAddCash(const std::string& PAT, const std::string& cashValue)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::AddCashPATRequest;
-	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
-	char l_cashValue[1024]; strcpy(l_cashValue, cashValue.c_str());
-	msg << l_cashValue << l_pat;
-	Send(msg);
-}
-
-void Client::UsernameddCash(const std::string& username, const std::string& cashValue)
-{
-	clever::message<clever::MessageType> msg;
-	msg.header.id = clever::MessageType::AddCashPATRequest;
-	char l_username[1024]; strcpy(l_username, username.c_str());
-	char l_cashValue[1024]; strcpy(l_cashValue, cashValue.c_str());
-	msg << l_cashValue << l_username;
 	Send(msg);
 }
 
@@ -306,6 +266,48 @@ void Client::UsernameEditCard(const std::string& username, const clever::CardCre
 	char l_oldcardname[1024]; strcpy(l_oldcardname, oldcardname.c_str());
 
 	msg << l_oldcardname << l_username << l_cardValidUntil << l_cardCurrencyISO << l_cardNumber << l_cardHolder << l_cardName;
+	Send(msg);
+}
+
+void Client::PATGetCashDetails(const std::string& PAT)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::PATGetCashRequest;
+
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	msg << l_pat;
+	Send(msg);
+}
+
+void Client::UsernameGetCashDetails(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::UsernameGetCashRequest;
+
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
+
+void Client::UserPATAddCash(const std::string& PAT, const std::string& cashValue, const std::string& fromCardName)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddCashPATRequest;
+	char l_pat[1024]; strcpy(l_pat, PAT.c_str());
+	char l_cashValue[1024]; strcpy(l_cashValue, cashValue.c_str());
+	char l_cardname[1024]; strcpy(l_cardname, fromCardName.c_str());
+	msg << l_cardname << l_cashValue << l_pat;
+	Send(msg);
+}
+
+void Client::UsernameAddCash(const std::string& username, const std::string& cashValue, const std::string& fromCardName)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddCashUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_cashValue[1024]; strcpy(l_cashValue, cashValue.c_str());
+	char l_cardname[1024]; strcpy(l_cardname, fromCardName.c_str());
+	msg << l_cardname << l_cashValue << l_username;
 	Send(msg);
 }
 

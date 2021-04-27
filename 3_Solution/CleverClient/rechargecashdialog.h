@@ -14,6 +14,7 @@ public:
 	RechargeCashDialog(std::string userCurrencyISO, std::map<std::string, clever::CardCredentialHandler>& map_cards, const QString& PAT, QWidget* parent = Q_NULLPTR);
 	RechargeCashDialog(std::string userCurrencyISO, std::map<std::string, clever::CardCredentialHandler>& map_cards, const std::string& username, QWidget* parent = Q_NULLPTR);
 	~RechargeCashDialog();
+	std::map<std::string, clever::CardCredentialHandler>& getCardMap();
 private slots:
 	void on_rechargePushButton_clicked();
 	void on_cancelRechargePushButton_clicked();

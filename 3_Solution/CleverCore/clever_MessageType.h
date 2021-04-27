@@ -35,7 +35,5 @@ namespace clever
 		AddCashPATRequest,
 		AddCashUsernameRequest,
 		ServerAddCashResponse,
-
-		
 	};
 }

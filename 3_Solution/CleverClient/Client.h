@@ -32,17 +32,16 @@ public:
 	void LogoutWithRememberMe(const std::string& PAT);
 	void UserPATAddCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler);
 	void UsernameAddCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler);
-	void PATGetCashDetails(const std::string& PAT);
-	void UsernameGetCashDetails(const std::string& PAT);
 	void PATGetCardsDetails(const std::string& PAT);
 	void UsernameGetCardsDetails(const std::string& username);
-	void UserPATAddCash(const std::string& PAT, const std::string& cashValue);
-	void UsernameAddCash(const std::string& username, const std::string& cashValue);
 	void UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue);
 	void UsernameAddCardFunds(const std::string& username, const std::string& currCardName, const std::string& fundsValue);
 	void UserPATEditCard(const std::string& PAT, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname);
 	void UsernameEditCard(const std::string& username, const clever::CardCredentialHandler& cardCredHandler, const std::string& oldcardname);
-
+	void PATGetCashDetails(const std::string& PAT);
+	void UsernameGetCashDetails(const std::string& username);
+	void UserPATAddCash(const std::string& PAT, const std::string& cashValue, const std::string& fromCardName);
+	void UsernameAddCash(const std::string& username, const std::string& cashValue, const std::string& fromCardName);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();
