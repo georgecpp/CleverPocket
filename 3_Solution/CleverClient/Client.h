@@ -42,6 +42,7 @@ public:
 	void UsernameGetCashDetails(const std::string& username);
 	void UserPATAddCash(const std::string& PAT, const std::string& cashValue, const std::string& fromCardName);
 	void UsernameAddCash(const std::string& username, const std::string& cashValue, const std::string& fromCardName);
+	void UserGetTranzactions(const std::string& username);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

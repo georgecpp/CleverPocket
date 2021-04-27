@@ -374,7 +374,61 @@ namespace clever
 			std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold += " + l_cardFunds + " WHERE CardName = " + l_cardName + " AND UserID = " + resultID;
 			ExecQuery(query);
 		}
+		void OnGetTranzactionsUsername(char username[], std::vector<clever::TranzactionHandler>& tranzactions)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
 
+			std::string queryGetAllTranzactionsUser = "SELECT [Source], [Destination], [Timestamp], [FinanceName], [TypeTranzaction], [Valoare], [CurrencyISO], [DescriereTranzactie], [CategoryName], [TranzactionTitle] FROM [CleverPocket].[dbo].[Tranzactions] WHERE UserID = " + resultUserID;
+			std::string resultQueryGetTranzactions = GetQueryExecRowsetResult(queryGetAllTranzactionsUser, 1, 10);
+			std::cout << resultQueryGetTranzactions;
+
+			std::stringstream ss(resultQueryGetTranzactions);
+			std::string row;
+			while (std::getline(ss, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string tranzactionSource;
+				std::string tranzactionDestination;
+				std::string tranzactionTimestamp;
+				std::string tranzactionFinanceName;
+				std::string tranzactionType; // clever::TranzactionsTypes -- unsigned int
+				std::string tranzactionValoare; // float
+				std::string tranzactionCurrencyISO;
+				std::string tranzactionDescriere;
+				std::string tranzactionCategoryName;
+				std::string tranzactionTitle;
+
+				std::getline(ssfields, tranzactionSource, ';');
+				std::getline(ssfields, tranzactionDestination, ';');
+				std::getline(ssfields, tranzactionTimestamp, ';');
+				std::getline(ssfields, tranzactionFinanceName, ';');
+				std::getline(ssfields, tranzactionType, ';');
+				std::getline(ssfields, tranzactionValoare, ';');
+				std::getline(ssfields, tranzactionCurrencyISO, ';');
+				std::getline(ssfields, tranzactionDescriere, ';');
+				std::getline(ssfields, tranzactionCategoryName, ';');
+				std::getline(ssfields, tranzactionTitle, ';');
+
+				TranzactionType trType = (tranzactionType == "1") ? TranzactionType::Income : TranzactionType::Spending;
+				tranzactions.push_back(clever::TranzactionHandler(tranzactionTitle,
+					tranzactionSource,
+					tranzactionDestination,
+					tranzactionTimestamp,
+					tranzactionFinanceName,
+					trType,
+					std::stof(tranzactionValoare),
+					tranzactionCurrencyISO,
+					tranzactionDescriere,
+					tranzactionCategoryName
+				));
+			}
+		}
 		void OnGetCardsUsername(char username[], std::vector<clever::CardCredentialHandler>& cards)
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);

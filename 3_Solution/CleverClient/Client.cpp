@@ -311,6 +311,15 @@ void Client::UsernameAddCash(const std::string& username, const std::string& cas
 	Send(msg);
 }
 
+void Client::UserGetTranzactions(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::GetTranzactionsRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;

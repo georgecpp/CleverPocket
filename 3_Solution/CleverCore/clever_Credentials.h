@@ -189,4 +189,149 @@ namespace clever
 		float m_Sold;
 	};
 
+	enum class TranzactionType
+	{
+		Income=1,
+		Spending,
+	};
+
+	class TranzactionHandler
+	{
+	public:
+		TranzactionHandler() {}
+		TranzactionHandler(std::string title, std::string source, std::string destination, std::string timestamp, std::string financename,
+			TranzactionType tranzactionType, float value, std::string currencyISO, std::string description, std::string categoryName)
+			: m_TranzactionTitle(title), m_Source(source), m_Destination(destination), m_Timestamp(timestamp),
+			m_FinanceName(financename), m_TranzactionType(tranzactionType), m_Value(value), m_CurrencyISO(currencyISO),
+			m_Description(description),m_CategoryName(categoryName)
+		{
+
+		}
+		const char* getTranzactionTitle() const
+		{
+			if (this->m_TranzactionTitle != "")
+			{
+				return this->m_TranzactionTitle.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionTitle(std::string newTitle)
+		{
+			this->m_TranzactionTitle = newTitle;
+		}
+		const char* getTranzactionSource() const
+		{
+			if (this->m_Source != "")
+			{
+				return this->m_Source.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionSource(std::string newSource)
+		{
+			this->m_Source = newSource;
+		}
+		const char* getTranzactionDestination() const
+		{
+			if (this->m_Destination != "")
+			{
+				return m_Destination.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionDestination(std::string newDestination)
+		{
+			this->m_Destination = newDestination;
+		}
+		const char* getTranzactionTimestamp() const
+		{
+			if (this->m_Timestamp != "")
+			{
+				return this->m_Timestamp.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionTimestamp(std::string newTimestamp)
+		{
+			this->m_Timestamp = newTimestamp;
+		}
+		const char* getTranzactionFinanceName() const
+		{
+			if (this->m_FinanceName != "")
+			{
+				return this->m_FinanceName.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionFinanceName(std::string newFinanceName)
+		{
+			this->m_FinanceName = newFinanceName;
+		}
+
+		// 1 - income, 2 - spending
+		TranzactionType getTranzactionType() const
+		{
+			return this->m_TranzactionType;
+		}
+		void setTranzactionTitle(TranzactionType trType)
+		{
+			this->m_TranzactionType = trType;
+		}
+		float getTranzactionValue() const
+		{
+			return this->m_Value;
+		}
+		void setTranzactionValue(float newValue)
+		{
+			this->m_Value = newValue;
+		}
+		const char* getTranzactionCurrencyISO() const
+		{
+			if (m_CurrencyISO != "")
+			{
+				return this->m_CurrencyISO.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionCurrencyISO(std::string newCurrencyISO)
+		{
+			this->m_CurrencyISO = newCurrencyISO;
+		}
+		const char* getTranzactionDescription() const
+		{
+			if (m_Description != "")
+			{
+				return m_Description.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionDescription(std::string newDescription)
+		{
+			this->m_Description = newDescription;
+		}
+		const char* getTranzactionCategoryName() const
+		{
+			if (this->m_CategoryName != "")
+			{
+				return this->m_CategoryName.c_str();
+			}
+			return NULL;
+		}
+		void setTranzactionCategoryName(std::string newCategoryName)
+		{
+			this->m_CategoryName = newCategoryName;
+		}
+	private:
+		std::string m_TranzactionTitle;
+		std::string m_Source;
+		std::string m_Destination;
+		std::string m_Timestamp;
+		std::string m_FinanceName;
+		TranzactionType m_TranzactionType;
+		float m_Value;
+		std::string m_CurrencyISO;
+		std::string m_Description;
+		std::string m_CategoryName;
+	};
+
 }

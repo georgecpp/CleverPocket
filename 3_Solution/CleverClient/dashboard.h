@@ -8,6 +8,7 @@
 #include <rechargecashdialog.h>
 #include <datepickerdialog.h>
 #include <clever_Credentials.h>
+#include <tranzactionrowitem.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -27,6 +28,7 @@ private:
 	std::string userCashCurrencyISO;
 	std::string currUserCash;
 	std::vector<std::string> currencyISOS;
+	std::vector<clever::TranzactionHandler> all_user_tranzactions;
 private:
 	void logout();
 	void loadCash();

@@ -32,6 +32,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	loadCards();
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
+	loadTranzactionsHistory();
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -49,6 +50,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->prepareOptionsComboBox(ui.categoriesOptions);
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
+	loadTranzactionsHistory();
 }
 
 Dashboard::~Dashboard()
@@ -652,5 +654,97 @@ void Dashboard::on_showFinanceHistory_clicked()
 
 void Dashboard::loadTranzactionsHistory()
 {
+	// TO DO.
+	// loads all transactions
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserGetTranzactions(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int tranzactionsToCome = 0;
+	int tranzactionIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetTranzactionsResponse)
+		{
+			msg >> tranzactionsToCome;
+		}
+	}
+	if (tranzactionsToCome > 0)
+	{
+		ui.listWidget->clear();
+		all_user_tranzactions.clear();
+	}
+	else
+	{
+		return;
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (tranzactionIndex == tranzactionsToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetTranzactionsResponse)
+			{
+				char tranzactionTitle[1024]; msg >> tranzactionTitle;
+				char tranzactionSource[1024]; msg >> tranzactionSource;
+				char tranzactionDestination[1024]; msg >> tranzactionDestination;
+				char tranzactionTimestamp[1024]; msg >> tranzactionTimestamp;
+				char tranzactionFinanceName[1024]; msg >> tranzactionFinanceName;
+				unsigned int tranzType; msg >> tranzType;
+				float tranzVal; msg >> tranzVal;
+				char tranzactionCurrencyISO[1024]; msg >> tranzactionCurrencyISO;
+				char tranzactionDescription[1024]; msg >> tranzactionDescription;
+				char tranzactionCategoryName[1024]; msg >> tranzactionCategoryName;
 
+				clever::TranzactionType trType = (tranzType == 1) ? clever::TranzactionType::Income : clever::TranzactionType::Spending;
+
+				clever::TranzactionHandler newTranzaction(tranzactionTitle,
+					tranzactionSource,
+					tranzactionDestination,
+					tranzactionTimestamp,
+					tranzactionFinanceName,
+					trType,
+					tranzVal,
+					tranzactionCurrencyISO,
+					tranzactionDescription,
+					tranzactionCategoryName);
+
+				all_user_tranzactions.push_back(newTranzaction);
+
+				// now add to that listWidget custom items.
+				// listWidget->addItem....
+				QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
+				ui.listWidget->addItem(item);
+				TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
+					tranzactionTitle,tranzactionTimestamp,std::to_string(tranzVal).c_str(),tranzactionCurrencyISO);
+				item->setSizeHint(tranzRowItem->minimumSizeHint());
+				ui.listWidget->setItemWidget(item, tranzRowItem);
+				tranzactionIndex++;
+			}
+		}
+	}
 }

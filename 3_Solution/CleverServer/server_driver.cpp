@@ -591,6 +591,49 @@ protected:
 			client->Send(msg);
 		}
 		break;
+
+		case clever::MessageType::GetTranzactionsRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Tranzactions (username) request\n";
+			char l_username[1024]; msg >> l_username;
+			std::vector<clever::TranzactionHandler> tranzactions;
+			msg.header.id = clever::MessageType::ServerGetTranzactionsResponse;
+			try
+			{
+				OnGetTranzactionsUsername(l_username, tranzactions);
+				int tranzactionsToCome = (int)tranzactions.size();
+				msg << tranzactionsToCome;
+				client->Send(msg);
+
+				for (std::vector<clever::TranzactionHandler>::iterator iter = tranzactions.begin(); iter != tranzactions.end(); iter++)
+				{
+					char tranzactionTitle[1024]; strcpy(tranzactionTitle, iter->getTranzactionTitle());
+					char tranzactionSource[1024]; strcpy(tranzactionSource, iter->getTranzactionSource());
+					char tranzactionDestination[1024]; strcpy(tranzactionDestination, iter->getTranzactionDestination());
+					char tranzactionTimestamp[1024]; strcpy(tranzactionTimestamp, iter->getTranzactionTimestamp());
+					char tranzactionFinanceName[1024]; strcpy(tranzactionFinanceName, iter->getTranzactionFinanceName());
+					unsigned int tranzactionType = (unsigned int)iter->getTranzactionType();
+					float tranzactionValue = iter->getTranzactionValue();
+					char tranzactionCurrencyISO[1024]; strcpy(tranzactionCurrencyISO, iter->getTranzactionCurrencyISO());
+					char tranzactionDescription[1024]; strcpy(tranzactionDescription, iter->getTranzactionDescription());
+					char tranzactionCategoryName[1024]; strcpy(tranzactionCategoryName, iter->getTranzactionCategoryName());
+
+					msg << tranzactionCategoryName << tranzactionDescription << tranzactionCurrencyISO << tranzactionValue << tranzactionType << tranzactionFinanceName;
+					msg << tranzactionTimestamp << tranzactionDestination << tranzactionSource << tranzactionTitle;
+					
+					client->Send(msg);
+				}
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetTranzactions");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+
+		break;
 		}
 	}
 };

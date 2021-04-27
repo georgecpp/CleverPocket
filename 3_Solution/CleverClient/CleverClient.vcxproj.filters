@@ -64,6 +64,9 @@
     <ClCompile Include="datepickerdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="tranzactionrowitem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="startup.h">
@@ -87,6 +90,9 @@
     <QtMoc Include="datepickerdialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="tranzactionrowitem.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="startup.ui">
@@ -108,6 +114,9 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="datepickerdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="tranzactionrowitem.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
