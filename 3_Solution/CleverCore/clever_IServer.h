@@ -669,6 +669,12 @@ namespace clever
 			std::string l_phoneNumber = convertToSqlVarcharFormat(credentials.getPhoneNumber());
 			std::string query = "INSERT INTO [CleverPocket].[dbo].[Users] (FirstName, LastName, Username, Password, Email, Country, PhoneNumber) VALUES ( " + l_firstname + ", " + l_lastname + ", " + l_username + ", " + l_password + ", " + l_email + ", " + l_countryid+", "+l_phoneNumber+")";
 			ExecQuery(query);
+			//INITIALIZING NUMERAR TABLE
+		    query = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(query);
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			query = "INSERT INTO[CleverPocket].[dbo].[Numerar](UserID, SoldNumerar, CurrencyISO) VALUES (" + userID + ", 0 , '0')";
+			ExecQuery(query);
 		}
 
 	private:

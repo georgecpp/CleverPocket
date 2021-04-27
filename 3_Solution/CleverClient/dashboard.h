@@ -24,6 +24,7 @@ private:
 	std::string usernameLoggedIn;
 	std::string userCashCurrencyISO;
 	std::string currUserCash;
+	std::vector<std::string> currencyISOS;
 	void logout();
 	void loadCards();
 	void loadCash();
@@ -41,7 +42,9 @@ private slots:
 	void on_choseImagePushButton_clicked();
 	void on_financesTabWidget_currentChanged(int index);
 	void on_addCashPushButton_clicked();
+	void on_preferenceCurrencyComboBox_currentTextChanged(const QString& arg1);
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void rechargeCashExec(RechargeCashDialog& rcd);
+	void loadCurrencyISOS();
 };

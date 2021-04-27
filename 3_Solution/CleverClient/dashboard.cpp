@@ -25,6 +25,8 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->usernameLoggedIn = "";
 	loadCards();
 	loadCash();
+	loadCurrencyISOS();
+	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -34,6 +36,8 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->PATLoggedIn = "";
 	loadCards();
 	loadCash();
+	loadCurrencyISOS();
+	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 }
 
 Dashboard::~Dashboard()
@@ -106,6 +110,35 @@ void Dashboard::logout()
 	{
 		this->fromStackedWidget->removeWidget(this);
 		this->fromStackedWidget->setCurrentIndex(0);
+	}
+}
+
+void Dashboard::loadCurrencyISOS()
+{
+	// load CurrencyISO from resource text file into combobox.
+	FILE* fin = fopen("currencyISO.txt", "r");
+	if (fin)
+	{
+		char buffer[256];
+		while (fgets(buffer, sizeof(buffer), fin))
+		{
+			std::string line;
+			if (buffer[strlen(buffer) - 1] != '\n')
+			{
+				line = buffer;
+			}
+			else
+			{
+				line.assign(buffer, strlen(buffer) - 1);
+			}
+			this->currencyISOS.push_back(line);
+		}
+		fclose(fin);
+		this->preferenceCurrencyComboBox->clear();
+		for (std::vector<std::string>::iterator it = currencyISOS.begin(); it != currencyISOS.end(); it++)
+		{
+			this->preferenceCurrencyComboBox->addItem(it->c_str());
+		}
 	}
 }
 
@@ -442,6 +475,12 @@ void Dashboard::on_choseImagePushButton_clicked()
 
 }
 
+void Dashboard::on_preferenceCurrencyComboBox_currentTextChanged(const QString& arg1)
+{
+	//TO DO
+	//la schimbarea currency-ului din combobox se introduce in bd
+}
+
 void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
 {
 	rcd.cashCurrencyISOLabel->setText(QString(userCashCurrencyISO.c_str()));
@@ -479,7 +518,7 @@ void Dashboard::on_addCashPushButton_clicked()
 		QTimer::singleShot(2000, msgBox, SLOT(close()));
 		return;
 	}
-	if (this->userCashCurrencyISO.empty()) //nu este selectata moneda implicita de la preferences //TESTAT EMPTY
+	if (this->userCashCurrencyISO == "0") 
 	{
 		msgBox->setText("Please complete the preferences options first!");
 		msgBox->show();
