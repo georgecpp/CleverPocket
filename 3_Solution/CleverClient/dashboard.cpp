@@ -264,6 +264,8 @@ void Dashboard::on_menuItemSelected(int index)
 	default:
 		break;
 	}
+
+
 }
 
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
