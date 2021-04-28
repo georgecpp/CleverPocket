@@ -4,6 +4,8 @@
 #include "ui_tranzactionrowitem.h"
 #include <qlabel.h>
 #include <qlayout.h>
+#include <clever_Credentials.h>
+
 
 class TranzactionRowItem : public QWidget, public Ui::TranzactionRowItem
 {
@@ -11,7 +13,7 @@ class TranzactionRowItem : public QWidget, public Ui::TranzactionRowItem
 
 public:
 	TranzactionRowItem();
-	TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO);
+	TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO, clever::TranzactionType trType);
 	~TranzactionRowItem();
 	Ui::TranzactionRowItem ui;
 private:

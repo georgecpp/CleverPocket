@@ -32,16 +32,24 @@ TranzactionRowItem::TranzactionRowItem()
 	this->setLayout(layout);
 }
 
-TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO)
+TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO, clever::TranzactionType trType)
 {
 	this->layout = new QVBoxLayout();
 
-
+	std::string val = (trType == clever::TranzactionType::Income) ? "+" : "-";
+	val += value;
 	tranzactionTitle = new QLabel(title);
 	tranzactionDate = new QLabel(date);
-	tranzactionValue = new QLabel(value);
+	tranzactionValue = new QLabel(val.c_str());
+	if (trType == clever::TranzactionType::Income)
+	{
+		tranzactionValue->setStyleSheet("QLabel {color : green; }");
+	}
+	else
+	{
+		tranzactionValue->setStyleSheet("QLabel {color : red; }");
+	}
 	tranzactionCurrencyISO = new QLabel(currencyISO);
-
 	this->titleLayout = new QHBoxLayout();
 	//this->titleLayout->addWidget(new QLabel(""));
 	this->titleLayout->addSpacing(rowSize/4);

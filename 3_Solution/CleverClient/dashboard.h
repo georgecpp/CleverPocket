@@ -10,6 +10,13 @@
 #include <clever_Credentials.h>
 #include <tranzactionrowitem.h>
 
+enum class TranzactionFilters
+{
+	TranzactionFinanceName,
+	TranzactionType,
+	TranzactionDate,
+};
+
 class Dashboard : public QWidget, public Ui::Dashboard
 {
 	Q_OBJECT
@@ -35,6 +42,7 @@ private:
 	void loadCards();
 	void loadCurrencyISOS();
 	void loadTranzactionsHistory();
+	void filterTranzactionsBy(TranzactionFilters filterApplied);
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
@@ -45,6 +53,8 @@ private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
 	void on_financesTabWidget_currentChanged(int index);
+	void on_tranzactionTypePicker_currentTextChanged(const QString& newText);
+	void on_financeTypePicker_currentTextChanged(const QString& newText);
 	void on_addCardPushButton_clicked();
 	void on_addFundsPushButton_clicked();
 	void on_editCardPushButton_clicked();
@@ -59,4 +69,12 @@ private slots:
 	void on_showFinanceHistory_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
+private:
+	std::string currFinanceName;
+	std::string currTranzType;
+	std::string currTranzDate;
+private:
+	void updateTranzactionsDefault();
+	void updateTranzactionsByFilters(std::string FinanceName, std::string TranzactionType, std::string TranzactionDate);	
+
 };

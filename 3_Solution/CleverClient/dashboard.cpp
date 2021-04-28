@@ -3,6 +3,7 @@
 #include <qmessagebox.h>
 #include <qtimer.h>
 #include <qfiledialog.h>
+#include <iomanip>
 
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
@@ -449,6 +450,17 @@ void Dashboard::on_financesTabWidget_currentChanged(int index)
 	}
 }
 
+void Dashboard::on_tranzactionTypePicker_currentTextChanged(const QString& newText)
+{
+	updateTranzactionsByFilters(currFinanceName, newText.toStdString(), currTranzDate);
+	this->currTranzType = newText.toStdString();
+}
+
+void Dashboard::on_financeTypePicker_currentTextChanged(const QString& newText)
+{
+	updateTranzactionsByFilters(newText.toStdString(), currTranzType, currTranzDate);
+	this->currFinanceName = newText.toStdString();
+}
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 {
 	if (this->usernameLoggedIn != "")
@@ -462,6 +474,47 @@ void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 	connect(comboBoxToPrepare, SIGNAL(activated(int)), this, SLOT(on_menuItemSelected(int)));
 }
 
+void Dashboard::updateTranzactionsDefault()
+{
+	ui.listWidget->clear();
+	for (std::vector<clever::TranzactionHandler>::iterator iter = all_user_tranzactions.begin(); iter != all_user_tranzactions.end(); iter++)
+	{
+		QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
+		ui.listWidget->addItem(item);
+		std::string valToShow = std::to_string(iter->getTranzactionValue());
+		valToShow.erase(valToShow.find('.') + 3);
+
+		std::string dateTimestamp = iter->getTranzactionTimestamp();
+		dateTimestamp.erase(dateTimestamp.find('.'));
+		TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
+			iter->getTranzactionTitle(),dateTimestamp.c_str(),valToShow.c_str(),iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
+		item->setSizeHint(tranzRowItem->minimumSizeHint());
+		ui.listWidget->setItemWidget(item, tranzRowItem);
+	}
+}
+
+void Dashboard::updateTranzactionsByFilters(std::string FinanceName, std::string TranzactionType, std::string TranzactionDate)
+{
+	clever::TranzactionType trType = (TranzactionType == "Income") ? clever::TranzactionType::Income : clever::TranzactionType::Spending;
+	ui.listWidget->clear();
+	for (std::vector<clever::TranzactionHandler>::iterator iter = all_user_tranzactions.begin(); iter != all_user_tranzactions.end(); iter++)
+	{
+		if ((strcmp(iter->getTranzactionFinanceName(),FinanceName.c_str())==0 || FinanceName == "All Finances") && (iter->getTranzactionType() == trType || TranzactionType == "All Tranzactions") && (strncmp(iter->getTranzactionTimestamp(),TranzactionDate.c_str(),10)<=0))
+		{
+			QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
+			ui.listWidget->addItem(item);
+			std::string valToShow = std::to_string(iter->getTranzactionValue());
+			valToShow.erase(valToShow.find('.') + 3);
+
+			std::string dateTimestamp = iter->getTranzactionTimestamp();
+			dateTimestamp.erase(dateTimestamp.find('.'));
+			TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
+				iter->getTranzactionTitle(), dateTimestamp.c_str(), valToShow.c_str(), iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
+			item->setSizeHint(tranzRowItem->minimumSizeHint());
+			ui.listWidget->setItemWidget(item, tranzRowItem);
+		}
+	}
+}
 void Dashboard::on_financesCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.financesPage);
@@ -600,6 +653,10 @@ void Dashboard::on_transactionsCommandLinkButton_clicked()
 	populateTranzactionsFinanceType();
 	ui.dateLineEdit->setText(QDate::currentDate().toString());
 	toggleTranzactionsButtons(0);
+	this->currFinanceName = ui.financeTypePicker->currentText().toStdString();
+	this->currTranzType = ui.tranzactionTypePicker->currentText().toStdString();
+	this->currTranzDate = QDate::currentDate().toString("yyyy-MM-dd").toStdString();
+	updateTranzactionsByFilters(currFinanceName, currTranzType, currTranzDate);
 }
 
 void Dashboard::on_pickDatePushButton_clicked()
@@ -611,6 +668,8 @@ void Dashboard::on_pickDatePushButton_clicked()
 		{
 			// update DATE line edit. YYYY-MM-DD.
 			ui.dateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+			this->currTranzDate = datePicker.calendarWidget->selectedDate().toString("yyyy-MM-dd").toStdString();
+			updateTranzactionsByFilters(currFinanceName, currTranzType, currTranzDate);
 		}
 	}
 }
@@ -650,12 +709,17 @@ void Dashboard::on_showFinanceHistory_clicked()
 	ui.dateLineEdit->setText(QDate::currentDate().toString());
 	populateTranzactionsFinanceType();
 	ui.financeTypePicker->setCurrentText(ui.financeNameWallLabel->text());
+	this->currFinanceName = ui.financeTypePicker->currentText().toStdString();
+	this->currTranzType = ui.tranzactionTypePicker->currentText().toStdString();
+	this->currTranzDate = QDate::currentDate().toString("yyyy-MM-dd").toStdString();
+	updateTranzactionsByFilters(currFinanceName, currTranzType, currTranzDate);
 }
 
 void Dashboard::loadTranzactionsHistory()
 {
 	// TO DO.
 	// loads all transactions
+	bool allGood = false;
 	bool stillConnectedWaitingForAnswer = true;
 	QMessageBox* msgBox = new QMessageBox;
 	Client& c = Client::getInstance();
@@ -702,6 +766,7 @@ void Dashboard::loadTranzactionsHistory()
 		if (tranzactionIndex == tranzactionsToCome)
 		{
 			stillConnectedWaitingForAnswer = false;
+			allGood = true;
 			break;
 		}
 		if (!c.Incoming().empty())
@@ -716,6 +781,7 @@ void Dashboard::loadTranzactionsHistory()
 				char tranzactionFinanceName[1024]; msg >> tranzactionFinanceName;
 				unsigned int tranzType; msg >> tranzType;
 				float tranzVal; msg >> tranzVal;
+
 				char tranzactionCurrencyISO[1024]; msg >> tranzactionCurrencyISO;
 				char tranzactionDescription[1024]; msg >> tranzactionDescription;
 				char tranzactionCategoryName[1024]; msg >> tranzactionCategoryName;
@@ -734,17 +800,34 @@ void Dashboard::loadTranzactionsHistory()
 					tranzactionCategoryName);
 
 				all_user_tranzactions.push_back(newTranzaction);
-
-				// now add to that listWidget custom items.
-				// listWidget->addItem....
-				QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
-				ui.listWidget->addItem(item);
-				TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
-					tranzactionTitle,tranzactionTimestamp,std::to_string(tranzVal).c_str(),tranzactionCurrencyISO);
-				item->setSizeHint(tranzRowItem->minimumSizeHint());
-				ui.listWidget->setItemWidget(item, tranzRowItem);
 				tranzactionIndex++;
 			}
 		}
+	}
+	if (allGood)
+	{
+		// now add to that listWidget custom items.
+		// listWidget->addItem...
+		updateTranzactionsDefault();
+	}
+}
+
+void Dashboard::filterTranzactionsBy(TranzactionFilters filterApplied)
+{
+	switch (filterApplied)
+	{
+
+	case TranzactionFilters::TranzactionFinanceName:
+		// do stuff.
+		break;
+
+	case TranzactionFilters::TranzactionDate:
+		// do stuff;
+		break;
+	case TranzactionFilters::TranzactionType:
+		// do stuff;
+		break;
+	default:
+		break;
 	}
 }
