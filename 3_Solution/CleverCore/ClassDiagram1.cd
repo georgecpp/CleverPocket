@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="clever::server_interface&lt;T&gt;">
+    <Position X="9.25" Y="1.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>JBQAMAAAACNEIiEAAiRAAAQAAAAAAAAAIACBABAEAAA=</HashCode>
+      <FileName>clever_IServer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::connection&lt;T&gt;">
+    <Position X="5" Y="6.5" Width="3" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="clever::connection&lt;T&gt;::owner" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>clever_Connection.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>CQYIgFAACEAEACBAAEABgEABgCAABAAAAEAgACAAEoA=</HashCode>
+      <FileName>clever_Connection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::dbconnection&lt;T&gt;" Collapsed="true">
+    <Position X="13.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAABgAAAAAAIAAAAAAQEAAAAAAAAAAAABEAAAEBAA=</HashCode>
+      <FileName>clever_DBConnection.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::IException">
+    <Position X="3.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAKwAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::EmailValidationError" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::UserAlreadyRegisteredError" Collapsed="true">
+    <Position X="2.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::DatabaseConnectionError">
+    <Position X="5.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::DatabaseQueryError" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Exceptions.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::client_interface&lt;T&gt;" Collapsed="true">
+    <Position X="9.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQAAAAAAAAEAABAAEgBAIAAAAAAQAAAAAAAIAAAAAA=</HashCode>
+      <FileName>clever_IClient.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="clever::tsqueue&lt;T&gt;" Collapsed="true">
+    <Position X="11.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAACEAgBAQiAAABBEAAAACAgAAAAAEAQEAAAAAAAA=</HashCode>
+      <FileName>clever_TSQueue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="clever::message_header&lt;T&gt;" Collapsed="true">
+    <Position X="11.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAgA=</HashCode>
+      <FileName>clever_Message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="clever::message&lt;T&gt;" Collapsed="true">
+    <Position X="7" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAIAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>clever_Message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="clever::owned_message&lt;T&gt;" Collapsed="true">
+    <Position X="13.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>clever_Message.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="clever::MessageType" Collapsed="true">
+    <Position X="9.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAEAAAAAAAgAAAQAAAAAAAAAAAQAAAAAAAgAAAA=</HashCode>
+      <FileName>clever_MessageType.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
