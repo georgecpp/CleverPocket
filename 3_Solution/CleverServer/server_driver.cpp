@@ -499,13 +499,15 @@ protected:
 			char l_currencyCashISO[1024];
 			char responseBack[1024];
 			char l_username[1024];
+			clever::CredentialHandler userInfo;
 
 			std::string s_username="";
 			std::string s_cashValue;
 			std::string s_currencyISO;
+			std::string s_mailState = "";
 			try
 			{
-				OnGetCashPAT(l_pat, s_cashValue, s_currencyISO, s_username);
+				OnGetCashPAT(l_pat, s_cashValue, s_currencyISO, s_username, userInfo, s_mailState);
 				strcpy(responseBack, "SuccesGetCashDetails");
 				strcpy(l_cashValue, s_cashValue.c_str());
 				strcpy(l_currencyCashISO, s_currencyISO.c_str());
@@ -516,7 +518,7 @@ protected:
 				strcpy(responseBack, "FailGetCashDetails");
 			}
 			msg.header.id = clever::MessageType::ServerGetCashResponse;
-			msg << l_username << l_cashValue << l_currencyCashISO<< responseBack;
+			msg << s_mailState.c_str() << userInfo.getPassword() << userInfo.getPhoneNumber() << userInfo.getCountryID() << userInfo.getEmail() << userInfo.getLastName() << userInfo.getFirstName() << userInfo.getUsername() << l_cashValue << l_currencyCashISO<< responseBack;
 			client->Send(msg);
 		}
 		break;
@@ -528,11 +530,13 @@ protected:
 			char l_cashValue[1024];
 			char l_currencyCashISO[1024];
 			char responseBack[1024];
+			std::string s_mailState = "";
 			std::string s_cashValue;
 			std::string s_currencyISO;
+			clever::CredentialHandler userInfo;
 			try
 			{
-				OnGetCashUsername(l_pat, s_cashValue, s_currencyISO);
+				OnGetCashUsername(l_pat, s_cashValue, s_currencyISO, userInfo, s_mailState);
 				strcpy(responseBack, "SuccesGetCashDetails");
 				strcpy(l_cashValue, s_cashValue.c_str());
 				strcpy(l_currencyCashISO, s_currencyISO.c_str());
@@ -542,7 +546,7 @@ protected:
 				strcpy(responseBack, "FailGetCashDetails");
 			}
 			msg.header.id = clever::MessageType::ServerGetCashResponse;
-			msg << l_cashValue << l_currencyCashISO << responseBack;
+			msg << s_mailState.c_str() << userInfo.getPassword() << userInfo.getPhoneNumber() << userInfo.getCountryID() << userInfo.getEmail() << userInfo.getLastName() << userInfo.getFirstName() << userInfo.getUsername() << l_cashValue << l_currencyCashISO << responseBack;
 			client->Send(msg);
 		}
 		break;
@@ -587,6 +591,70 @@ protected:
 				strcpy(responseBack, "FailAddCash");
 			}
 			msg.header.id = clever::MessageType::ServerAddCashResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddPicturePATRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add picture (PAT) request\n";
+			char l_hexImg[1024]; msg >> l_hexImg;
+			char l_pat[1024]; msg >> l_pat;
+			char responseBack[1024];
+			try
+			{
+				OnAddPicturePAT(l_pat, l_hexImg);
+				strcpy(responseBack, "SuccessAddPicture");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddPicture");
+			}
+			msg.header.id = clever::MessageType::ServerAddPictureResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddPreferencesOptionRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add preferences option (Username) request\n";
+			char l_currencyISO[1024]; msg >> l_currencyISO;
+			char l_dailyMail[1024]; msg >> l_dailyMail;
+			char l_username[1024]; msg >> l_username;
+			char responseBack[1024];
+			try
+			{
+				OnAddPreferencesUsername(l_username, l_dailyMail, l_currencyISO);
+				strcpy(responseBack, "SuccessAddPreferencesOption");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddPreferencesOption");
+			}
+			msg.header.id = clever::MessageType::ServerAddPreferencesOptionResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddPictureUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add picture (Username) request\n";
+			char l_hexImg[1024]; msg >> l_hexImg;
+			char l_username[1024]; msg >> l_username;
+			char responseBack[1024];
+			try
+			{
+				OnAddPictureUsername(l_username, l_hexImg);
+				strcpy(responseBack, "SuccessAddPicture");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddPicture");
+			}
+			msg.header.id = clever::MessageType::ServerAddPictureResponse;
 			msg << responseBack;
 			client->Send(msg);
 		}

@@ -25,8 +25,11 @@ private:
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
 	std::map<std::string, clever::CardCredentialHandler> map_cards;
+	clever::CredentialHandler user_information;
 	std::string userCashCurrencyISO;
+	std::string dailyMailState;
 	std::string currUserCash;
+	std::string profilePicture;
 	std::vector<std::string> currencyISOS;
 	std::vector<clever::TranzactionHandler> all_user_tranzactions;
 private:
@@ -41,6 +44,7 @@ private:
 	void rechargeCashExec(RechargeCashDialog& rcd);
 	void toggleTranzactionsButtons(int state);
 	void populateTranzactionsFinanceType();
+	void insertBDProfiePicture(std::string& hexImg);
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
@@ -57,6 +61,7 @@ private slots:
 	void on_spendingsCategoriesPushButton_clicked();
 	void on_backToTranzactionsPushButtton_clicked();
 	void on_showFinanceHistory_clicked();
+	void on_savePreferencesButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };
