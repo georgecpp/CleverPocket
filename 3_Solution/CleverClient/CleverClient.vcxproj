@@ -115,6 +115,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="infotranzactiondialog.cpp" />
     <ClCompile Include="tranzactionrowitem.cpp" />
     <QtMoc Include="tranzactionrowitem.h" />
     <QtMoc Include="startup.h" />
@@ -125,6 +126,7 @@
     <QtMoc Include="editcarddialog.h" />
     <QtMoc Include="rechargecashdialog.h" />
     <QtMoc Include="datepickerdialog.h" />
+    <QtMoc Include="infotranzactiondialog.h" />
     <ClInclude Include="stdafx.h" />
     <ClCompile Include="addcarddialog.cpp" />
     <ClCompile Include="addfundsdialog.cpp" />
@@ -146,6 +148,7 @@
     <QtUic Include="dashboard.ui" />
     <QtUic Include="datepickerdialog.ui" />
     <QtUic Include="editcarddialog.ui" />
+    <QtUic Include="infotranzactiondialog.ui" />
     <QtUic Include="rechargecashdialog.ui" />
     <QtUic Include="startup.ui" />
     <QtUic Include="tranzactionrowitem.ui" />

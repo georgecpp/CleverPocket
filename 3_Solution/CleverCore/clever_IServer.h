@@ -1,7 +1,7 @@
 #pragma once
 #include <tchar.h>
 #include "easendmailobj.tlh"
-
+#include <ctime>
 #include "clever_inclusions.h"
 #include "clever_TSQueue.h"
 #include "clever_Message.h"
@@ -9,6 +9,7 @@
 #include "clever_DBConnection.h"
 #include "clever_Exceptions.h"
 #include "clever_Credentials.h"
+#include <map>
 
 using namespace EASendMailObjLib;
 enum class ConnectSMTPCodes
@@ -31,7 +32,7 @@ namespace clever
 		server_interface(uint16_t port)
 			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::address::from_string("0.0.0.0"), port))
 		{
-
+			didntSendTodayNotification = true;
 		}
 
 		virtual ~server_interface()
@@ -275,7 +276,180 @@ namespace clever
 		{
 
 		}
+		private:
+			bool didntSendTodayNotification;
+			std::string getToDaysDate()
+			{
+				std::string dateX = ""; // DD.MM.YYYY
+				std::time_t t = std::time(0); // get time now.
+				std::tm* now = std::localtime(&t);
+				int currDay = now->tm_mday;
+				std::string date = "";
+				if (currDay < 10)
+				{
+					dateX += "0";
+				}
+				dateX += std::to_string(currDay);
+				dateX += ".";
+				int currMonth = (now->tm_mon + 1);
+				if (currMonth < 10)
+				{
+					dateX += "0";
+				}
+				dateX += std::to_string(currMonth);
+				dateX += ".";
+				dateX += std::to_string(1900 + now->tm_year);
+				
+				return dateX;
+			}
+		public:
+		void SendDailyNotification()
+		{
 
+			std::map<std::string, std::pair<std::string, std::string>> emailMaps; // email, {income,outcome}.
+			std::string queryGetEmailNIncome = "SELECT U.Email, SUM(T.Valoare) AS TotalIncomeToday FROM DailyMails AS DM JOIN Users as U ON DM.UserID = U.UserID JOIN Tranzactions AS T ON DM.UserID = T.UserID WHERE T.TypeTranzaction = '1' AND CONVERT(date, T.Timestamp) = CONVERT(date, GETDATE()) GROUP BY T.UserID, U.Email";
+			std::string resultsEmailIncome = GetQueryExecRowsetResult(queryGetEmailNIncome, 1, 2);
+			std::stringstream ss(resultsEmailIncome);
+			std::string row;
+			while (std::getline(ss, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string emailTo;
+				std::string income;
+
+				std::getline(ssfields, emailTo, ';');
+				std::getline(ssfields, income, ';');
+				
+				std::pair<std::string, std::string> income_outcome(income, "0");
+				emailMaps.insert(std::pair<std::string, std::pair<std::string, std::string>>(emailTo, income_outcome));
+			}
+
+
+			std::string queryGetEmailNSpendings = "SELECT U.Email, SUM(T.Valoare) AS TotalSpendingToday FROM DailyMails AS DM JOIN Users as U ON DM.UserID = U.UserID JOIN Tranzactions AS T ON DM.UserID = T.UserID WHERE T.TypeTranzaction = '2' AND CONVERT(date, T.Timestamp) = CONVERT(date, GETDATE()) GROUP BY T.UserID, U.Email";
+			std::string resultsEmailSpendings = GetQueryExecRowsetResult(queryGetEmailNSpendings, 1, 2);
+			std::stringstream ss2(resultsEmailSpendings);
+			while (std::getline(ss2, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string emailTo;
+				std::string outcome;
+
+				std::getline(ssfields, emailTo, ';');
+				std::getline(ssfields, outcome, ';');
+
+				if (emailMaps.find(emailTo) != emailMaps.end())
+				{
+					emailMaps[emailTo].second = outcome;
+				}
+				else
+				{
+					std::pair<std::string, std::string> income_outcome("0", outcome);
+					emailMaps.insert(std::pair<std::string, std::pair<std::string, std::string>>(emailTo, income_outcome));
+				}
+			}
+			// do send the email to those users.
+			for (std::map<std::string, std::pair<std::string, std::string>>::iterator iter = emailMaps.begin(); iter != emailMaps.end(); iter++)
+			{
+				std::string msg = "Hello!\nHere's the daily summary for your tranzactions: \n";
+				msg += "Income: "; msg += iter->second.first;
+				msg += "\nSpendings: "; msg += iter->second.second;
+				msg += "\n\nAll the best,\nCleverPocket developers";
+				SendSMTPEmail(iter->first, msg);
+			}
+			FILE* fout = fopen("ServerSentEmails.txt", "w");
+			std::string date = getToDaysDate();
+			fputs(date.c_str(), fout);
+			fclose(fout);
+		}
+		bool checkIfUptimeToSendDailyMails()
+		{
+			// 1. check if it's minimum 20:00:00
+			std::time_t t = std::time(0); // get time now.
+			std::tm* now = std::localtime(&t);
+			if (now->tm_hour < 20)
+			{
+				return false;
+			}
+			if (didntSendTodayNotification)
+			{
+				int currDay = now->tm_mday;
+				std::string date = "";
+				if (currDay < 10)
+				{
+					date += "0";
+				}
+				date += std::to_string(currDay);
+				date += ".";
+				int currMonth = (now->tm_mon + 1);
+				if (currMonth < 10)
+				{
+					date += "0";
+				}
+				date += std::to_string(currMonth);
+				date += ".";
+				date += std::to_string(1900 + now->tm_year);
+
+				// 2. check if already sent that day.
+				FILE* fin = fopen("ServerSentEmails.txt", "r");
+				if (fin)
+				{
+					char buff[256]; fgets(buff, sizeof(buff), fin);
+					if (strcmp(buff, date.c_str()) == 0)
+					{
+						std::cout << "[SERVER]: Already Sent Daily Emails to users that requested!\n";
+						didntSendTodayNotification = false;
+						return false;
+					}
+					fclose(fin);
+				}
+				return true;
+			}
+			return false;
+		}
+		void SendSMTPEmail(const std::string& emailTo, const std::string& body)
+		{
+			::CoInitialize(NULL); //?
+			IMailPtr oSMTP = NULL;
+			oSMTP.CreateInstance(__uuidof(EASendMailObjLib::Mail));
+			oSMTP->LicenseCode = _T("TryIt");
+
+			// set from gmail address
+			oSMTP->FromAddr = _T("steelparrot.inc@gmail.com");
+
+			// to gmail address.
+			oSMTP->AddRecipientEx(_bstr_t(emailTo.c_str()), 0);
+
+			// set email subject.
+			oSMTP->Subject = _T("CleverPocket Daily Summary");
+
+			// set email body.
+			//std::string msg = "Hello!\nLooks like you requested us to update your password, since you forgot it. Here's the validation code: " + valid_code + "\n\nAll the best,\nCleverPocket developers";
+			oSMTP->BodyText = _bstr_t(body.c_str()); // generate random code, save local to server in a file, and read it then delete.
+
+
+			// gmail SMTP Server Address.
+			oSMTP->ServerAddr = _T("smtp.gmail.com");
+
+			// gmail user authentication should use your gmail address as username
+			// extract secured from file or smt. TO DO!!
+			oSMTP->UserName = _T("steelparrot.inc@gmail.com");
+			oSMTP->Password = _T("papagaluu1");
+
+			// set port 25 or 587.
+			oSMTP->ServerPort = 587;
+
+			// detect SSL/TLS automatically
+			oSMTP->ConnectType = (long)ConnectSMTPCodes::ConnectSSLAuto;
+
+			if (oSMTP->SendMail() == 0)
+			{
+				std::cout << "[SERVER]: email was sent successfully!\r\n";
+			}
+			else
+			{
+				std::cout << "[SERVER]: failed to send email with the following error:\r\n" << (const TCHAR*)oSMTP->GetLastErrDescription();
+			}
+		}
 		void OnAddPreferencesUsername(char username[], char dailyMail[], char currencyISO[])
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);
@@ -855,7 +1029,6 @@ namespace clever
 			query = "INSERT INTO[CleverPocket].[dbo].[Numerar] (UserID, SoldNumerar, CurrencyISO) VALUES (" + userID + ", 0 , '0')";
 			ExecQuery(query);
 		}
-
 	private:
 		std::string convertToSqlVarcharFormat(const char* field)
 		{
@@ -963,7 +1136,7 @@ namespace clever
 
 		// Clients will be identified in the "wider system" via an ID
 		uint32_t nIDCounter = 10000;
-
+		
 		// dbconnection class.
 		dbconnection<T> m_dbconnector;
 	};

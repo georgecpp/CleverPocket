@@ -584,10 +584,11 @@ void Dashboard::updateTranzactionsDefault()
 		std::string valToShow = std::to_string(iter->getTranzactionValue());
 		valToShow.erase(valToShow.find('.') + 3);
 
-		std::string dateTimestamp = iter->getTranzactionTimestamp();
-		dateTimestamp.erase(dateTimestamp.find('.'));
+		// HANDLES DATE FORMAT TRIM IN CONSTRUCTOR OF ROWITEM
+		/*std::string dateTimestamp = iter->getTranzactionTimestamp();
+		dateTimestamp.erase(dateTimestamp.find('.'));*/
 		TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
-			iter->getTranzactionTitle(),dateTimestamp.c_str(),valToShow.c_str(),iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
+			iter->getTranzactionTitle(),iter->getTranzactionTimestamp(),valToShow.c_str(),iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
 		item->setSizeHint(tranzRowItem->minimumSizeHint());
 		ui.listWidget->setItemWidget(item, tranzRowItem);
 	}
@@ -606,14 +607,27 @@ void Dashboard::updateTranzactionsByFilters(std::string FinanceName, std::string
 			std::string valToShow = std::to_string(iter->getTranzactionValue());
 			valToShow.erase(valToShow.find('.') + 3);
 
-			std::string dateTimestamp = iter->getTranzactionTimestamp();
-			dateTimestamp.erase(dateTimestamp.find('.'));
+			// HANDLES DATE FORMAT TRIM IN CONSTRUCTOR OF ROWITEM
+			/*std::string dateTimestamp = iter->getTranzactionTimestamp();
+		dateTimestamp.erase(dateTimestamp.find('.'));*/ 
 			TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
-				iter->getTranzactionTitle(), dateTimestamp.c_str(), valToShow.c_str(), iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
+				iter->getTranzactionTitle(), iter->getTranzactionTimestamp(), valToShow.c_str(), iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
 			item->setSizeHint(tranzRowItem->minimumSizeHint());
 			ui.listWidget->setItemWidget(item, tranzRowItem);
 		}
 	}
+}
+clever::TranzactionHandler Dashboard::getTranzactionByCurrentItem(const char* trTitle, const char* trTimestamp)
+{
+	// TODO: insert return statement here
+	for (std::vector<clever::TranzactionHandler>::iterator iter = all_user_tranzactions.begin(); iter != all_user_tranzactions.end(); iter++)
+	{
+		if (strcmp(iter->getTranzactionTitle(), trTitle) == 0 && strcmp(iter->getTranzactionTimestamp(), trTimestamp) == 0)
+		{
+			return *iter;
+		}
+	}
+	return clever::TranzactionHandler();
 }
 void Dashboard::on_financesCommandLinkButton_clicked()
 {
@@ -873,6 +887,48 @@ void Dashboard::on_savePreferencesButton_clicked()
 			stillConnectedWaitingAnswer = false;
 		}
 	}
+}
+
+void Dashboard::on_listWidget_itemClicked(QListWidgetItem* item)
+{
+	TranzactionRowItem* tr = dynamic_cast<TranzactionRowItem*>(ui.listWidget->itemWidget(item));
+	clever::TranzactionHandler tranzInfo;
+	if (tr != nullptr)
+	{
+		tranzInfo = getTranzactionByCurrentItem(tr->getTranzactionTitle(), tr->getTranzactionTimestamp());
+	}
+	InfoTranzactionDialog infotranzdialog(this);
+	infotranzdialog.titleInfoLineEdit->setText(tranzInfo.getTranzactionTitle());
+	infotranzdialog.sourceInfoLineEdit->setText(tranzInfo.getTranzactionSource());
+	infotranzdialog.destinationInfoLineEdit->setText(tranzInfo.getTranzactionDestination());
+	infotranzdialog.financeInfoLineEdit->setText(tranzInfo.getTranzactionFinanceName());
+
+	std::string dateTimestamp = tranzInfo.getTranzactionTimestamp();
+	dateTimestamp.erase(dateTimestamp.find('.'));
+
+	infotranzdialog.timestampInfoLineEdit->setText(dateTimestamp.c_str());
+
+	std::string valToShow = std::to_string(tranzInfo.getTranzactionValue());
+	valToShow.erase(valToShow.find('.') + 3);
+	clever::TranzactionType trType = tranzInfo.getTranzactionType();
+	std::string finalVal = (trType == clever::TranzactionType::Income)? "+" : "-";
+	finalVal += valToShow;
+	finalVal += " ";
+	finalVal += (tranzInfo.getTranzactionCurrencyISO());
+	if (trType == clever::TranzactionType::Income)
+	{
+		infotranzdialog.valueInfoLineEdit->setStyleSheet("QLineEdit {color : green; }");
+	}
+	else
+	{
+		infotranzdialog.valueInfoLineEdit->setStyleSheet("QLineEdit {color : red; }");
+	}
+	infotranzdialog.valueInfoLineEdit->setText(finalVal.c_str());
+	infotranzdialog.descriptionInfoLineEdit->setText(tranzInfo.getTranzactionDescription());
+	infotranzdialog.categoryInfoLabel->setText(tranzInfo.getTranzactionCategoryName());
+	infotranzdialog.exec();
+	QListWidgetItem* currItem = ui.listWidget->currentItem();
+	ui.listWidget->setItemSelected(currItem, false);
 }
 
 void Dashboard::loadTranzactionsHistory()

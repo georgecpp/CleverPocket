@@ -9,6 +9,7 @@
 #include <datepickerdialog.h>
 #include <clever_Credentials.h>
 #include <tranzactionrowitem.h>
+#include <infotranzactiondialog.h>
 
 enum class TranzactionFilters
 {
@@ -72,6 +73,7 @@ private slots:
 	void on_backToTranzactionsPushButtton_clicked();
 	void on_showFinanceHistory_clicked();
 	void on_savePreferencesButton_clicked();
+	void on_listWidget_itemClicked(QListWidgetItem* item);
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 private:
@@ -81,5 +83,5 @@ private:
 private:
 	void updateTranzactionsDefault();
 	void updateTranzactionsByFilters(std::string FinanceName, std::string TranzactionType, std::string TranzactionDate);	
-
+	clever::TranzactionHandler getTranzactionByCurrentItem(const char* trTitle, const char* trTimestamp);
 };

@@ -34,12 +34,18 @@ TranzactionRowItem::TranzactionRowItem()
 
 TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO, clever::TranzactionType trType)
 {
+	this->trStoredTitle = title;
+	this->trStoredDate = date;
+
+
 	this->layout = new QVBoxLayout();
 
 	std::string val = (trType == clever::TranzactionType::Income) ? "+" : "-";
 	val += value;
 	tranzactionTitle = new QLabel(title);
-	tranzactionDate = new QLabel(date);
+	std::string dateTimestamp = date;
+	dateTimestamp.erase(dateTimestamp.find('.'));
+	tranzactionDate = new QLabel(dateTimestamp.c_str());
 	tranzactionValue = new QLabel(val.c_str());
 	if (trType == clever::TranzactionType::Income)
 	{
@@ -75,4 +81,22 @@ TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const cha
 TranzactionRowItem::~TranzactionRowItem()
 {
 
+}
+
+const char* TranzactionRowItem::getTranzactionTitle()
+{
+	if (trStoredTitle != "")
+	{
+		return this->trStoredTitle.c_str();
+	}
+	return nullptr;
+}
+
+const char* TranzactionRowItem::getTranzactionTimestamp()
+{
+	if (trStoredDate != "")
+	{
+		return this->trStoredDate.c_str();
+	}
+	return nullptr;
 }

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>InfoTranzactionDialog</class>
+ <widget class="QDialog" name="InfoTranzactionDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>InfoTranzactionDialog</string>
+  </property>
+  <widget class="QLineEdit" name="sourceInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>130</y>
+     <width>181</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="destinationInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>130</y>
+     <width>141</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="timestampInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>220</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="financeInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>300</y>
+     <width>113</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="valueInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>370</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="descriptionInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>460</y>
+     <width>391</width>
+     <height>101</height>
+    </rect>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>110</y>
+     <width>55</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Source</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>110</y>
+     <width>81</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Destination</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_3">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>200</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Timestamp</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>280</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Finance</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>350</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Value</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>430</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Description</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="titleInfoLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>30</y>
+     <width>241</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
+   </property>
+   <property name="placeholderText">
+    <string>Tranzaction Title</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="okButtonPushButton">
+   <property name="geometry">
+    <rect>
+     <x>690</x>
+     <y>550</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="categoryInfoLabel">
+   <property name="geometry">
+    <rect>
+     <x>560</x>
+     <y>70</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Category</string>
+   </property>
+  </widget>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>okButtonPushButton</sender>
+   <signal>clicked()</signal>
+   <receiver>InfoTranzactionDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>738</x>
+     <y>557</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>697</x>
+     <y>456</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

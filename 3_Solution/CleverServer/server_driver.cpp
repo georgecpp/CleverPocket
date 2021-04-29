@@ -7,7 +7,10 @@ class Server : public clever::server_interface<clever::MessageType>
 public:
 	Server(uint16_t port) : clever::server_interface<clever::MessageType>(port)
 	{
-
+		if (checkIfUptimeToSendDailyMails())
+		{
+			SendDailyNotification();
+		}
 	}
 protected:
 	virtual bool OnClientConnect(std::shared_ptr<clever::connection<clever::MessageType>> client)
@@ -746,6 +749,10 @@ int main()
 	server.Start();
 	
 	while (1) {
+		if (server.checkIfUptimeToSendDailyMails())
+		{
+			server.SendDailyNotification();
+		}
 		server.Update(-1, true);
 	}
 	return 0;

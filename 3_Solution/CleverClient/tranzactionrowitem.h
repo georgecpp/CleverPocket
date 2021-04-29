@@ -16,6 +16,8 @@ public:
 	TranzactionRowItem(int rowSize, const char* title, const char* date, const char* value, const char* currencyISO, clever::TranzactionType trType);
 	~TranzactionRowItem();
 	Ui::TranzactionRowItem ui;
+	const char* getTranzactionTitle();
+	const char* getTranzactionTimestamp();
 private:
 	QVBoxLayout* layout;
 	QHBoxLayout* othersLayout;
@@ -25,4 +27,7 @@ private:
 	QLabel* tranzactionDate;
 	QLabel* tranzactionValue;
 	QLabel* tranzactionCurrencyISO;
+private:
+	std::string trStoredTitle;
+	std::string trStoredDate;
 };
