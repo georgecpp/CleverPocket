@@ -276,6 +276,63 @@ namespace clever
 
 		}
 
+		void OnAddPreferencesUsername(char username[], char dailyMail[], char currencyISO[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string l_dailyMail = convertToSqlVarcharFormat(dailyMail);
+			std::string l_currencyISO = convertToSqlVarcharFormat(currencyISO);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this Username... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string query = "UPDATE [CleverPocket].[dbo].[Numerar] SET  CurrencyISO = " + l_currencyISO + "WHERE UserID = " + resultID;
+			ExecQuery(query);
+
+			//check mail state of this user
+			if (strcmp(dailyMail, "True")==0)
+			{
+				query = "INSERT INTO  [CleverPocket].[dbo].[DailyMails](UserID, SendMail) VALUES( " + resultID + " , " + l_dailyMail + ")";
+			}
+			else
+			{
+				query = "DELETE FROM  [CleverPocket].[dbo].[DailyMails] WHERE UserID = " + resultID;
+			}
+			ExecQuery(query);
+		}
+
+		void OnAddPicturePAT(char pat[], char hexImg[])
+		{
+			std::string l_pat = convertToSqlVarcharFormat(pat);
+			std::string l_hexImg = convertToSqlVarcharFormat(hexImg);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string query = "UPDATE [CleverPocket].[dbo].[Users] SET Picture = " + l_hexImg + " WHERE UserID = " + resultID;
+			ExecQuery(query);
+		}
+
+		void OnAddPictureUsername(char username[], char hexImg[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string l_hexImg = convertToSqlVarcharFormat(hexImg);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this Username... operation down");
+			}
+			resultID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string query = "UPDATE [CleverPocket].[dbo].[Users] SET Picture = " + l_hexImg + " WHERE UserID = " + resultID;
+			ExecQuery(query);
+		}
+
 		void OnAddCashPAT(char pat[], char cashValue[], char cardname[])
 		{
 			std::string l_pat = convertToSqlVarcharFormat(pat);
@@ -310,7 +367,7 @@ namespace clever
 			query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold -= " + l_cashValue + " WHERE UserID = " + resultID + " AND CardName = " + l_cardname;
 			ExecQuery(query);
 		}
-		void OnGetCashUsername(char username[], std::string& cashValue, std::string& cashCurrencyISO)
+		void OnGetCashUsername(char username[], std::string& cashValue, std::string& cashCurrencyISO, clever::CredentialHandler& userInfo, std::string& mailState)
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);
 			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
@@ -325,15 +382,46 @@ namespace clever
 			cashValue = GetQueryExecResult(query);
 			query = "SELECT CurrencyISO FROM CleverPocket.dbo.Numerar WHERE UserID = " + userID;
 			cashCurrencyISO = GetQueryExecResult(query);
+			std::string queryGetAllUserInformation = "SELECT [FirstName], [LastName], [Username], [Email], [Country], [PhoneNumber], [Picture] FROM CleverPocket.dbo.Users WHERE  UserID = " + userID;
+			std::string resultQueryGetAllUserInfoCards = GetQueryExecRowsetResult(queryGetAllUserInformation, 1, 7);
+
+			std::stringstream ss(resultQueryGetAllUserInfoCards);
+
+			std::string firstName;
+			std::string lastName;
+			std::string userName;
+			std::string email;
+			std::string country;
+			std::string phoneNumber;
+			std::string picture;
+			std::getline(ss, firstName, ';'); userInfo.setFirstName(firstName);
+			std::getline(ss, lastName, ';'); userInfo.setLastName(lastName);
+			std::getline(ss, userName, ';'); userInfo.setUsername(userName);
+			std::getline(ss, email, ';'); userInfo.setEmail(email);
+			std::getline(ss, country, ';'); userInfo.setCountryID(country);
+			std::getline(ss, phoneNumber, ';'); userInfo.setPhoneNumber(phoneNumber);
+			std::getline(ss, picture, ';'); userInfo.setPassword(picture);
+
+
+			std::string queryMail = "SELECT [SendMail] FROM CleverPocket.dbo.DailyMails WHERE UserID = " + resultID;
+			std::string resultQueryMail = GetQueryExecResult(queryMail);
+			if (resultQueryMail == "")
+			{
+				mailState = "False";
+			}
+			else
+			{
+				mailState = "True";
+			}
 		}
-		void OnGetCashPAT(char pat[], std::string& cashValue, std::string& cashCurrencyISO, std::string& username)
+		void OnGetCashPAT(char pat[], std::string& cashValue, std::string& cashCurrencyISO, std::string& username, clever::CredentialHandler& userInfo, std::string& mailState)
 		{
 			std::string l_pat = convertToSqlVarcharFormat(pat);
 			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Sessions WHERE PAT = " + l_pat;
 			std::string resultID = GetQueryExecResult(userIDQuery);
 			if (resultID == "")
 			{
-				throw UsernameInvalidLoginError("We couldn't find any user with this PAT... operation down");
+				throw InvalidPATLoginError("We couldn't find any user with this PAT... operation down");
 			}
 			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
 			std::string query = "SELECT SoldNumerar FROM CleverPocket.dbo.Numerar WHERE UserID = " + userID;
@@ -342,6 +430,38 @@ namespace clever
 			cashCurrencyISO = GetQueryExecResult(query);
 			query = "SELECT Username FROM CleverPocket.dbo.Users WHERE UserID = " + userID;
 			username = GetQueryExecResult(query);
+
+			std::string queryGetAllUserInformation = "SELECT [FirstName], [LastName], [Username], [Email], [Country], [PhoneNumber], [Picture] FROM CleverPocket.dbo.Users WHERE  UserID = " + userID;
+			std::string resultQueryGetAllUserInfoCards = GetQueryExecRowsetResult(queryGetAllUserInformation, 1, 7);
+
+			std::stringstream ss(resultQueryGetAllUserInfoCards);
+
+			std::string firstName;
+			std::string lastName;
+			std::string userName;
+			std::string email;
+			std::string country;
+			std::string phoneNumber;
+			std::string picture;
+			std::getline(ss, firstName, ';'); userInfo.setFirstName(firstName);
+			std::getline(ss, lastName, ';'); userInfo.setLastName(lastName);
+			std::getline(ss, userName, ';'); userInfo.setUsername(userName);
+			std::getline(ss, email, ';'); userInfo.setEmail(email);
+			std::getline(ss, country, ';'); userInfo.setCountryID(country);
+			std::getline(ss, phoneNumber, ';'); userInfo.setPhoneNumber(phoneNumber);
+			std::getline(ss, picture, ';'); userInfo.setPassword(picture);
+
+
+			std::string queryMail = "SELECT [SendMail] FROM CleverPocket.dbo.DailyMails WHERE UserID = " + resultID;
+			std::string resultQueryMail = GetQueryExecResult(queryMail);
+			if (resultQueryMail == "")
+			{
+				mailState = "False";
+			}
+			else
+			{
+				mailState = "True";
+			}
 		}
 		void OnAddCardFundsPAT(char pat[], char cardFunds[], char cardName[])
 		{

@@ -4,6 +4,7 @@
 #include <qtimer.h>
 #include <qfiledialog.h>
 #include <iomanip>
+#include <qbuffer.h>
 
 Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	: QWidget(parent)
@@ -162,13 +163,56 @@ void Dashboard::loadCash()
 			char userCash[1024];
 			char userCurrencyISO[1024];
 			char usernameLogged[1024];
+
+			char firstName[1024];
+			char lastName[1024];
+			char email[1024];
+			char country[1024];
+			char phoneNumber[1024];
+			char picture[1024];
+			char dailyMailState[1024];
 			msg >> responseBack;
 			if (strcmp(responseBack, "SuccesGetCashDetails") == 0)
 			{
-				msg >> userCurrencyISO >> userCash >> usernameLogged;
+				msg >> userCurrencyISO >> userCash >> usernameLogged >> firstName >> lastName >> email >> country >> phoneNumber >> picture >> dailyMailState;
 				this->currUserCash = userCash;
 				this->userCashCurrencyISO = userCurrencyISO;
 				this->usernameLoggedIn = usernameLogged;
+
+				this->user_information.setUsername(usernameLogged);
+				this->user_information.setFirstName(firstName);
+				this->user_information.setLastName(lastName);
+				this->user_information.setEmail(email);
+				this->user_information.setCountryID(country);
+				this->user_information.setPhoneNumber(phoneNumber);
+				this->profilePicture = picture;
+
+
+				// loading profile picture
+				QByteArray ss(this->profilePicture.c_str(), this->profilePicture.length());
+				QByteArray by = QByteArray::fromBase64(ss);
+				QImage img = QImage::fromData(by, "png");
+				ui.profilePictureLabel->setPixmap(QPixmap::fromImage(img));
+
+				//loading profile info
+				strcat(firstName, " ");
+				strcat(firstName, lastName);
+				ui.firstLastNameLabel->setText(firstName);
+				ui.emailLabel->setText(email);
+				ui.phoneLabel->setText(phoneNumber);
+				ui.countryLabel->setText(country);
+
+				//setting preference option
+				if (strcmp(dailyMailState,"False")==0)
+				{
+					ui.checkBox->setChecked(false); //rename checkbox qt
+					this->dailyMailState = "False";
+				}
+				else
+				{
+					ui.checkBox->setChecked(true); // rename checkbox qt
+					this->dailyMailState = "True";
+				}
 			}
 			if (strcmp(responseBack, "FailGetCashDetails") == 0)
 			{
@@ -380,6 +424,62 @@ void Dashboard::populateTranzactionsFinanceType()
 	}
 
 	ui.financeTypePicker->addItem("Cash");
+}
+
+void Dashboard::insertBDProfiePicture(std::string& hexImg)
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (hexImg.empty())
+	{
+		return;
+	}
+	bool stillConnectedWaitingAnswer = true;
+	Client& c = Client::getInstance(); // handles connection too, if it is not connected.!!
+	c.Incoming().clear();
+	if (this->usernameLoggedIn == "")
+	{
+		c.AddPATPicture(this->PATLoggedIn.toStdString(), hexImg);
+	}
+	else
+	{
+		c.AddUsernamePicture(this->usernameLoggedIn, hexImg);
+	}
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			QTimer::singleShot(2500, msgBox, SLOT(close()));
+			stillConnectedWaitingAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerAddPictureResponse)
+		{
+			// server has responded back to add picture request.
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessAddPicture") == 0)
+			{
+				// ALL GOOD.
+				msgBox->setText("Picture added with success!");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+			}
+			else
+			{
+				msgBox->setText("Couldn't add profile picture! Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+				return;
+			}
+			stillConnectedWaitingAnswer = false;
+		}
+	}
 }
 
 void Dashboard::loadCurrencyISOS()
@@ -608,6 +708,12 @@ void Dashboard::on_choseImagePushButton_clicked()
 		{
 			image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
 			ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+			QByteArray imgByteArray;
+			QBuffer inByteArray(&imgByteArray);
+			image.save(&inByteArray, "png");
+			QByteArray hexImg = imgByteArray.toBase64();
+			insertBDProfiePicture(hexImg.toStdString());
+			this->profilePicture = hexImg.toStdString();
 		}
 		else
 		{
@@ -713,6 +819,60 @@ void Dashboard::on_showFinanceHistory_clicked()
 	this->currTranzType = ui.tranzactionTypePicker->currentText().toStdString();
 	this->currTranzDate = QDate::currentDate().toString("yyyy-MM-dd").toStdString();
 	updateTranzactionsByFilters(currFinanceName, currTranzType, currTranzDate);
+}
+
+void Dashboard::on_savePreferencesButton_clicked()
+{
+	this->userCashCurrencyISO = ui.preferenceCurrencyComboBox->currentText().toStdString();
+	if (ui.checkBox->isChecked())  // rename this object in qt designer
+	{
+		this->dailyMailState = "True";
+	}
+	else
+	{
+		this->dailyMailState = "False";
+	}
+	bool stillConnectedWaitingAnswer = true;
+	QMessageBox* msgBox = new QMessageBox();
+	Client& c = Client::getInstance(); // handles connection too, if it is not connected.!!
+	c.Incoming().clear();
+	c.AddPreferences(usernameLoggedIn, dailyMailState, userCashCurrencyISO);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			QTimer::singleShot(2500, msgBox, SLOT(close()));
+			stillConnectedWaitingAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerAddPreferencesOptionResponse)
+		{
+			// server has responded back to add preferences options request.
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessAddPreferencesOption") == 0)
+			{
+				// ALL GOOD.
+				msgBox->setText("Preferences added with success!");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+			}
+			else
+			{
+				msgBox->setText("Couldn't add preferences ! Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+				return;
+			}
+			stillConnectedWaitingAnswer = false;
+		}
+	}
 }
 
 void Dashboard::loadTranzactionsHistory()

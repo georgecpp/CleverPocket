@@ -37,5 +37,10 @@ namespace clever
 		ServerAddCashResponse,
 		GetTranzactionsRequest,
 		ServerGetTranzactionsResponse,
+		ServerAddPictureResponse,
+		AddPictureUsernameRequest,
+		AddPicturePATRequest,
+		AddPreferencesOptionRequest,
+		ServerAddPreferencesOptionResponse,
 	};
 }

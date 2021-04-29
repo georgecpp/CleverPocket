@@ -320,6 +320,37 @@ void Client::UserGetTranzactions(const std::string& username)
 	Send(msg);
 }
 
+void Client::AddUsernamePicture(const std::string& username, const std::string& hexImg)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddPictureUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_hexImg[1024]; strcpy(l_hexImg, hexImg.c_str());
+	msg << l_username << l_hexImg;
+	Send(msg);
+}
+
+void Client::AddPATPicture(const std::string& PAT, const std::string& hexImg)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddPicturePATRequest;
+	char l_pat[MAX_IMG_LEN]; strcpy(l_pat, PAT.c_str());
+	char l_hexImg[MAX_IMG_LEN]; strcpy(l_hexImg, hexImg.c_str());
+	msg << l_pat << l_hexImg;
+	Send(msg);
+}
+
+void Client::AddPreferences(const std::string& username, const std::string& dailyMailState, const std::string& cashCurrencyISO)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddPreferencesOptionRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_dailyMailState[1024]; strcpy(l_dailyMailState, dailyMailState.c_str());
+	char l_cashCurrencyISO[1024]; strcpy(l_cashCurrencyISO, cashCurrencyISO.c_str());
+	msg << l_username << l_dailyMailState << l_cashCurrencyISO;
+	Send(msg);
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;

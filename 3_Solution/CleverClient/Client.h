@@ -1,5 +1,7 @@
 #pragma once
 #include <clever_core.h>
+#define MAX_IMG_LEN 80000
+
 
 class Client : public clever::client_interface<clever::MessageType>
 {
@@ -43,6 +45,9 @@ public:
 	void UserPATAddCash(const std::string& PAT, const std::string& cashValue, const std::string& fromCardName);
 	void UsernameAddCash(const std::string& username, const std::string& cashValue, const std::string& fromCardName);
 	void UserGetTranzactions(const std::string& username);
+	void AddUsernamePicture(const std::string& username, const std::string& hexImg);
+	void AddPATPicture(const std::string& PAT, const std::string& hexImg);
+	void AddPreferences(const std::string& username, const std::string& dailyMailState, const std::string& cashCurrencyISO);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();
