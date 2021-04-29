@@ -46,6 +46,8 @@ public:
 	void AddUsernamePicture(const std::string& username, const std::string& hexImg);
 	void AddPATPicture(const std::string& PAT, const std::string& hexImg);
 	void AddPreferences(const std::string& username, const std::string& dailyMailState, const std::string& cashCurrencyISO);
+	void UsernameAddIncome(const std::string& username, const clever::FinanceTypeCredentialHandler& incomeCredHandler);
+	void UsernameGetRecurenciesDetails(const std::string& username);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

@@ -546,6 +546,46 @@ namespace clever
 				));
 			}
 		}
+		void OnGetRecurenciesUsername(char username[], std::vector<clever::FinanceTypeCredentialHandler>& incomes)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+
+			std::string queryGetAllCardsUser = "SELECT [RecurenciesName], [RecurenciesReceiver], [RecurenciesValue], [RecurenciesCard], [RecurenciesISO], [DayOfMonth], [RecurenciesTypeID] FROM [CleverPocket].[dbo].[Recurencies] WHERE dbo.Cards.UserID = " + resultUserID;
+			// will contain all data separated each row with \n.
+			std::string resultQueryGetCards = GetQueryExecRowsetResult(queryGetAllCardsUser, 1, 7);
+			//std::cout << resultQueryGetCards;
+
+			std::stringstream ss(resultQueryGetCards);
+			std::string row;
+			while (std::getline(ss, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string recurenciesName;
+				std::string recurenciesReceiver;
+				std::string recurenciesValue;
+				std::string recurenciesCard;
+				std::string recurenciesISO;
+				std::string dayOfMonth;
+				std::string recurenciesTypeID;
+
+				std::getline(ssfields, recurenciesName, ';');
+				std::getline(ssfields, recurenciesReceiver, ';');
+				std::getline(ssfields, recurenciesValue, ';');
+				std::getline(ssfields, recurenciesCard, ';');
+				std::getline(ssfields, recurenciesISO, ';');
+				std::getline(ssfields, dayOfMonth, ';');
+				std::getline(ssfields, recurenciesTypeID, ';');
+
+
+				incomes.push_back(clever::FinanceTypeCredentialHandler(recurenciesName, recurenciesReceiver, recurenciesISO, dayOfMonth, recurenciesCard, std::stof(recurenciesValue), recurenciesTypeID));
+			}
+		}
 		void OnGetCardsUsername(char username[], std::vector<clever::CardCredentialHandler>& cards)
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);
@@ -619,6 +659,27 @@ namespace clever
 
 				cards.push_back(clever::CardCredentialHandler(cardName, cardHolder, cardNumber, cardCurrencyISO, cardValidUntil,std::stof(cardSold)));
 			}
+		}
+		void OnAddIncomeUsername(char username[], const clever::FinanceTypeCredentialHandler& incomeCredHandler)
+		{
+			// obtain the user ID from this username and insert in Cards with this user ID.
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string incomeName = convertToSqlVarcharFormat(incomeCredHandler.getFinanceTypeName());
+			std::string incomeSource = convertToSqlVarcharFormat(incomeCredHandler.getFinanceTypeSource());
+			std::string incomeCurrencyISO = convertToSqlVarcharFormat(incomeCredHandler.getFinanceTypeCurrencyISO());
+			std::string dayOfIncome = convertToSqlVarcharFormat(incomeCredHandler.getDayOfFinanceType());
+			std::string incomeToCard = convertToSqlVarcharFormat(incomeCredHandler.getFinanceTypeToCard());
+			std::string incomeValue = convertToSqlVarcharFormat(std::string(incomeCredHandler.getFinanceTypeValue()).c_str());
+
+			std::string query = "INSERT INTO [CleverPocket].[dbo].[Recurencies](UserId, RecurenciesName, RecurenciesReceiver, RecurenciesValue, RecurenciesCard, RecurenciesISO, DayOfMonth, RecurenciesTypeID) VALUES (" + userID + "," + incomeName + "," + incomeSource + "," + incomeValue + "," + incomeToCard + "," + incomeCurrencyISO + "," + dayOfIncome + ", 1)";
+			ExecQuery(query);
 		}
 		void OnAddCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler)
 		{

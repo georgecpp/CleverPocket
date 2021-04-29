@@ -215,6 +215,16 @@ void Client::UsernameGetCardsDetails(const std::string& username)
 	Send(msg);
 }
 
+void Client::UsernameGetRecurenciesDetails(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::UserGetRecurenciesRequest;
+
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
+
 void Client::UserPATAddCardFunds(const std::string& PAT, const std::string& currCardName, const std::string& fundsValue)
 {
 	clever::message<clever::MessageType> msg;
@@ -348,6 +358,22 @@ void Client::AddPreferences(const std::string& username, const std::string& dail
 	char l_dailyMailState[1024]; strcpy(l_dailyMailState, dailyMailState.c_str());
 	char l_cashCurrencyISO[1024]; strcpy(l_cashCurrencyISO, cashCurrencyISO.c_str());
 	msg << l_username << l_dailyMailState << l_cashCurrencyISO;
+	Send(msg);
+}
+
+void Client::UsernameAddIncome(const std::string& username, const clever::FinanceTypeCredentialHandler& incomeCredHandler)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddIncomeUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_incomeName[1024]; strcpy(l_incomeName, incomeCredHandler.getFinanceTypeName());
+	char l_incomeCurrencyISO[1024]; strcpy(l_incomeCurrencyISO, incomeCredHandler.getFinanceTypeCurrencyISO());
+	char l_dayOfIncome[1024]; strcpy(l_dayOfIncome, incomeCredHandler.getDayOfFinanceType());
+	char l_incomeSource[1024]; strcpy(l_incomeSource, incomeCredHandler.getFinanceTypeSource());
+	char l_incomeToCard[1024]; strcpy(l_incomeToCard, incomeCredHandler.getFinanceTypeToCard());
+	char l_incomeValue[1024]; strcpy(l_incomeValue, std::to_string(incomeCredHandler.getFinanceTypeValue()).c_str());
+
+	msg << l_username << l_incomeName << l_incomeCurrencyISO << l_dayOfIncome << l_incomeSource << l_incomeToCard << l_incomeValue;
 	Send(msg);
 }
 

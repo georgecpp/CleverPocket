@@ -42,5 +42,10 @@ namespace clever
 		AddPicturePATRequest,
 		AddPreferencesOptionRequest,
 		ServerAddPreferencesOptionResponse,
+		AddIncomeUsernameRequest,
+		ServerIncomeResponse,
+		ServerGetRecurenciesResponse,
+		UserGetRecurenciesRequest,
+
 	};
 }

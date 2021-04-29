@@ -9,6 +9,7 @@
 #include <datepickerdialog.h>
 #include <clever_Credentials.h>
 #include <tranzactionrowitem.h>
+#include <addincomedialog.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -25,6 +26,7 @@ private:
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
 	std::map<std::string, clever::CardCredentialHandler> map_cards;
+	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
 	clever::CredentialHandler user_information;
 	std::string userCashCurrencyISO;
 	std::string dailyMailState;
@@ -36,9 +38,12 @@ private:
 	void logout();
 	void loadCash();
 	void loadCards();
+	void loadRecurencies();
 	void loadCurrencyISOS();
+	void loadRecurenciesComboBoxes();
 	void loadTranzactionsHistory();
 	void addCardExec(AddCardDialog& adc);
+	void addIncomeExec(AddIncomeDialog& adi);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
 	void rechargeCashExec(RechargeCashDialog& rcd);
@@ -53,6 +58,7 @@ private slots:
 	void on_addFundsPushButton_clicked();
 	void on_editCardPushButton_clicked();
 	void on_cardSelected();
+	void on_recurenciesSelected();
 	void on_choseImagePushButton_clicked();
 	void on_addCashPushButton_clicked();
 	void on_transactionsCommandLinkButton_clicked();
@@ -62,6 +68,9 @@ private slots:
 	void on_backToTranzactionsPushButtton_clicked();
 	void on_showFinanceHistory_clicked();
 	void on_savePreferencesButton_clicked();
+	void on_addIncomePushButton_clicked();
+	void on_periodicallyIncomePushButton();
+	void on_incomeBackToTranzactionsPushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };

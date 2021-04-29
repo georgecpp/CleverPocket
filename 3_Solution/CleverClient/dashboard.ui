@@ -1290,7 +1290,7 @@
         <string>Add Income</string>
        </property>
       </widget>
-      <widget class="QPushButton" name="pushButton_4">
+      <widget class="QPushButton" name="incomeBackToTranzactionsPushButton">
        <property name="geometry">
         <rect>
          <x>150</x>
