@@ -46,6 +46,7 @@ namespace clever
 		ServerIncomeResponse,
 		ServerGetRecurenciesResponse,
 		UserGetRecurenciesRequest,
-
+		ServerOutcomeResponse,
+		AddOutcomeUsernameRequest,
 	};
 }

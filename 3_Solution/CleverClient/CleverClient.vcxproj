@@ -116,12 +116,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="addincomedialog.cpp" />
+    <ClCompile Include="addoutcomedialog.cpp" />
     <ClCompile Include="tranzactionrowitem.cpp" />
     <QtMoc Include="tranzactionrowitem.h" />
     <QtMoc Include="startup.h" />
     <QtMoc Include="addcarddialog.h" />
     <QtMoc Include="addfundsdialog.h" />
     <QtMoc Include="addincomedialog.h" />
+    <QtMoc Include="addoutcomedialog.h" />
     <ClInclude Include="Client.h" />
     <QtMoc Include="dashboard.h" />
     <QtMoc Include="editcarddialog.h" />
@@ -146,6 +148,7 @@
     <QtUic Include="addcarddialog.ui" />
     <QtUic Include="addfundsdialog.ui" />
     <QtUic Include="addincomedialog.ui" />
+    <QtUic Include="addoutcomedialog.ui" />
     <QtUic Include="dashboard.ui" />
     <QtUic Include="datepickerdialog.ui" />
     <QtUic Include="editcarddialog.ui" />

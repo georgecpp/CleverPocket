@@ -681,6 +681,27 @@ namespace clever
 			std::string query = "INSERT INTO [CleverPocket].[dbo].[Recurencies](UserId, RecurenciesName, RecurenciesReceiver, RecurenciesValue, RecurenciesCard, RecurenciesISO, DayOfMonth, RecurenciesTypeID) VALUES (" + userID + "," + incomeName + "," + incomeSource + "," + incomeValue + "," + incomeToCard + "," + incomeCurrencyISO + "," + dayOfIncome + ", 1)";
 			ExecQuery(query);
 		}
+		void OnAddOutcomeUsername(char username[], const clever::FinanceTypeCredentialHandler& outcomeCredHandler)
+		{
+			// obtain the user ID from this username and insert in Cards with this user ID.
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string oucomeName = convertToSqlVarcharFormat(outcomeCredHandler.getFinanceTypeName());
+			std::string outcomeSource = convertToSqlVarcharFormat(outcomeCredHandler.getFinanceTypeSource());
+			std::string outcomeCurrencyISO = convertToSqlVarcharFormat(outcomeCredHandler.getFinanceTypeCurrencyISO());
+			std::string dayOfOutcome = convertToSqlVarcharFormat(outcomeCredHandler.getDayOfFinanceType());
+			std::string outcomeToCard = convertToSqlVarcharFormat(outcomeCredHandler.getFinanceTypeToCard());
+			std::string outcomeValue = convertToSqlVarcharFormat(std::string(outcomeCredHandler.getFinanceTypeValue()).c_str());
+
+			std::string query = "INSERT INTO [CleverPocket].[dbo].[Recurencies](UserId, RecurenciesName, RecurenciesReceiver, RecurenciesValue, RecurenciesCard, RecurenciesISO, DayOfMonth, RecurenciesTypeID) VALUES (" + userID + "," + incomeName + "," + incomeSource + "," + incomeValue + "," + incomeToCard + "," + incomeCurrencyISO + "," + dayOfIncome + ", 2)";
+			ExecQuery(query);
+		}
 		void OnAddCardUsername(char username[], const clever::CardCredentialHandler& cardCredHandler)
 		{
 			// obtain the user ID from this username and insert in Cards with this user ID.

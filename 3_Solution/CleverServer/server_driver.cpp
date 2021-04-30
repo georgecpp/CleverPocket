@@ -295,6 +295,34 @@ protected:
 		}
 		break;
 
+		case clever::MessageType::AddOutcomeUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add outcome (username) request\n";
+
+			char l_outcomeValue[1024]; msg >> l_outcomeValue;
+			char l_outcomeToCard[1024]; msg >> l_outcomeToCard;
+			char l_outcomeSource[1024]; msg >> l_outcomeSource;
+			char l_dayOfOutcome[1024]; msg >> l_dayOfOutcome;
+			char l_outcomeCurrencyISO[1024]; msg >> l_outcomeCurrencyISO;
+			char l_outcomeName[1024]; msg >> l_outcomeName;
+			char l_username[1024]; msg >> l_username;
+			clever::FinanceTypeCredentialHandler outcomeCredHandler(l_outcomeName, l_outcomeSource, l_outcomeCurrencyISO, l_dayOfOutcome, l_outcomeToCard, std::atof(l_outcomeValue));
+			char responseBack[1024];
+			try
+			{
+				OnAddOutcomeUsername(l_username, outcomeCredHandler);
+				strcpy(responseBack, "SuccessAddOutcome");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddOutcomeCard");
+			}
+			msg.header.id = clever::MessageType::ServerOutcomeResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 		case clever::MessageType::AddCardUsernameRequest:
 		{
 			std::cout << "[" << client->GetID() << "]: Add card (username) request\n";

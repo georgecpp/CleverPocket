@@ -15,6 +15,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
 	connect(ui.incomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
+	connect(ui.outcomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	connect(ui.tranzactionTypePicker, SIGNAL(activated(int)), this, SLOT(on_TranzactionTypeSelected()));
 	toggleTranzactionsButtons(0);
 }
@@ -32,6 +33,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
 	this->prepareOptionsComboBox(ui.incomeOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
 	loadCards();
 	loadRecurencies();
 	loadCurrencyISOS();
@@ -54,6 +56,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
 	this->prepareOptionsComboBox(ui.incomeOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -392,12 +395,31 @@ void Dashboard::addIncomeExec(AddIncomeDialog& adi)
 		if (adi.result() == QDialog::Accepted)
 		{
 			ui.incomePicker->addItem(adi.incomeNameLineEdit->text());
+			ui.incomePicker->setCurrentText(adi.incomeNameLineEdit->text());
 			ui.incomeNameLineEdit->setText(adi.incomeNameLineEdit->text());
 			ui.incomeValueLineEdit->setText(adi.incomeValue->text());
 			ui.dayOfMonthLineEdit->setText(adi.dayOfMonthComboBox->currentText());
 			clever::FinanceTypeCredentialHandler newRecurencies(adi.incomeNameLineEdit->text().toStdString(), adi.incomeSourceLineEdit->text().toStdString(), adi.cardCurrencyISO->text().toStdString(), adi.dayOfMonthComboBox->currentText().toStdString(), adi.cardsIncomeComboBox->currentText().toStdString(), adi.incomeValue->text().toFloat(), "1");
 			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(adi.incomeNameLineEdit->text().toStdString(), newRecurencies));
 			
+		}
+	}
+}
+
+void Dashboard::addOutcomeExec(AddOutComeDialog& ado)
+{
+	if (ado.exec())
+	{
+		if (ado.result() == QDialog::Accepted)
+		{
+			ui.outcomePicker->addItem(ado.OutcomeNameLineEdit->text());
+			ui.outcomePicker->setCurrentText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeNameLineEdit->setText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeValueLineEdit->setText(ado.outcomeValue->text());
+			ui.outcomeDayOfMonthLineEdit->setText(ado.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(ado.OutcomeNameLineEdit->text().toStdString(), ado.OutcomeDestinationLineEdit->text().toStdString(), ado.cardCurrencyISO->text().toStdString(), ado.dayOfMonthComboBox->currentText().toStdString(), ado.cardsOutcomeComboBox->currentText().toStdString(), ado.outcomeValue->text().toFloat(), "2");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(ado.OutcomeNameLineEdit->text().toStdString(), newRecurencies));
+
 		}
 	}
 }
@@ -607,7 +629,7 @@ void Dashboard::loadRecurenciesComboBoxes()
 		}
 		else
 		{
-			// outcomes
+			ui.outcomePicker->addItem(it.second.getFinanceTypeName());
 		}
 	}
 }
@@ -735,6 +757,31 @@ void Dashboard::on_incomeBackToTranzactionsPushButton_clicked()
 	toggleTranzactionsButtons(0);
 }
 
+void Dashboard::on_recurrentSpendingsCommandLInkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.periodicallyOutcomePage);
+}
+
+void Dashboard::on_outcomeBackToCategoriesPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+}
+
+void Dashboard::on_addoutcomePushButton_clicked()
+{
+	if (this->PATLoggedIn == "")
+	{
+		AddOutComeDialog addoutcomedialog(map_cards, usernameLoggedIn, this);
+		addOutcomeExec(addoutcomedialog);
+
+	}
+	else
+	{
+		AddOutComeDialog addoutcomedialog(map_cards, PATLoggedIn, this);
+		addOutcomeExec(addoutcomedialog);
+	}
+}
+
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 {
 	if (this->usernameLoggedIn != "")
@@ -838,9 +885,12 @@ void Dashboard::on_recurenciesSelected()
 		ui.incomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
 		ui.dayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
 	}
-	else
+	if (ui.stackedWidget->currentWidget() == ui.periodicallyOutcomePage)
 	{
-		// for ui.perriodicallyOutcomePage
+		recurenciesName = ui.outcomePicker->currentText();
+		ui.outcomeNameLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeName());
+		ui.outcomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
+		ui.outcomeDayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
 	}
 }
 

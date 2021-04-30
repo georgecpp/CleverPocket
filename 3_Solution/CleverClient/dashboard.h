@@ -10,6 +10,7 @@
 #include <clever_Credentials.h>
 #include <tranzactionrowitem.h>
 #include <addincomedialog.h>
+#include <addoutcomedialog.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -44,6 +45,7 @@ private:
 	void loadTranzactionsHistory();
 	void addCardExec(AddCardDialog& adc);
 	void addIncomeExec(AddIncomeDialog& adi);
+	void addOutcomeExec(AddOutComeDialog& ado);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
 	void rechargeCashExec(RechargeCashDialog& rcd);
@@ -71,6 +73,9 @@ private slots:
 	void on_addIncomePushButton_clicked();
 	void on_periodicallyIncomePushButton();
 	void on_incomeBackToTranzactionsPushButton_clicked();
+	void on_recurrentSpendingsCommandLInkButton_clicked();
+	void on_outcomeBackToCategoriesPushButton_clicked();
+	void on_addoutcomePushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };

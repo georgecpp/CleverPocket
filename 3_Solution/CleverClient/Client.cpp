@@ -377,6 +377,22 @@ void Client::UsernameAddIncome(const std::string& username, const clever::Financ
 	Send(msg);
 }
 
+void Client::UsernameAddOutcome(const std::string& username, const clever::FinanceTypeCredentialHandler& outcomeCredHandler)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddOutcomeUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_outcomeName[1024]; strcpy(l_outcomeName, outcomeCredHandler.getFinanceTypeName());
+	char l_outcomeCurrencyISO[1024]; strcpy(l_outcomeCurrencyISO, outcomeCredHandler.getFinanceTypeCurrencyISO());
+	char l_dayOfOutcome[1024]; strcpy(l_dayOfOutcome, outcomeCredHandler.getDayOfFinanceType());
+	char l_outcomeSource[1024]; strcpy(l_outcomeSource, outcomeCredHandler.getFinanceTypeSource());
+	char l_outcomeToCard[1024]; strcpy(l_outcomeToCard, outcomeCredHandler.getFinanceTypeToCard());
+	char l_outcomeValue[1024]; strcpy(l_outcomeValue, std::to_string(outcomeCredHandler.getFinanceTypeValue()).c_str());
+
+	msg << l_username << l_outcomeName << l_outcomeCurrencyISO << l_dayOfOutcome << l_outcomeSource << l_outcomeToCard << l_outcomeValue;
+	Send(msg);
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;
