@@ -877,6 +877,12 @@ void Dashboard::on_savePreferencesButton_clicked()
 				msgBox->show();
 				QTimer::singleShot(2500, msgBox, SLOT(close()));
 			}
+			else if (strcmp(responseBack, "AlreadyCheckedDailyNotification") == 0)
+			{
+				msgBox->setText("Already checked for daily notification!");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+			}
 			else
 			{
 				msgBox->setText("Couldn't add preferences ! Server problem. Try again.");

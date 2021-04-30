@@ -104,4 +104,12 @@ namespace clever
 
 		}
 	};
+	class AlreadyCheckedForDailyNotification : public IException
+	{
+	public:
+		AlreadyCheckedForDailyNotification(std::string err, int errcode = 11) : IException(err, errcode)
+		{
+
+		}
+	};
 }

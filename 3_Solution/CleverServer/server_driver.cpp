@@ -666,6 +666,10 @@ protected:
 				OnAddPreferencesUsername(l_username, l_dailyMail, l_currencyISO);
 				strcpy(responseBack, "SuccessAddPreferencesOption");
 			}
+			catch (clever::AlreadyCheckedForDailyNotification)
+			{
+				strcpy(responseBack, "AlreadyCheckedDailyNotification");
+			}
 			catch (...)
 			{
 				strcpy(responseBack, "FailAddPreferencesOption");

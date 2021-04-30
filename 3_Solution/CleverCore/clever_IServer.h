@@ -464,10 +464,15 @@ namespace clever
 			resultID = convertToSqlVarcharFormat(resultID.c_str());
 			std::string query = "UPDATE [CleverPocket].[dbo].[Numerar] SET  CurrencyISO = " + l_currencyISO + "WHERE UserID = " + resultID;
 			ExecQuery(query);
-
 			//check mail state of this user
 			if (strcmp(dailyMail, "True")==0)
 			{
+				query = "SELECT UserID FROM [CleverPocket].[dbo].[DailyMails]";
+				std::string exists = GetQueryExecResult(query);
+				if (exists != "")
+				{
+					throw AlreadyCheckedForDailyNotification("Already check for daily notification!");
+				}
 				query = "INSERT INTO  [CleverPocket].[dbo].[DailyMails](UserID, SendMail) VALUES( " + resultID + " , " + l_dailyMail + ")";
 			}
 			else
