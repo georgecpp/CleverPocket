@@ -11,6 +11,7 @@ public:
 		{
 			SendDailyNotification();
 		}
+		InitReccurentTransactions();
 	}
 protected:
 	virtual bool OnClientConnect(std::shared_ptr<clever::connection<clever::MessageType>> client)

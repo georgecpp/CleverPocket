@@ -44,7 +44,10 @@ TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const cha
 	val += value;
 	tranzactionTitle = new QLabel(title);
 	std::string dateTimestamp = date;
-	dateTimestamp.erase(dateTimestamp.find('.'));
+	if (dateTimestamp.find('.'))
+	{
+		dateTimestamp.erase(dateTimestamp.find('.'));
+	}
 	tranzactionDate = new QLabel(dateTimestamp.c_str());
 	tranzactionValue = new QLabel(val.c_str());
 	if (trType == clever::TranzactionType::Income)

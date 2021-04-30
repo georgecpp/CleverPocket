@@ -284,7 +284,6 @@ namespace clever
 				std::time_t t = std::time(0); // get time now.
 				std::tm* now = std::localtime(&t);
 				int currDay = now->tm_mday;
-				std::string date = "";
 				if (currDay < 10)
 				{
 					dateX += "0";
@@ -302,11 +301,232 @@ namespace clever
 				
 				return dateX;
 			}
+			std::string getCurrentDateTimeSQLFormat()
+			{
+				//'20120618 10:34:09 AM'
+				std::string dateTimeX = "";
+				std::string AM_PM = "";
+				std::time_t t = std::time(0); // get time now.
+				std::tm* now = std::localtime(&t);
+				dateTimeX += std::to_string(1900 + (now->tm_year));
+				int currMonth = 1 + (now->tm_mon);
+				if (currMonth < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currMonth);
+				int currDay = now->tm_mday;
+				if (currDay < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currDay);
+				dateTimeX += " ";
+				int currHour = now->tm_hour;
+				if (currHour < 10)
+				{
+					dateTimeX += "0";
+				}
+				AM_PM = (currHour >= 12) ? "PM" : "AM";
+				if (currHour > 12)
+				{
+					currHour -= 12;
+				}
+				dateTimeX += std::to_string(currHour);
+				dateTimeX += ":";
+				int currMin = now->tm_min;
+				if (currMin < 10)
+				{
+					dateTimeX += "0";
+
+				}
+				dateTimeX += std::to_string(currMin);
+				dateTimeX += ":";
+				int currSec = now->tm_sec;
+				if (currSec < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currSec);
+				dateTimeX += " ";
+				dateTimeX += AM_PM;
+				
+				return dateTimeX;
+			}
+			
 		public:
+			std::string getCurrentDateTime()
+			{
+
+				std::string dateTimeX = "";
+				std::time_t t = std::time(0); // get time now.
+				std::tm* now = std::localtime(&t);
+				dateTimeX += std::to_string(1900 + (now->tm_year));
+				dateTimeX += "-";
+				int currMonth = 1 + (now->tm_mon);
+				if (currMonth < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currMonth);
+				dateTimeX += "-";
+				int currDay = now->tm_mday;
+				if (currDay < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currDay);
+				dateTimeX += " ";
+				int currHour = now->tm_hour;
+				if (currHour < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currHour);
+				dateTimeX += ":";
+				int currMin = now->tm_min;
+				if (currMin < 10)
+				{
+					dateTimeX += "0";
+
+				}
+				dateTimeX += std::to_string(currMin);
+				dateTimeX += ":";
+				int currSec = now->tm_sec;
+				if (currSec < 10)
+				{
+					dateTimeX += "0";
+				}
+				dateTimeX += std::to_string(currSec);
+
+				return dateTimeX;
+			}
+		bool checkIfToSendReccurencies()
+		{
+			std::string date = getToDaysDate();
+			FILE* fin = fopen("ServerReccuringTranzactions.txt", "r");
+			if (fin)
+			{
+				char buff[256]; fgets(buff, sizeof(buff), fin);
+				if (strcmp(buff, date.c_str()) == 0)
+				{
+					std::cout << "[SERVER]: Already Sent Reccuring Transactions for this day of month!\n";
+					return false;
+				}
+				fclose(fin);
+				return true;
+			}
+			return false;
+		}
+		void InitReccurentTransactions()
+		{
+			if (checkIfToSendReccurencies())
+			{
+				std::time_t t = std::time(0); // get time now.
+				std::tm* now = std::localtime(&t);
+				std::string thisDay = std::to_string(now->tm_mday);
+
+				std::string queryAllReccurenciesToday = "SELECT [UserID], [RecurenciesName], [RecurenciesReceiver], [RecurenciesValue], [RecurenciesCard], [RecurenciesISO], [DayOfMonth], [RecurenciesTypeID] FROM [CleverPocket].[dbo].[Recurencies] WHERE DayOfMonth = " + thisDay;
+				std::string allReccurenciesToday = GetQueryExecRowsetResult(queryAllReccurenciesToday, 1, 8);
+				std::cout << allReccurenciesToday << "\n";
+				std::stringstream ss(allReccurenciesToday);
+				std::string row;
+				bool sentTranzactions = false;
+				while (std::getline(ss, row, '\n'))
+				{
+					sentTranzactions = true;
+					std::stringstream ssfields(row);
+					std::string userID;
+					std::string reccurencyName;
+					std::string reccurencyReceiverSender;
+					std::string reccurencyValue;
+					std::string reccurencyCardTo;
+					std::string reccurencyISO;
+					std::string reccurencyDayOfMonth;
+					std::string reccurencyTypeTranzaction;
+
+					std::getline(ssfields, userID, ';');
+					std::getline(ssfields, reccurencyName, ';');
+					std::getline(ssfields, reccurencyReceiverSender, ';');
+					std::getline(ssfields, reccurencyValue, ';'); reccurencyValue = convertToSqlVarcharFormat(reccurencyValue.c_str());
+					std::getline(ssfields, reccurencyCardTo, ';'); reccurencyCardTo = convertToSqlVarcharFormat(reccurencyCardTo.c_str());
+					std::getline(ssfields, reccurencyISO, ';'); reccurencyISO = convertToSqlVarcharFormat(reccurencyISO.c_str());
+					std::getline(ssfields, reccurencyDayOfMonth, ';'); reccurencyDayOfMonth = convertToSqlVarcharFormat(reccurencyDayOfMonth.c_str());
+					std::getline(ssfields, reccurencyTypeTranzaction, ';'); 
+
+
+					// first, check if tranzaction type is '2' that the card affected has the money!! if not, do smt.
+					// TO DO!
+
+					// go update -card implied- value with the one of the reccurency.
+					std::string add_substract;
+					std::string sender;
+					std::string destination;
+					if (reccurencyTypeTranzaction == "1")
+					{
+						// then add value
+						add_substract = " += ";
+						sender = "CleverPocket " + reccurencyName;
+						destination = reccurencyReceiverSender;
+					}
+					else
+					{
+						// then substract value.
+						add_substract = " -= ";
+						std::string queryUser = "SELECT Username FROM [CleverPocket].[dbo].[Users] WHERE UserID = " + userID;
+						sender = GetQueryExecResult(queryUser);
+						destination = reccurencyReceiverSender;
+					}
+					// '20120618 10:34:09 AM'
+					std::string timeStamp = getCurrentDateTimeSQLFormat();
+					std::cout << timeStamp << "\n";
+					timeStamp = convertToSqlVarcharFormat(timeStamp.c_str());
+					return; // TO REMOVE WHEN COMPLETED PROCEDURE!!!
+					reccurencyTypeTranzaction = convertToSqlVarcharFormat(reccurencyTypeTranzaction.c_str());
+					std::string queryUpdateCardValue = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold" + add_substract + reccurencyValue + " WHERE CardName = " + reccurencyCardTo + " AND UserID = " + userID;
+					ExecQuery(queryUpdateCardValue);
+
+					// now init tranzaction, insert into Tranzactions this new tranzaction.
+					
+					std::string description = "Regular " + reccurencyName;
+					description = convertToSqlVarcharFormat(description.c_str());
+					reccurencyName = convertToSqlVarcharFormat(reccurencyName.c_str());
+					reccurencyReceiverSender = convertToSqlVarcharFormat(reccurencyReceiverSender.c_str());
+					userID = convertToSqlVarcharFormat(userID.c_str());
+					sender = convertToSqlVarcharFormat(sender.c_str());
+					destination = convertToSqlVarcharFormat(destination.c_str());
+					std::string categoryName = convertToSqlVarcharFormat("Recurring");
+					std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle] VALUES (" + userID + ", " + sender + ", " + destination + ", " + timeStamp + ", " + reccurencyCardTo + ", " + reccurencyTypeTranzaction + ", " + reccurencyValue + ", " + reccurencyISO + ", " + description + ", "+categoryName+ ", " + reccurencyName + ")";
+					ExecQuery(queryInitTranzaction);
+				}
+				if (sentTranzactions)
+				{
+					std::cout << "[SERVER]: Finished Sending Reccuring Transactions for this day of month!\n";
+					FILE* fout = fopen("ServerReccuringTranzactions.txt", "w");
+					std::string date = getToDaysDate();
+					fputs(date.c_str(), fout);
+					fclose(fout);
+				}
+			}
+		}
 		void SendDailyNotification()
 		{
-
 			std::map<std::string, std::pair<std::string, std::string>> emailMaps; // email, {income,outcome}.
+
+			std::string queryAllEmails = "SELECT U.Email FROM DailyMails as DM JOIN Users as U ON DM.UserID = U.UserID";
+			std::string emailsToCome = GetQueryExecRowsetResult(queryAllEmails, 1, 1);
+			std::stringstream ssmails(emailsToCome);
+			std::string rowMail;
+			while (std::getline(ssmails, rowMail, '\n'))
+			{
+				std::stringstream ssfields(rowMail);
+				std::string emailTo;
+				std::getline(ssfields, emailTo, ';');
+
+				std::pair<std::string, std::string> income_outcome("0", "0");
+				emailMaps.insert(std::pair<std::string, std::pair<std::string, std::string>>(emailTo, income_outcome));
+			}
+
 			std::string queryGetEmailNIncome = "SELECT U.Email, SUM(T.Valoare) AS TotalIncomeToday FROM DailyMails AS DM JOIN Users as U ON DM.UserID = U.UserID JOIN Tranzactions AS T ON DM.UserID = T.UserID WHERE T.TypeTranzaction = '1' AND CONVERT(date, T.Timestamp) = CONVERT(date, GETDATE()) GROUP BY T.UserID, U.Email";
 			std::string resultsEmailIncome = GetQueryExecRowsetResult(queryGetEmailNIncome, 1, 2);
 			std::stringstream ss(resultsEmailIncome);
@@ -319,11 +539,11 @@ namespace clever
 
 				std::getline(ssfields, emailTo, ';');
 				std::getline(ssfields, income, ';');
-				
-				std::pair<std::string, std::string> income_outcome(income, "0");
-				emailMaps.insert(std::pair<std::string, std::pair<std::string, std::string>>(emailTo, income_outcome));
+				if (emailMaps.find(emailTo) != emailMaps.end())
+				{
+					emailMaps[emailTo].first = income;
+				}
 			}
-
 
 			std::string queryGetEmailNSpendings = "SELECT U.Email, SUM(T.Valoare) AS TotalSpendingToday FROM DailyMails AS DM JOIN Users as U ON DM.UserID = U.UserID JOIN Tranzactions AS T ON DM.UserID = T.UserID WHERE T.TypeTranzaction = '2' AND CONVERT(date, T.Timestamp) = CONVERT(date, GETDATE()) GROUP BY T.UserID, U.Email";
 			std::string resultsEmailSpendings = GetQueryExecRowsetResult(queryGetEmailNSpendings, 1, 2);
@@ -341,19 +561,25 @@ namespace clever
 				{
 					emailMaps[emailTo].second = outcome;
 				}
-				else
-				{
-					std::pair<std::string, std::string> income_outcome("0", outcome);
-					emailMaps.insert(std::pair<std::string, std::pair<std::string, std::string>>(emailTo, income_outcome));
-				}
 			}
 			// do send the email to those users.
 			for (std::map<std::string, std::pair<std::string, std::string>>::iterator iter = emailMaps.begin(); iter != emailMaps.end(); iter++)
 			{
-				std::string msg = "Hello!\nHere's the daily summary for your tranzactions: \n";
-				msg += "Income: "; msg += iter->second.first;
-				msg += "\nSpendings: "; msg += iter->second.second;
-				msg += "\n\nAll the best,\nCleverPocket developers";
+				std::string msg;
+				if (iter->second.first == "0" && iter->second.second == "0")
+				{
+					msg = "Hello!\nLooks like you haven't spent or received any money today! \n\n";
+					msg += "Income: "; msg += iter->second.first;
+					msg += "\nSpendings: "; msg += iter->second.second;
+					msg += "\n\nAll the best,\nCleverPocket developers";
+				}
+				else
+				{
+					msg = "Hello!\nHere's the daily summary for your tranzactions: \n\n";
+					msg += "Income: "; msg += iter->second.first;
+					msg += "\nSpendings: "; msg += iter->second.second;
+					msg += "\n\nAll the best,\nCleverPocket developers";
+				}
 				SendSMTPEmail(iter->first, msg);
 			}
 			FILE* fout = fopen("ServerSentEmails.txt", "w");
