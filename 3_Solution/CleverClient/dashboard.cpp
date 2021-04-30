@@ -16,6 +16,8 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
 	connect(ui.tranzactionTypePicker, SIGNAL(activated(int)), this, SLOT(on_TranzactionTypeSelected()));
+	connect(ui.incomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
+	connect(ui.outcomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	toggleTranzactionsButtons(0);
 }
 
@@ -25,13 +27,17 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->PATLoggedIn = PAT;
 	this->usernameLoggedIn = "";
 	loadCash();
+	this->prepareOptionsComboBox(ui.incomeOptions);
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
 	this->prepareOptionsComboBox(ui.preferencesOptions);
 	this->prepareOptionsComboBox(ui.profileOptions);
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
+
 	loadCards();
+	loadRecurencies();
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -44,12 +50,16 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->PATLoggedIn = "";
 	loadCards();
 	loadCash();
+	loadRecurencies();
+	this->prepareOptionsComboBox(ui.incomeOptions);
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
 	this->prepareOptionsComboBox(ui.preferencesOptions);
 	this->prepareOptionsComboBox(ui.profileOptions);
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
+
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -937,6 +947,63 @@ void Dashboard::on_listWidget_itemClicked(QListWidgetItem* item)
 	ui.listWidget->setItemSelected(currItem, false);
 }
 
+void Dashboard::on_recurenciesSelected()
+{
+	QString recurenciesName;
+	if (ui.stackedWidget->currentWidget() == ui.periodicallyIncomePage)
+	{
+		recurenciesName = ui.incomePicker->currentText();
+		ui.incomeNameLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeName());
+		ui.incomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
+		ui.dayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
+	}
+	if (ui.stackedWidget->currentWidget() == ui.periodicallyOutcomePage)
+	{
+		recurenciesName = ui.outcomePicker->currentText();
+		ui.outcomeNameLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeName());
+		ui.outcomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
+		ui.outcomeDayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
+	}
+}
+
+void Dashboard::on_addIncomePushButton_clicked()
+{
+	AddIncomeDialog addincomedialog(map_cards, usernameLoggedIn, this);
+	addIncomeExec(addincomedialog);
+}
+
+void Dashboard::on_periodicallyIncomePushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.periodicallyIncomePage);
+	on_recurenciesSelected();
+}
+
+void Dashboard::on_incomeBackToTranzactionsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+	ui.tranzactionTypePicker->setCurrentIndex(0); // All tranzactions.
+	populateTranzactionsFinanceType();
+	ui.dateLineEdit->setText(QDate::currentDate().toString());
+	toggleTranzactionsButtons(0);
+}
+
+void Dashboard::on_recurrentSpendingsCommandLInkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.periodicallyOutcomePage);
+	on_recurenciesSelected();
+}
+
+void Dashboard::on_outcomeBackToCategoriesPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+}
+
+void Dashboard::on_addoutcomePushButton_clicked()
+{
+	AddOutComeDialog addoutcomedialog(map_cards, usernameLoggedIn, this);
+	addOutcomeExec(addoutcomedialog);
+}
+
 void Dashboard::loadTranzactionsHistory()
 {
 	// TO DO.
@@ -1031,6 +1098,122 @@ void Dashboard::loadTranzactionsHistory()
 		// now add to that listWidget custom items.
 		// listWidget->addItem...
 		updateTranzactionsDefault();
+	}
+}
+
+void Dashboard::loadRecurencies()
+{
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UsernameGetRecurenciesDetails(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int recurenciesToCome = 0;
+	int recurenciesIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetRecurenciesResponse)
+		{
+			msg >> recurenciesToCome;
+		}
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (recurenciesIndex == recurenciesToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetRecurenciesResponse)
+			{
+				char recurenciesName[1024]; msg >> recurenciesName;
+				char recurenciesReceiver[1024]; msg >> recurenciesReceiver;
+				char recurenciesCard[1024]; msg >> recurenciesCard;
+				char recurenciesISO[1024]; msg >> recurenciesISO;
+				char dayOfMonth[1024]; msg >> dayOfMonth;
+				char recurenciesTypeID[1024]; msg >> recurenciesTypeID;
+				float recurenciesValue; msg >> recurenciesValue;
+
+				clever::FinanceTypeCredentialHandler newIncome(recurenciesName, recurenciesReceiver, recurenciesISO, dayOfMonth, recurenciesCard, recurenciesValue, recurenciesTypeID);
+				map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(recurenciesName, newIncome));
+				recurenciesIndex++;
+			}
+		}
+	}
+	loadRecurenciesComboBoxes();
+}
+
+void Dashboard::loadRecurenciesComboBoxes()
+{
+	ui.incomePicker->clear();
+	ui.outcomePicker->clear();
+
+	for (auto& it : map_recurencies)
+	{
+		if (strcmp(it.second.getFinanceTypeRecurencies(), "1") == 0)
+		{
+			ui.incomePicker->addItem(it.second.getFinanceTypeName());
+		}
+		else
+		{
+			ui.outcomePicker->addItem(it.second.getFinanceTypeName());
+		}
+	}
+}
+
+void Dashboard::addIncomeExec(AddIncomeDialog& adi)
+{
+	if (adi.exec())
+	{
+		if (adi.result() == QDialog::Accepted)
+		{
+			ui.incomePicker->addItem(adi.incomeNameLineEdit->text());
+			ui.incomePicker->setCurrentText(adi.incomeNameLineEdit->text());
+			ui.incomeNameLineEdit->setText(adi.incomeNameLineEdit->text());
+			ui.incomeValueLineEdit->setText(adi.incomeValue->text());
+			ui.dayOfMonthLineEdit->setText(adi.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(adi.incomeNameLineEdit->text().toStdString(), adi.incomeSourceLineEdit->text().toStdString(), adi.cardCurrencyISO->text().toStdString(), adi.dayOfMonthComboBox->currentText().toStdString(), adi.cardsIncomeComboBox->currentText().toStdString(), adi.incomeValue->text().toFloat(), "1");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(adi.incomeNameLineEdit->text().toStdString(), newRecurencies));
+
+		}
+	}
+}
+
+void Dashboard::addOutcomeExec(AddOutComeDialog& ado)
+{
+	if (ado.exec())
+	{
+		if (ado.result() == QDialog::Accepted)
+		{
+			ui.outcomePicker->addItem(ado.OutcomeNameLineEdit->text());
+			ui.outcomePicker->setCurrentText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeNameLineEdit->setText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeValueLineEdit->setText(ado.outcomeValue->text());
+			ui.outcomeDayOfMonthLineEdit->setText(ado.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(ado.OutcomeNameLineEdit->text().toStdString(), ado.OutcomeDestinationLineEdit->text().toStdString(), ado.cardCurrencyISO->text().toStdString(), ado.dayOfMonthComboBox->currentText().toStdString(), ado.cardsOutcomeComboBox->currentText().toStdString(), ado.outcomeValue->text().toFloat(), "2");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(ado.OutcomeNameLineEdit->text().toStdString(), newRecurencies));
+		}
 	}
 }
 

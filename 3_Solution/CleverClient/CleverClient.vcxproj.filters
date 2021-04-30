@@ -70,6 +70,15 @@
     <ClCompile Include="infotranzactiondialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="addincomedialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addoutcomedialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addspendingsdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="startup.h">
@@ -99,6 +108,15 @@
     <QtMoc Include="infotranzactiondialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="addincomedialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="addoutcomedialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="addspendingsdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="startup.ui">
@@ -126,6 +144,15 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="infotranzactiondialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addincomedialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addoutcomedialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addspendingsdialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

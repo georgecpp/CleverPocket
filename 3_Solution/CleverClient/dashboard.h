@@ -10,6 +10,9 @@
 #include <clever_Credentials.h>
 #include <tranzactionrowitem.h>
 #include <infotranzactiondialog.h>
+#include <addincomedialog.h>
+#include <addoutcomedialog.h>
+
 
 enum class TranzactionFilters
 {
@@ -37,6 +40,7 @@ private:
 	std::string currUserCash;
 	std::vector<std::string> currencyISOS;
 	std::vector<clever::TranzactionHandler> all_user_tranzactions;
+	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
 	clever::CredentialHandler user_information;
 	std::string dailyMailState;
 	std::string profilePicture;
@@ -46,6 +50,10 @@ private:
 	void loadCards();
 	void loadCurrencyISOS();
 	void loadTranzactionsHistory();
+	void loadRecurencies();
+	void loadRecurenciesComboBoxes();
+	void addIncomeExec(AddIncomeDialog& adi);
+	void addOutcomeExec(AddOutComeDialog& ado);
 	void filterTranzactionsBy(TranzactionFilters filterApplied);
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
@@ -74,6 +82,13 @@ private slots:
 	void on_showFinanceHistory_clicked();
 	void on_savePreferencesButton_clicked();
 	void on_listWidget_itemClicked(QListWidgetItem* item);
+	void on_recurenciesSelected();
+	void on_addIncomePushButton_clicked();
+	void on_periodicallyIncomePushButton_clicked();
+	void on_incomeBackToTranzactionsPushButton_clicked();
+	void on_recurrentSpendingsCommandLInkButton_clicked();
+	void on_outcomeBackToCategoriesPushButton_clicked();
+	void on_addoutcomePushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 private:

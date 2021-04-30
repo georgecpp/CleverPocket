@@ -741,9 +741,102 @@ protected:
 				client->Send(msg);
 			}
 		}
-
 		break;
+
+		case clever::MessageType::UserGetRecurenciesRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Recurencies (Username) request\n";
+			char l_username[1024]; msg >> l_username;
+			std::vector<clever::FinanceTypeCredentialHandler> incomes;
+			msg.header.id = clever::MessageType::ServerGetRecurenciesResponse;
+			try
+			{
+				OnGetRecurenciesUsername(l_username, incomes);
+				// now incomes is filled.
+				int incomesToCome = (int)incomes.size();
+				msg << incomesToCome;
+				client->Send(msg);
+				for (std::vector<clever::FinanceTypeCredentialHandler>::iterator iter = incomes.begin(); iter != incomes.end(); iter++)
+				{
+					char recurenciesName[1024]; strcpy(recurenciesName, iter->getFinanceTypeName());
+					char recurenciesReceiver[1024]; strcpy(recurenciesReceiver, iter->getFinanceTypeSource());
+					char recurenciesCard[1024]; strcpy(recurenciesCard, iter->getFinanceTypeToCard());
+					char recurenciesISO[1024]; strcpy(recurenciesISO, iter->getFinanceTypeCurrencyISO());
+					char dayOfMonth[1024]; strcpy(dayOfMonth, iter->getDayOfFinanceType());
+					char recurenciesTypeID[1024]; strcpy(recurenciesTypeID, iter->getFinanceTypeRecurencies());
+					float recurenciesValue = iter->getFinanceTypeValue();
+					msg<< recurenciesValue << recurenciesTypeID << dayOfMonth << recurenciesISO << recurenciesCard << recurenciesReceiver << recurenciesName;
+					client->Send(msg);
+				}
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetIncomes");
+				msg << responseBack;
+				client->Send(msg);
+			}
 		}
+		break;
+
+		case clever::MessageType::AddIncomeUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add income (username) request\n";
+
+			char l_incomeValue[1024]; msg >> l_incomeValue;
+			char l_incomeToCard[1024]; msg >> l_incomeToCard;
+			char l_incomeSource[1024]; msg >> l_incomeSource;
+			char l_dayOfIncome[1024]; msg >> l_dayOfIncome;
+			char l_incomeCurrencyISO[1024]; msg >> l_incomeCurrencyISO;
+			char l_incomeName[1024]; msg >> l_incomeName;
+			char l_username[1024]; msg >> l_username;
+			clever::FinanceTypeCredentialHandler incomeCredHandler(l_incomeName, l_incomeSource, l_incomeCurrencyISO, l_dayOfIncome, l_incomeToCard, std::atof(l_incomeValue));
+			char responseBack[1024];
+			try
+			{
+				OnAddIncomeUsername(l_username, incomeCredHandler);
+				strcpy(responseBack, "SuccessAddIncome");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddIncomeCard");
+			}
+			msg.header.id = clever::MessageType::ServerIncomeResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddOutcomeUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add outcome (username) request\n";
+
+			char l_outcomeValue[1024]; msg >> l_outcomeValue;
+			char l_outcomeToCard[1024]; msg >> l_outcomeToCard;
+			char l_outcomeSource[1024]; msg >> l_outcomeSource;
+			char l_dayOfOutcome[1024]; msg >> l_dayOfOutcome;
+			char l_outcomeCurrencyISO[1024]; msg >> l_outcomeCurrencyISO;
+			char l_outcomeName[1024]; msg >> l_outcomeName;
+			char l_username[1024]; msg >> l_username;
+			clever::FinanceTypeCredentialHandler outcomeCredHandler(l_outcomeName, l_outcomeSource, l_outcomeCurrencyISO, l_dayOfOutcome, l_outcomeToCard, std::atof(l_outcomeValue));
+			char responseBack[1024];
+			try
+			{
+				OnAddOutcomeUsername(l_username, outcomeCredHandler);
+				strcpy(responseBack, "SuccessAddOutcome");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddOutcomeCard");
+			}
+			msg.header.id = clever::MessageType::ServerOutcomeResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		}
+
 	}
 };
 
