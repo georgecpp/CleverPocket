@@ -323,7 +323,7 @@ namespace clever
 				dateTimeX += std::to_string(currDay);
 				dateTimeX += " ";
 				int currHour = now->tm_hour;
-				if (currHour < 10)
+				if (currHour < 10 && currHour>0)
 				{
 					dateTimeX += "0";
 				}
@@ -331,6 +331,10 @@ namespace clever
 				if (currHour > 12)
 				{
 					currHour -= 12;
+				}
+				if (currHour == 0)
+				{
+					currHour = 12;
 				}
 				dateTimeX += std::to_string(currHour);
 				dateTimeX += ":";
@@ -479,9 +483,8 @@ namespace clever
 					}
 					// '20120618 10:34:09 AM'
 					std::string timeStamp = getCurrentDateTimeSQLFormat();
-					std::cout << timeStamp << "\n";
 					timeStamp = convertToSqlVarcharFormat(timeStamp.c_str());
-					return; // TO REMOVE WHEN COMPLETED PROCEDURE!!!
+					std::string categoryName = convertToSqlVarcharFormat("Recurring");
 					reccurencyTypeTranzaction = convertToSqlVarcharFormat(reccurencyTypeTranzaction.c_str());
 					std::string queryUpdateCardValue = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold" + add_substract + reccurencyValue + " WHERE CardName = " + reccurencyCardTo + " AND UserID = " + userID;
 					ExecQuery(queryUpdateCardValue);
@@ -491,12 +494,10 @@ namespace clever
 					std::string description = "Regular " + reccurencyName;
 					description = convertToSqlVarcharFormat(description.c_str());
 					reccurencyName = convertToSqlVarcharFormat(reccurencyName.c_str());
-					reccurencyReceiverSender = convertToSqlVarcharFormat(reccurencyReceiverSender.c_str());
 					userID = convertToSqlVarcharFormat(userID.c_str());
 					sender = convertToSqlVarcharFormat(sender.c_str());
 					destination = convertToSqlVarcharFormat(destination.c_str());
-					std::string categoryName = convertToSqlVarcharFormat("Recurring");
-					std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle] VALUES (" + userID + ", " + sender + ", " + destination + ", " + timeStamp + ", " + reccurencyCardTo + ", " + reccurencyTypeTranzaction + ", " + reccurencyValue + ", " + reccurencyISO + ", " + description + ", "+categoryName+ ", " + reccurencyName + ")";
+					std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle]) VALUES (" + userID + ", " + sender + ", " + destination + ", " + timeStamp + ", " + reccurencyCardTo + ", " + reccurencyTypeTranzaction + ", " + reccurencyValue + ", " + reccurencyISO + ", " + description + ", "+categoryName+ ", " + reccurencyName + ")";
 					ExecQuery(queryInitTranzaction);
 				}
 				if (sentTranzactions)
