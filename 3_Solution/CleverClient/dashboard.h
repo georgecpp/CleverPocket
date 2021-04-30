@@ -17,6 +17,8 @@ enum class TranzactionFilters
 	TranzactionType,
 	TranzactionDate,
 };
+#include <addincomedialog.h>
+#include <addoutcomedialog.h>
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -33,8 +35,12 @@ private:
 	QString PATLoggedIn;
 	std::string usernameLoggedIn;
 	std::map<std::string, clever::CardCredentialHandler> map_cards;
+	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
+	clever::CredentialHandler user_information;
 	std::string userCashCurrencyISO;
+	std::string dailyMailState;
 	std::string currUserCash;
+	std::string profilePicture;
 	std::vector<std::string> currencyISOS;
 	std::vector<clever::TranzactionHandler> all_user_tranzactions;
 	clever::CredentialHandler user_information;
@@ -44,10 +50,14 @@ private:
 	void logout();
 	void loadCash();
 	void loadCards();
+	void loadRecurencies();
 	void loadCurrencyISOS();
+	void loadRecurenciesComboBoxes();
 	void loadTranzactionsHistory();
 	void filterTranzactionsBy(TranzactionFilters filterApplied);
 	void addCardExec(AddCardDialog& adc);
+	void addIncomeExec(AddIncomeDialog& adi);
+	void addOutcomeExec(AddOutComeDialog& ado);
 	void addFundsExec(AddFundsDialog& adf);
 	void editCardExec(EditCardDialog& edc);
 	void rechargeCashExec(RechargeCashDialog& rcd);
@@ -64,6 +74,7 @@ private slots:
 	void on_addFundsPushButton_clicked();
 	void on_editCardPushButton_clicked();
 	void on_cardSelected();
+	void on_recurenciesSelected();
 	void on_choseImagePushButton_clicked();
 	void on_addCashPushButton_clicked();
 	void on_transactionsCommandLinkButton_clicked();
@@ -74,6 +85,12 @@ private slots:
 	void on_showFinanceHistory_clicked();
 	void on_savePreferencesButton_clicked();
 	void on_listWidget_itemClicked(QListWidgetItem* item);
+	void on_addIncomePushButton_clicked();
+	void on_periodicallyIncomePushButton();
+	void on_incomeBackToTranzactionsPushButton_clicked();
+	void on_recurrentSpendingsCommandLInkButton_clicked();
+	void on_outcomeBackToCategoriesPushButton_clicked();
+	void on_addoutcomePushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 private:

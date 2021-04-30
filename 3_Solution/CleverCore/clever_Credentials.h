@@ -334,4 +334,103 @@ namespace clever
 		std::string m_CategoryName;
 	};
 
+	class FinanceTypeCredentialHandler
+	{
+	public:
+		FinanceTypeCredentialHandler() {}
+		FinanceTypeCredentialHandler(std::string FinanceTypeName, std::string FinanceTypeSource, 
+			std::string FinanceTypeCurrencyISO, std::string DayOfFinanceType, std::string FinanceTypeToCard, float FinanceTypeValue = 0.0f, std::string FinanceTypeRecurencies = "1")
+			: m_FinanceTypeName(FinanceTypeName), m_FinanceTypeSource(FinanceTypeSource), m_FinanceTypeValue(FinanceTypeValue), 
+			m_DayOfFinanceType(DayOfFinanceType), m_FinanceTypeToCard(FinanceTypeToCard), m_FinanceTypeCurrencyISO(FinanceTypeCurrencyISO)
+		{
+
+		}
+		const char* getFinanceTypeName() const
+		{
+			if (m_FinanceTypeName != "")
+			{
+				return m_FinanceTypeName.c_str();
+			}
+			return NULL;
+		}
+		const char* getFinanceTypeSource() const
+		{
+			if (m_FinanceTypeSource != "")
+			{
+				return m_FinanceTypeSource.c_str();
+			}
+			return NULL;
+		}
+		const char* getFinanceTypeCurrencyISO() const
+		{
+			if (m_FinanceTypeCurrencyISO != "")
+			{
+				return m_FinanceTypeCurrencyISO.c_str();
+			}
+			return NULL;
+		}
+		const char* getDayOfFinanceType() const
+		{
+			if (m_DayOfFinanceType != "")
+			{
+				return m_DayOfFinanceType.c_str();
+			}
+			return NULL;
+		}
+		const char* getFinanceTypeToCard() const
+		{
+			if (m_FinanceTypeToCard != "")
+			{
+				return m_FinanceTypeToCard.c_str();
+			}
+			return NULL;
+		}
+		const char* getFinanceTypeRecurencies() const
+		{
+			if (m_FinanceTypeRecurencies != "")
+			{
+				return m_FinanceTypeRecurencies.c_str();
+			}
+			return NULL;
+		}
+		float getFinanceTypeValue() const {
+			return m_FinanceTypeValue;
+		}
+		void setFinanceTypeValue(float newFinanceTypeValue)
+		{
+			this->m_FinanceTypeValue = newFinanceTypeValue;
+		}
+		void setFinanceTypeSource(std::string newFinanceTypeSource)
+		{
+			this->m_FinanceTypeSource = newFinanceTypeSource;
+		}
+		void setFinanceTypeCurrencyISO(std::string newFinanceTypeCurrencyISO)
+		{
+			this->m_FinanceTypeCurrencyISO = newFinanceTypeCurrencyISO;
+		}
+		void setDayOfFinanceType(std::string newDayOfFinanceType)
+		{
+			this->m_DayOfFinanceType = newDayOfFinanceType;
+		}
+		void setFinanceTypeToCard(std::string newFinanceTypeToCard)
+		{
+			this->m_FinanceTypeToCard = newFinanceTypeToCard;
+		}
+		void setFinanceTypeName(std::string newFinanceTypeName)
+		{
+			this->m_FinanceTypeName = newFinanceTypeName;
+		}
+		void setFinanceTypeRecurencies(std::string newFinanceTypeRecurencies)
+		{
+			this->m_FinanceTypeRecurencies = newFinanceTypeRecurencies;
+		}
+	private:
+		std::string m_FinanceTypeName;
+		std::string m_FinanceTypeCurrencyISO;
+		std::string m_FinanceTypeToCard;
+		std::string	m_DayOfFinanceType;
+		float m_FinanceTypeValue;
+		std::string m_FinanceTypeSource;
+		std::string m_FinanceTypeRecurencies;
+	};
 }

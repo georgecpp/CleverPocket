@@ -15,6 +15,8 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	ui.setupUi(this);
 	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
 	connect(ui.cardPicker, SIGNAL(activated(int)), this, SLOT(on_cardSelected()));
+	connect(ui.incomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
+	connect(ui.outcomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	connect(ui.tranzactionTypePicker, SIGNAL(activated(int)), this, SLOT(on_TranzactionTypeSelected()));
 	toggleTranzactionsButtons(0);
 }
@@ -31,7 +33,10 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->prepareOptionsComboBox(ui.profileOptions);
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
+	this->prepareOptionsComboBox(ui.incomeOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
 	loadCards();
+	loadRecurencies();
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -44,12 +49,15 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	this->PATLoggedIn = "";
 	loadCards();
 	loadCash();
+	loadRecurencies();
 	this->prepareOptionsComboBox(ui.dashboardOptions);
 	this->prepareOptionsComboBox(ui.financesOptions);
 	this->prepareOptionsComboBox(ui.preferencesOptions);
 	this->prepareOptionsComboBox(ui.profileOptions);
 	this->prepareOptionsComboBox(ui.tranzactionsOptions);
 	this->prepareOptionsComboBox(ui.categoriesOptions);
+	this->prepareOptionsComboBox(ui.incomeOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -163,7 +171,6 @@ void Dashboard::loadCash()
 			char userCash[1024];
 			char userCurrencyISO[1024];
 			char usernameLogged[1024];
-
 			char firstName[1024];
 			char lastName[1024];
 			char email[1024];
@@ -186,7 +193,6 @@ void Dashboard::loadCash()
 				this->user_information.setCountryID(country);
 				this->user_information.setPhoneNumber(phoneNumber);
 				this->profilePicture = picture;
-
 
 				// loading profile picture
 				QByteArray ss(this->profilePicture.c_str(), this->profilePicture.length());
@@ -305,6 +311,69 @@ void Dashboard::loadCards()
 	}
 }
 
+void Dashboard::loadRecurencies()
+{
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	//c.UsernameGetCardsDetails(usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int recurenciesToCome = 0;
+	int recurenciesIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetCardsResponse)
+		{
+			msg >> recurenciesToCome;
+		}
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (recurenciesIndex == recurenciesToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetRecurenciesResponse)
+			{
+				char recurenciesName[1024]; msg >> recurenciesName;
+				char recurenciesReceiver[1024]; msg >> recurenciesReceiver;
+				char recurenciesCard[1024]; msg >> recurenciesCard;
+				char recurenciesISO[1024]; msg >> recurenciesISO;
+				char dayOfMonth[1024]; msg >> dayOfMonth;
+				char recurenciesTypeID[1024]; msg >> recurenciesTypeID;
+				float recurenciesValue; msg >> recurenciesValue;
+
+				clever::FinanceTypeCredentialHandler newIncome(recurenciesName, recurenciesReceiver, recurenciesISO, dayOfMonth, recurenciesCard, recurenciesValue, recurenciesTypeID);
+				map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(recurenciesName, newIncome));
+				recurenciesIndex++;
+			}
+		}
+	}
+	loadRecurenciesComboBoxes();
+}
+
 void Dashboard::addCardExec(AddCardDialog& adc)
 {
 	if (adc.exec())
@@ -317,6 +386,42 @@ void Dashboard::addCardExec(AddCardDialog& adc)
 				ui.cardPicker->removeItem(0);
 			}
 			loadCards();
+		}
+	}
+}
+
+void Dashboard::addIncomeExec(AddIncomeDialog& adi)
+{
+	if (adi.exec())
+	{
+		if (adi.result() == QDialog::Accepted)
+		{
+			ui.incomePicker->addItem(adi.incomeNameLineEdit->text());
+			ui.incomePicker->setCurrentText(adi.incomeNameLineEdit->text());
+			ui.incomeNameLineEdit->setText(adi.incomeNameLineEdit->text());
+			ui.incomeValueLineEdit->setText(adi.incomeValue->text());
+			ui.dayOfMonthLineEdit->setText(adi.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(adi.incomeNameLineEdit->text().toStdString(), adi.incomeSourceLineEdit->text().toStdString(), adi.cardCurrencyISO->text().toStdString(), adi.dayOfMonthComboBox->currentText().toStdString(), adi.cardsIncomeComboBox->currentText().toStdString(), adi.incomeValue->text().toFloat(), "1");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(adi.incomeNameLineEdit->text().toStdString(), newRecurencies));
+			
+		}
+	}
+}
+
+void Dashboard::addOutcomeExec(AddOutComeDialog& ado)
+{
+	if (ado.exec())
+	{
+		if (ado.result() == QDialog::Accepted)
+		{
+			ui.outcomePicker->addItem(ado.OutcomeNameLineEdit->text());
+			ui.outcomePicker->setCurrentText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeNameLineEdit->setText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeValueLineEdit->setText(ado.outcomeValue->text());
+			ui.outcomeDayOfMonthLineEdit->setText(ado.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(ado.OutcomeNameLineEdit->text().toStdString(), ado.OutcomeDestinationLineEdit->text().toStdString(), ado.cardCurrencyISO->text().toStdString(), ado.dayOfMonthComboBox->currentText().toStdString(), ado.cardsOutcomeComboBox->currentText().toStdString(), ado.outcomeValue->text().toFloat(), "2");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(ado.OutcomeNameLineEdit->text().toStdString(), newRecurencies));
+
 		}
 	}
 }
@@ -511,6 +616,26 @@ void Dashboard::loadCurrencyISOS()
 	}
 }
 
+
+
+void Dashboard::loadRecurenciesComboBoxes()
+{
+	ui.incomePicker->clear();
+	// outcomes picker
+
+	for (auto& it : map_recurencies)
+	{
+		if (strcmp(it.second.getFinanceTypeRecurencies(), "1") == 0)
+		{
+			ui.incomePicker->addItem(it.second.getFinanceTypeName());
+		}
+		else
+		{
+			ui.outcomePicker->addItem(it.second.getFinanceTypeName());
+		}
+	}
+}
+
 void Dashboard::on_menuItemSelected(int index)
 {
 	// index 0 is reserved for header : Avatar + "Andronache George" -- current user logged in.
@@ -561,6 +686,115 @@ void Dashboard::on_financeTypePicker_currentTextChanged(const QString& newText)
 	updateTranzactionsByFilters(newText.toStdString(), currTranzType, currTranzDate);
 	this->currFinanceName = newText.toStdString();
 }
+void Dashboard::on_savePreferencesButton_clicked()
+{
+	this->userCashCurrencyISO = ui.preferenceCurrencyComboBox->currentText().toStdString();
+	if (ui.checkBox->isChecked())  // rename this object in qt designer
+	{
+		this->dailyMailState = "True";
+	}
+	else
+	{
+		this->dailyMailState = "False";
+	}
+	bool stillConnectedWaitingAnswer = true;
+	QMessageBox* msgBox = new QMessageBox();
+	Client& c = Client::getInstance(); // handles connection too, if it is not connected.!!
+	c.Incoming().clear();
+	c.AddPreferences(usernameLoggedIn, dailyMailState, userCashCurrencyISO);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			QTimer::singleShot(2500, msgBox, SLOT(close()));
+			stillConnectedWaitingAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerAddPreferencesOptionResponse)
+		{
+			// server has responded back to add preferences options request.
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessAddPreferencesOption") == 0)
+			{
+				// ALL GOOD.
+				msgBox->setText("Preferences added with success!");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+			}
+			else
+			{
+				msgBox->setText("Couldn't add preferences ! Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2500, msgBox, SLOT(close()));
+				return;
+			}
+			stillConnectedWaitingAnswer = false;
+		}
+	}
+}
+
+void Dashboard::on_addIncomePushButton_clicked()
+{
+	if (this->PATLoggedIn == "")
+	{
+		AddIncomeDialog addincomedialog(map_cards,usernameLoggedIn, this);
+		addIncomeExec(addincomedialog);
+
+	}
+	else
+	{
+		AddIncomeDialog addincomedialog(map_cards, PATLoggedIn, this);
+		addIncomeExec(addincomedialog);
+	}
+}
+
+void Dashboard::on_periodicallyIncomePushButton()
+{
+	ui.stackedWidget->setCurrentWidget(ui.periodicallyIncomePage);
+	on_recurenciesSelected();
+}
+
+void Dashboard::on_incomeBackToTranzactionsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+	ui.tranzactionTypePicker->setCurrentIndex(0); // All tranzactions.
+	populateTranzactionsFinanceType();
+	ui.dateLineEdit->setText(QDate::currentDate().toString());
+	toggleTranzactionsButtons(0);
+}
+
+void Dashboard::on_recurrentSpendingsCommandLInkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.periodicallyOutcomePage);
+}
+
+void Dashboard::on_outcomeBackToCategoriesPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+}
+
+void Dashboard::on_addoutcomePushButton_clicked()
+{
+	if (this->PATLoggedIn == "")
+	{
+		AddOutComeDialog addoutcomedialog(map_cards, usernameLoggedIn, this);
+		addOutcomeExec(addoutcomedialog);
+
+	}
+	else
+	{
+		AddOutComeDialog addoutcomedialog(map_cards, PATLoggedIn, this);
+		addOutcomeExec(addoutcomedialog);
+	}
+}
+
 void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 {
 	if (this->usernameLoggedIn != "")
@@ -709,6 +943,25 @@ void Dashboard::on_cardSelected()
 	ui.soldWallLabel->setText(std::to_string(this->map_cards[cardName.toStdString()].getCardSold()).c_str());
 }
 
+void Dashboard::on_recurenciesSelected()
+{
+	QString recurenciesName;
+	if (ui.stackedWidget->currentWidget() == ui.periodicallyIncomePage)
+	{
+		recurenciesName = ui.incomePicker->currentText();
+		ui.incomeNameLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeName());
+		ui.incomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
+		ui.dayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
+	}
+	if (ui.stackedWidget->currentWidget() == ui.periodicallyOutcomePage)
+	{
+		recurenciesName = ui.outcomePicker->currentText();
+		ui.outcomeNameLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeName());
+		ui.outcomeValueLineEdit->setText(std::to_string(this->map_recurencies[recurenciesName.toStdString()].getFinanceTypeValue()).c_str());
+		ui.outcomeDayOfMonthLineEdit->setText(this->map_recurencies[recurenciesName.toStdString()].getDayOfFinanceType());
+	}
+}
+
 void Dashboard::on_choseImagePushButton_clicked()
 {
 	QString filename = QFileDialog::getOpenFileName(this, tr("Chose"), "", tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)")); // title of file dialog-default folder-file format
@@ -728,6 +981,7 @@ void Dashboard::on_choseImagePushButton_clicked()
 			QByteArray hexImg = imgByteArray.toBase64();
 			insertBDProfiePicture(hexImg.toStdString());
 			this->profilePicture = hexImg.toStdString();
+			
 		}
 		else
 		{

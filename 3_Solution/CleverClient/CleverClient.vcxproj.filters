@@ -68,6 +68,10 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="infotranzactiondialog.cpp">
+    <ClCompile Include="addincomedialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addoutcomedialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -97,6 +101,10 @@
       <Filter>Header Files</Filter>
     </QtMoc>
     <QtMoc Include="infotranzactiondialog.h">
+    <QtMoc Include="addincomedialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="addoutcomedialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
@@ -126,6 +134,10 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="infotranzactiondialog.ui">
+    <QtUic Include="addincomedialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addoutcomedialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
