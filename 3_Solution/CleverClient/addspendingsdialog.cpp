@@ -16,13 +16,14 @@ AddSpendingsDialog::AddSpendingsDialog(QWidget *parent)
 AddSpendingsDialog::AddSpendingsDialog(std::string& categoryName, std::pair<std::string, std::string>& cash_details, std::map<std::string, clever::CardCredentialHandler>& map_cards, const std::string& username, QWidget* parent)
 	: AddSpendingsDialog(parent)
 {
+	this->cash_details = cash_details;
 	this->map_cards = map_cards;
 	this->currUsernameLogged = username;
 	for (auto& it : map_cards)
 	{
 		this->categoryFinancePicker->addItem(it.second.getCardName());
 	}
-	this->categoryFinancePicker->addItem("Numerar");
+	this->categoryFinancePicker->addItem("Cash");
 	this->categoryNameLineEdit->setText(categoryName.c_str());
 	this->categoryFinancePicker->setCurrentIndex(0);
 }
@@ -48,9 +49,11 @@ void AddSpendingsDialog::on_addSpendingsPushButton_clicked()
 	spending_details.push_back(tranzCurrencyISO.toStdString());
 	QString tranzFinanceType = this->categoryFinancePicker->currentText();
 	spending_details.push_back(tranzFinanceType.toStdString());
+	QString tranzTitle = this->categoryTranzactionTitleLineEdit->text();
+	spending_details.push_back(tranzTitle.toStdString());
 	
 	//fill the boxes
-	if (tranzValue == "" || tranzDestination == "" || tranzDetails == "")
+	if (tranzValue == "" || tranzDestination == "" || tranzDetails == "" || tranzTitle == "")
 	{
 		msgBox->setText("Please fill all the boxes!");
 		msgBox->show();
@@ -58,7 +61,7 @@ void AddSpendingsDialog::on_addSpendingsPushButton_clicked()
 		return;
 	}
 	//value spend higher than the finance current sold
-	if (tranzFinanceType == "Numerar")
+	if (tranzFinanceType == "Cash")
 	{
 		if (tranzValue.toFloat() > std::stof(cash_details.first))
 		{
@@ -129,9 +132,9 @@ void AddSpendingsDialog::on_cancelAddSpendingsPushButton_clicked()
 	this->done(QDialog::Rejected);
 }
 
-void AddSpendingsDialog::on_categoryFinancePicker_currentTextChanged_clicked(const QString& financeSelected)
+void AddSpendingsDialog::on_categoryFinancePicker_currentTextChanged(const QString& financeSelected)
 {
-	if (this->categoryFinancePicker->currentText() == "Numerar")
+	if (this->categoryFinancePicker->currentText() == "Cash")
 	{
 		this->financeISOLineEdit->setText(cash_details.second.c_str());
 	}

@@ -383,7 +383,7 @@ void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
 	{
 		if (ads.result() == QDialog::Accepted)
 		{
-			if (ads.categoryNameLineEdit->text() == "Numerar")
+			if (ads.categoryNameLineEdit->text() == "Cash")
 			{
 				float currCashSold = std::stoi(this->currUserCash) - ads.categoryTranzactionValueLineEdit->text().toFloat();
 				this->currUserCash = std::to_string(currCashSold);
@@ -392,6 +392,31 @@ void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
 			{
 				this->map_cards[ads.categoryFinancePicker->currentText().toStdString()].setCardSold(this->map_cards[ads.categoryFinancePicker->currentText().toStdString()].getCardSold() - ads.categoryTranzactionValueLineEdit->text().toFloat());
 			}
+
+			std::string tranzTitle = ads.categoryTranzactionTitleLineEdit->text().toStdString();
+			std::string tranzSource = this->usernameLoggedIn;
+			std::string tranzDestination = ads.categoryTranzactionDestinationLineEdit->text().toStdString();
+			std::string timeStamp = this->getCurrentDateTime();
+			std::string tranzFinanceName = ads.categoryFinancePicker->currentText().toStdString();
+			clever::TranzactionType trType = clever::TranzactionType::Spending;
+			float tranzVal = ads.categoryTranzactionValueLineEdit->text().toFloat();
+			std::string tranzISO = ads.financeISOLineEdit->text().toStdString();
+			std::string tranzDescription = ads.categoryTranzactionDetailsLineEdit->text().toStdString();
+			std::string tranzCategoryName = ads.categoryNameLineEdit->text().toStdString();
+
+			clever::TranzactionHandler newTranzaction(tranzTitle,
+				tranzSource,
+				tranzDestination,
+				timeStamp,
+				tranzFinanceName,
+				trType,
+				tranzVal,
+				tranzISO,
+				tranzDescription,
+				tranzCategoryName);
+
+
+			this->all_user_tranzactions.push_back(newTranzaction);
 		}
 	}
 }
@@ -602,6 +627,11 @@ void Dashboard::prepareAllOptionsComboBox()
 	this->prepareOptionsComboBox(ui.budgetOptions);
 }
 
+void Dashboard::refreshCash()
+{
+	this->cash_details.first = this->currUserCash;
+	this->cash_details.second = this->userCashCurrencyISO;
+}
 void Dashboard::updateTranzactionsDefault()
 {
 	ui.listWidget->clear();
@@ -610,13 +640,12 @@ void Dashboard::updateTranzactionsDefault()
 		QListWidgetItem* item = new QListWidgetItem(ui.listWidget);
 		ui.listWidget->addItem(item);
 		std::string valToShow = std::to_string(iter->getTranzactionValue());
-		valToShow.erase(valToShow.find('.') + 3);
-
-		// HANDLES DATE FORMAT TRIM IN CONSTRUCTOR OF ROWITEM
-		/*std::string dateTimestamp = iter->getTranzactionTimestamp();
-		dateTimestamp.erase(dateTimestamp.find('.'));*/
+		if (valToShow.find('.'))
+		{
+			valToShow.erase(valToShow.find('.') + 3);
+		}
 		TranzactionRowItem* tranzRowItem = new TranzactionRowItem(ui.listWidget->width(),
-			iter->getTranzactionTitle(),iter->getTranzactionTimestamp(),valToShow.c_str(),iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
+		iter->getTranzactionTitle(),iter->getTranzactionTimestamp(),valToShow.c_str(),iter->getTranzactionCurrencyISO(), iter->getTranzactionType());
 		item->setSizeHint(tranzRowItem->minimumSizeHint());
 		ui.listWidget->setItemWidget(item, tranzRowItem);
 	}
@@ -847,6 +876,7 @@ void Dashboard::on_spendingsCategoriesPushButton_clicked()
 void Dashboard::on_backToTranzactionsPushButtton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
+	updateTranzactionsDefault();
 }
 
 void Dashboard::on_showFinanceHistory_clicked()
@@ -1024,6 +1054,7 @@ void Dashboard::on_addoutcomePushButton_clicked()
 
 void Dashboard::on_transportCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Public Transport & Taxi";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1031,6 +1062,7 @@ void Dashboard::on_transportCommandLinkButton_clicked()
 
 void Dashboard::on_educationCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Education";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1038,6 +1070,7 @@ void Dashboard::on_educationCommandLinkButton_clicked()
 
 void Dashboard::on_shoppingCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Shopping";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1045,6 +1078,7 @@ void Dashboard::on_shoppingCommandLinkButton_clicked()
 
 void Dashboard::on_freeTimeCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Free Time";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1052,6 +1086,7 @@ void Dashboard::on_freeTimeCommandLinkButton_clicked()
 
 void Dashboard::on_holidayCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Holiday & Travel";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1084,6 +1119,7 @@ void Dashboard::on_budgetbackToGoalsPushButton_clicked()
 
 void Dashboard::on_healthCommandLinkButton_clicked()
 {
+	refreshCash();
 	std::string categoryName = "Health & Self-Care";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
@@ -1320,4 +1356,50 @@ void Dashboard::filterTranzactionsBy(TranzactionFilters filterApplied)
 	default:
 		break;
 	}
+}
+
+std::string Dashboard::getCurrentDateTime()
+{
+	std::string dateTimeX = "";
+	std::time_t t = std::time(0); // get time now.
+	std::tm* now = std::localtime(&t);
+	dateTimeX += std::to_string(1900 + (now->tm_year));
+	dateTimeX += "-";
+	int currMonth = 1 + (now->tm_mon);
+	if (currMonth < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currMonth);
+	dateTimeX += "-";
+	int currDay = now->tm_mday;
+	if (currDay < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currDay);
+	dateTimeX += " ";
+	int currHour = now->tm_hour;
+	if (currHour < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currHour);
+	dateTimeX += ":";
+	int currMin = now->tm_min;
+	if (currMin < 10)
+	{
+		dateTimeX += "0";
+
+	}
+	dateTimeX += std::to_string(currMin);
+	dateTimeX += ":";
+	int currSec = now->tm_sec;
+	if (currSec < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currSec);
+
+	return dateTimeX;
 }

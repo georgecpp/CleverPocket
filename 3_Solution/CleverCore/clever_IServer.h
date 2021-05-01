@@ -695,25 +695,27 @@ namespace clever
 			std::string l_tranzDetails = convertToSqlVarcharFormat(spending_details[3].c_str());
 			std::string l_tranzCurrencyISO = convertToSqlVarcharFormat(spending_details[4].c_str());
 			std::string l_tranzFinanceType = convertToSqlVarcharFormat(spending_details[5].c_str());
+			std::string l_tranzTitle = convertToSqlVarcharFormat(spending_details[6].c_str());
 			std::string timeStamp = getCurrentDateTimeSQLFormat();
 			timeStamp = convertToSqlVarcharFormat(timeStamp.c_str());
+			std::string type = convertToSqlVarcharFormat("2");
 			
 			//insert into tranzactions table
-			std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle]) VALUES (" + userID + ", " + l_username + ", " + l_tranzDestination + ", " + timeStamp + ", " + l_tranzFinanceType + ", " + "outcome" + ", " + l_tranzValue + ", " + l_tranzCurrencyISO + ", " + l_tranzDetails + ", " + l_tranzCategoryName + ", " ")";
+			std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle]) VALUES (" + userID + ", " + l_username + ", " + l_tranzDestination + ", " + timeStamp + ", " + l_tranzFinanceType + ", " + type + ", " + l_tranzValue + ", " + l_tranzCurrencyISO + ", " + l_tranzDetails + ", " + l_tranzCategoryName + ", "+ l_tranzTitle+")";
 			ExecQuery(queryInitTranzaction);
 			
 
 			//update solds
-			if (l_tranzFinanceType == "Numerar")
+			std::string query;
+			if (l_tranzFinanceType == "Cash")
 			{
-				std::string query = "UPDATE [CleverPocket].[dbo].[Numerar] SET SoldNumerar -= " + l_tranzValue + "WHERE UserID = " + userID;
+				query = "UPDATE [CleverPocket].[dbo].[Numerar] SET SoldNumerar -= " + l_tranzValue + "WHERE UserID = " + userID;
 			}
 			else
 			{
-				std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold -= " + l_tranzValue + "WHERE UserID = " + userID + "AND CardName = " + l_tranzFinanceType;
+				query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold -= " + l_tranzValue + "WHERE UserID = " + userID + "AND CardName = " + l_tranzFinanceType;
 			}
-
-
+			ExecQuery(query);
 		}
 		void OnAddOutcomeUsername(char username[], const clever::FinanceTypeCredentialHandler& outcomeCredHandler)
 		{
@@ -1028,9 +1030,8 @@ namespace clever
 				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
 			}
 
-			std::string queryGetAllTranzactionsUser = "SELECT [Source], [Destination], [Timestamp], [FinanceName], [TypeTranzaction], [Valoare], [CurrencyISO], [DescriereTranzactie], [CategoryName], [TranzactionTitle] FROM [CleverPocket].[dbo].[Tranzactions] WHERE UserID = " + resultUserID;
+			std::string queryGetAllTranzactionsUser = "SELECT [Source], [Destination], [Timestamp], [FinanceName], [TypeTranzaction], [Valoare], [CurrencyISO], [DescriereTranzactie], [CategoryName], [TranzactionTitle] FROM [CleverPocket].[dbo].[Tranzactions] WHERE UserID = " + resultUserID +" ORDER BY [Timestamp] DESC";
 			std::string resultQueryGetTranzactions = GetQueryExecRowsetResult(queryGetAllTranzactionsUser, 1, 10);
-			std::cout << resultQueryGetTranzactions;
 
 			std::stringstream ss(resultQueryGetTranzactions);
 			std::string row;

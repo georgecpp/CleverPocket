@@ -14,7 +14,7 @@ public:
 	~AddSpendingsDialog();
 
 private slots:
-	void on_categoryFinancePicker_currentTextChanged_clicked(const QString& financeSelected);
+	void on_categoryFinancePicker_currentTextChanged(const QString& financeSelected);
 	void on_addSpendingsPushButton_clicked();
 	void on_cancelAddSpendingsPushButton_clicked();
 private:

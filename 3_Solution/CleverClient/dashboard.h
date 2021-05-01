@@ -106,6 +106,8 @@ private slots:
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void prepareAllOptionsComboBox();
+	void refreshCash();
+	std::string getCurrentDateTime();
 private:
 	std::string currFinanceName;
 	std::string currTranzType;

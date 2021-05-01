@@ -637,6 +637,7 @@ protected:
 		case clever::MessageType::AddSpendingUsernameRequest:
 		{
 			std::cout << "[" << client->GetID() << "]: Add spendings (username) request\n";
+			char l_tranzTitle[1024]; msg >> l_tranzTitle;
 			char l_tranzFinanceType[1024]; msg >> l_tranzFinanceType;
 			char l_tranzCurrencyISO[1024]; msg >> l_tranzCurrencyISO;
 			char l_tranzDetails[1024]; msg >> l_tranzDetails;
@@ -650,12 +651,12 @@ protected:
 														  l_tranzDestination,
 														  l_tranzDetails,
 														  l_tranzCurrencyISO, 
-														  l_tranzFinanceType};
+														  l_tranzFinanceType,
+														  l_tranzTitle};
 			char responseBack[1024];
 			try
 			{
-
-				//OnAddCashUsername(l_username, l_cashValue, l_cardname);
+				OnAddSpendingsUsername(l_username, spending_details);
 				strcpy(responseBack, "SuccessAddSpendings");
 			}
 			catch (...)
