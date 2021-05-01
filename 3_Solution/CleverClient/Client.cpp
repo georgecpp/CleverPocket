@@ -406,8 +406,6 @@ void Client::UsernameAddSpendings(const std::string& username, std::vector<std::
 		msg << l_details;
 	}
 	Send(msg);
-
-
 }
 
 std::string Client::getIpAddressTo()

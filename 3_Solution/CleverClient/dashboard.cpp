@@ -27,15 +27,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	this->PATLoggedIn = PAT;
 	this->usernameLoggedIn = "";
 	loadCash();
-	this->prepareOptionsComboBox(ui.incomeOptions);
-	this->prepareOptionsComboBox(ui.dashboardOptions);
-	this->prepareOptionsComboBox(ui.financesOptions);
-	this->prepareOptionsComboBox(ui.preferencesOptions);
-	this->prepareOptionsComboBox(ui.profileOptions);
-	this->prepareOptionsComboBox(ui.tranzactionsOptions);
-	this->prepareOptionsComboBox(ui.categoriesOptions);
-	this->prepareOptionsComboBox(ui.outcomeOptions);
-
+	prepareAllOptionsComboBox();
 	loadCards();
 	loadRecurencies();
 	loadCurrencyISOS();
@@ -51,15 +43,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	loadCards();
 	loadCash();
 	loadRecurencies();
-	this->prepareOptionsComboBox(ui.incomeOptions);
-	this->prepareOptionsComboBox(ui.dashboardOptions);
-	this->prepareOptionsComboBox(ui.financesOptions);
-	this->prepareOptionsComboBox(ui.preferencesOptions);
-	this->prepareOptionsComboBox(ui.profileOptions);
-	this->prepareOptionsComboBox(ui.tranzactionsOptions);
-	this->prepareOptionsComboBox(ui.categoriesOptions);
-	this->prepareOptionsComboBox(ui.outcomeOptions);
-
+	prepareAllOptionsComboBox();
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
@@ -603,6 +587,21 @@ void Dashboard::prepareOptionsComboBox(QComboBox* comboBoxToPrepare)
 	connect(comboBoxToPrepare, SIGNAL(activated(int)), this, SLOT(on_menuItemSelected(int)));
 }
 
+void Dashboard::prepareAllOptionsComboBox()
+{
+	this->prepareOptionsComboBox(ui.incomeOptions);
+	this->prepareOptionsComboBox(ui.dashboardOptions);
+	this->prepareOptionsComboBox(ui.financesOptions);
+	this->prepareOptionsComboBox(ui.preferencesOptions);
+	this->prepareOptionsComboBox(ui.profileOptions);
+	this->prepareOptionsComboBox(ui.tranzactionsOptions);
+	this->prepareOptionsComboBox(ui.categoriesOptions);
+	this->prepareOptionsComboBox(ui.outcomeOptions);
+	this->prepareOptionsComboBox(ui.goalsOptions);
+	this->prepareOptionsComboBox(ui.savingsOptions);
+	this->prepareOptionsComboBox(ui.budgetOptions);
+}
+
 void Dashboard::updateTranzactionsDefault()
 {
 	ui.listWidget->clear();
@@ -1056,6 +1055,31 @@ void Dashboard::on_holidayCommandLinkButton_clicked()
 	std::string categoryName = "Holiday & Travel";
 	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
 	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_goalsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_savingsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.savingsPage);
+}
+
+void Dashboard::on_budgetCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.budgetPage);
+}
+
+void Dashboard::on_savingsbackToGoalsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_budgetbackToGoalsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
 }
 
 void Dashboard::on_healthCommandLinkButton_clicked()

@@ -98,8 +98,14 @@ private slots:
 	void on_freeTimeCommandLinkButton_clicked();
 	void on_healthCommandLinkButton_clicked();
 	void on_holidayCommandLinkButton_clicked();
+	void on_goalsCommandLinkButton_clicked();
+	void on_savingsCommandLinkButton_clicked();
+	void on_budgetCommandLinkButton_clicked();
+	void on_savingsbackToGoalsPushButton_clicked();
+	void on_budgetbackToGoalsPushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
+	void prepareAllOptionsComboBox();
 private:
 	std::string currFinanceName;
 	std::string currTranzType;

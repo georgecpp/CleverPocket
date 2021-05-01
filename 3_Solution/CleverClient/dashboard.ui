@@ -37,7 +37,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>5</number>
+    <number>9</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -167,7 +167,7 @@
       <string/>
      </property>
     </widget>
-    <widget class="QCommandLinkButton" name="investmentsCommandLinkButton_2">
+    <widget class="QCommandLinkButton" name="goalsCommandLinkButton">
      <property name="geometry">
       <rect>
        <x>540</x>
@@ -1485,6 +1485,122 @@
        <width>121</width>
        <height>22</height>
       </rect>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="goalsPage">
+    <widget class="QComboBox" name="goalsOptions">
+     <property name="geometry">
+      <rect>
+       <x>1170</x>
+       <y>30</y>
+       <width>151</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QCommandLinkButton" name="savingsCommandLinkButton">
+     <property name="geometry">
+      <rect>
+       <x>420</x>
+       <y>250</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+              QCommandLinkButton
+              {
+              background-color : lightgreen;
+              border-radius: 90px;
+              }
+              QCommandLinkButton::!hover
+              {
+              background-color : yellow;
+              border-radius: 90px;
+              }
+            </string>
+     </property>
+     <property name="text">
+      <string>Savings</string>
+     </property>
+    </widget>
+    <widget class="QCommandLinkButton" name="budgetCommandLinkButton">
+     <property name="geometry">
+      <rect>
+       <x>670</x>
+       <y>250</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+              QCommandLinkButton
+              {
+              background-color : lightgreen;
+              border-radius: 90px;
+              }
+              QCommandLinkButton::!hover
+              {
+              background-color : yellow;
+              border-radius: 90px;
+              }
+            </string>
+     </property>
+     <property name="text">
+      <string>Budget</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="savingsPage">
+    <widget class="QComboBox" name="savingsOptions">
+     <property name="geometry">
+      <rect>
+       <x>1160</x>
+       <y>40</y>
+       <width>151</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="savingsbackToGoalsPushButton">
+     <property name="geometry">
+      <rect>
+       <x>550</x>
+       <y>660</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Take me back to Goals</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="budgetPage">
+    <widget class="QComboBox" name="budgetOptions">
+     <property name="geometry">
+      <rect>
+       <x>1160</x>
+       <y>40</y>
+       <width>151</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="budgetbackToGoalsPushButton">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>670</y>
+       <width>171</width>
+       <height>51</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Take me back to Goals</string>
      </property>
     </widget>
    </widget>
