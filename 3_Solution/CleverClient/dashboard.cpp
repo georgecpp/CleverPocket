@@ -393,6 +393,25 @@ void Dashboard::rechargeCashExec(RechargeCashDialog& rcd)
 	}
 }
 
+void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
+{
+	if (ads.exec())
+	{
+		if (ads.result() == QDialog::Accepted)
+		{
+			if (ads.categoryNameLineEdit->text() == "Numerar")
+			{
+				float currCashSold = std::stoi(this->currUserCash) - ads.categoryTranzactionValueLineEdit->text().toFloat();
+				this->currUserCash = std::to_string(currCashSold);
+			}
+			else
+			{
+				this->map_cards[ads.categoryFinancePicker->currentText().toStdString()].setCardSold(this->map_cards[ads.categoryFinancePicker->currentText().toStdString()].getCardSold() - ads.categoryTranzactionValueLineEdit->text().toFloat());
+			}
+		}
+	}
+}
+
 void Dashboard::toggleTranzactionsButtons(int state)
 {
 	switch (state)
@@ -1002,6 +1021,48 @@ void Dashboard::on_addoutcomePushButton_clicked()
 {
 	AddOutComeDialog addoutcomedialog(map_cards, usernameLoggedIn, this);
 	addOutcomeExec(addoutcomedialog);
+}
+
+void Dashboard::on_transportCommandLinkButton_clicked()
+{
+	std::string categoryName = "Public Transport & Taxi";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_educationCommandLinkButton_clicked()
+{
+	std::string categoryName = "Education";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_shoppingCommandLinkButton_clicked()
+{
+	std::string categoryName = "Shopping";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_freeTimeCommandLinkButton_clicked()
+{
+	std::string categoryName = "Free Time";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_holidayCommandLinkButton_clicked()
+{
+	std::string categoryName = "Holiday & Travel";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_healthCommandLinkButton_clicked()
+{
+	std::string categoryName = "Health & Self-Care";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
 }
 
 void Dashboard::loadTranzactionsHistory()

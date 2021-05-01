@@ -677,6 +677,44 @@ namespace clever
 				std::cout << "[SERVER]: failed to send email with the following error:\r\n" << (const TCHAR*)oSMTP->GetLastErrDescription();
 			}
 		}
+		void OnAddSpendingsUsername(char username[], const std::vector<std::string>& spending_details)
+		{
+			// obtain the user ID from this username and insert in Cards with this user ID.
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultID = GetQueryExecResult(userIDQuery);
+			if (resultID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+		
+			std::string userID = convertToSqlVarcharFormat(resultID.c_str());
+			std::string l_tranzCategoryName = convertToSqlVarcharFormat(spending_details[0].c_str());
+			std::string l_tranzValue = convertToSqlVarcharFormat(spending_details[1].c_str());
+			std::string l_tranzDestination = convertToSqlVarcharFormat(spending_details[2].c_str());
+			std::string l_tranzDetails = convertToSqlVarcharFormat(spending_details[3].c_str());
+			std::string l_tranzCurrencyISO = convertToSqlVarcharFormat(spending_details[4].c_str());
+			std::string l_tranzFinanceType = convertToSqlVarcharFormat(spending_details[5].c_str());
+			std::string timeStamp = getCurrentDateTimeSQLFormat();
+			timeStamp = convertToSqlVarcharFormat(timeStamp.c_str());
+			
+			//insert into tranzactions table
+			std::string queryInitTranzaction = "INSERT INTO [CleverPocket].[dbo].[Tranzactions] ([UserID],[Source],[Destination],[Timestamp],[FinanceName],[TypeTranzaction],[Valoare],[CurrencyISO],[DescriereTranzactie],[CategoryName],[TranzactionTitle]) VALUES (" + userID + ", " + l_username + ", " + l_tranzDestination + ", " + timeStamp + ", " + l_tranzFinanceType + ", " + "outcome" + ", " + l_tranzValue + ", " + l_tranzCurrencyISO + ", " + l_tranzDetails + ", " + l_tranzCategoryName + ", " ")";
+			ExecQuery(queryInitTranzaction);
+			
+
+			//update solds
+			if (l_tranzFinanceType == "Numerar")
+			{
+				std::string query = "UPDATE [CleverPocket].[dbo].[Numerar] SET SoldNumerar -= " + l_tranzValue + "WHERE UserID = " + userID;
+			}
+			else
+			{
+				std::string query = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold -= " + l_tranzValue + "WHERE UserID = " + userID + "AND CardName = " + l_tranzFinanceType;
+			}
+
+
+		}
 		void OnAddOutcomeUsername(char username[], const clever::FinanceTypeCredentialHandler& outcomeCredHandler)
 		{
 			// obtain the user ID from this username and insert in Cards with this user ID.

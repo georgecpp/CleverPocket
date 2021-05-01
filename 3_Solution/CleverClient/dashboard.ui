@@ -37,7 +37,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>7</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -899,8 +899,8 @@
     <widget class="QCommandLinkButton" name="shoppingCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>140</x>
-       <y>430</y>
+       <x>10</x>
+       <y>10</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -929,11 +929,11 @@
       <string>Shopping</string>
      </property>
     </widget>
-    <widget class="QCommandLinkButton" name="spareTimeCommandLinkButton">
+    <widget class="QCommandLinkButton" name="freeTimeCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>230</x>
-       <y>160</y>
+       <x>210</x>
+       <y>20</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -965,8 +965,8 @@
     <widget class="QCommandLinkButton" name="healthCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>520</x>
-       <y>30</y>
+       <x>420</x>
+       <y>10</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -992,14 +992,14 @@
             </string>
      </property>
      <property name="text">
-      <string>Health</string>
+      <string>Health&amp;Self-care</string>
      </property>
     </widget>
-    <widget class="QCommandLinkButton" name="giftsCommandLinkButton">
+    <widget class="QCommandLinkButton" name="holidayCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>780</x>
-       <y>30</y>
+       <x>630</x>
+       <y>20</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -1025,14 +1025,14 @@
             </string>
      </property>
      <property name="text">
-      <string>Gifts</string>
+      <string>Holiday&amp;Travel</string>
      </property>
     </widget>
     <widget class="QCommandLinkButton" name="transportCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>1030</x>
-       <y>200</y>
+       <x>20</x>
+       <y>430</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -1058,14 +1058,14 @@
             </string>
      </property>
      <property name="text">
-      <string>Transport</string>
+      <string>Public Transport&amp;Taxi</string>
      </property>
     </widget>
     <widget class="QCommandLinkButton" name="recurrentSpendingsCommandLInkButton">
      <property name="geometry">
       <rect>
-       <x>1050</x>
-       <y>470</y>
+       <x>1160</x>
+       <y>540</y>
        <width>180</width>
        <height>180</height>
       </rect>
@@ -1115,6 +1115,39 @@
        <width>121</width>
        <height>22</height>
       </rect>
+     </property>
+    </widget>
+    <widget class="QCommandLinkButton" name="educationCommandLinkButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>230</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+              QCommandLinkButton
+              {
+              background-color : lightgreen;
+              border-radius: 90px;
+              }
+              QCommandLinkButton::!hover
+              {
+              background-color : yellow;
+              border-radius: 90px;
+              }
+            </string>
+     </property>
+     <property name="text">
+      <string>Education</string>
      </property>
     </widget>
    </widget>

@@ -51,6 +51,7 @@ public:
 	void UsernameAddIncome(const std::string& username, const clever::FinanceTypeCredentialHandler& incomeCredHandler);
 	void UsernameGetRecurenciesDetails(const std::string& username);
 	void UsernameAddOutcome(const std::string& username, const clever::FinanceTypeCredentialHandler& outcomeCredHandler);
+	void UsernameAddSpendings(const std::string& username, std::vector<std::string>& spending_details);
 
 public:
 	std::string getIpAddressTo();

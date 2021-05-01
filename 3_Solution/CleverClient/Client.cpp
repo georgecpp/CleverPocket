@@ -393,6 +393,23 @@ void Client::UsernameAddOutcome(const std::string& username, const clever::Finan
 	Send(msg);
 }
 
+void Client::UsernameAddSpendings(const std::string& username, std::vector<std::string>& spending_details)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddSpendingUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_details[1024];
+	msg << l_username;
+	for (auto& it : spending_details)
+	{
+		strcpy(l_details, it.c_str());
+		msg << l_details;
+	}
+	Send(msg);
+
+
+}
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;

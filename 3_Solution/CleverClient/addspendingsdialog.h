@@ -2,6 +2,7 @@
 
 #include <QDialog>
 #include "ui_addspendingsdialog.h"
+#include <clever_Credentials.h>
 
 class AddSpendingsDialog : public QDialog, public Ui::AddSpendingsDialog
 {
@@ -9,5 +10,15 @@ class AddSpendingsDialog : public QDialog, public Ui::AddSpendingsDialog
 
 public:
 	AddSpendingsDialog(QWidget *parent = Q_NULLPTR);
+	AddSpendingsDialog(std::string& categoryName,std::pair<std::string, std::string>& cash_details, std::map<std::string, clever::CardCredentialHandler>& map_cards, const std::string& username, QWidget* parent = Q_NULLPTR);
 	~AddSpendingsDialog();
+
+private slots:
+	void on_categoryFinancePicker_currentTextChanged_clicked(const QString& financeSelected);
+	void on_addSpendingsPushButton_clicked();
+	void on_cancelAddSpendingsPushButton_clicked();
+private:
+	std::string currUsernameLogged;
+	std::map<std::string, clever::CardCredentialHandler> map_cards;
+	std::pair<std::string, std::string> cash_details;
 };

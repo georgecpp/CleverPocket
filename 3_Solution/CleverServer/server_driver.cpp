@@ -634,6 +634,40 @@ protected:
 		}
 		break;
 
+		case clever::MessageType::AddSpendingUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add spendings (username) request\n";
+			char l_tranzFinanceType[1024]; msg >> l_tranzFinanceType;
+			char l_tranzCurrencyISO[1024]; msg >> l_tranzCurrencyISO;
+			char l_tranzDetails[1024]; msg >> l_tranzDetails;
+			char l_tranzDestination[1024]; msg >> l_tranzDestination;
+			char l_tranzValue[1024]; msg >> l_tranzValue;
+			char l_tranzCategoryName[1024]; msg >> l_tranzCategoryName;
+			char l_username[1024]; msg >> l_username;
+
+			std::vector<std::string> spending_details = { l_tranzCategoryName, 
+													      l_tranzValue,
+														  l_tranzDestination,
+														  l_tranzDetails,
+														  l_tranzCurrencyISO, 
+														  l_tranzFinanceType};
+			char responseBack[1024];
+			try
+			{
+
+				//OnAddCashUsername(l_username, l_cashValue, l_cardname);
+				strcpy(responseBack, "SuccessAddSpendings");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddSpending");
+			}
+			msg.header.id = clever::MessageType::ServerSpendingsResponse;
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 		case clever::MessageType::AddPicturePATRequest:
 		{
 			std::cout << "[" << client->GetID() << "]: Add picture (PAT) request\n";

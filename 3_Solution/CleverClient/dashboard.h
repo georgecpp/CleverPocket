@@ -12,6 +12,7 @@
 #include <infotranzactiondialog.h>
 #include <addincomedialog.h>
 #include <addoutcomedialog.h>
+#include<addspendingsdialog.h>
 
 
 enum class TranzactionFilters
@@ -38,6 +39,7 @@ private:
 	std::map<std::string, clever::CardCredentialHandler> map_cards;
 	std::string userCashCurrencyISO;
 	std::string currUserCash;
+	std::pair<std::string, std::string> cash_details;
 	std::vector<std::string> currencyISOS;
 	std::vector<clever::TranzactionHandler> all_user_tranzactions;
 	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
@@ -54,6 +56,7 @@ private:
 	void loadRecurenciesComboBoxes();
 	void addIncomeExec(AddIncomeDialog& adi);
 	void addOutcomeExec(AddOutComeDialog& ado);
+	void addSpendingExec(AddSpendingsDialog& ads);
 	void filterTranzactionsBy(TranzactionFilters filterApplied);
 	void addCardExec(AddCardDialog& adc);
 	void addFundsExec(AddFundsDialog& adf);
@@ -89,6 +92,12 @@ private slots:
 	void on_recurrentSpendingsCommandLInkButton_clicked();
 	void on_outcomeBackToCategoriesPushButton_clicked();
 	void on_addoutcomePushButton_clicked();
+	void on_transportCommandLinkButton_clicked();
+	void on_educationCommandLinkButton_clicked();
+	void on_shoppingCommandLinkButton_clicked();
+	void on_freeTimeCommandLinkButton_clicked();
+	void on_healthCommandLinkButton_clicked();
+	void on_holidayCommandLinkButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 private:
