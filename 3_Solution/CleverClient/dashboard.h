@@ -52,6 +52,7 @@ private:
 	void toggleTranzactionsButtons(int state);
 	void populateTranzactionsFinanceType();
 	void insertBDProfiePicture(std::string& hexImg);
+	void load_spendingsTotals();
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);

@@ -37,7 +37,11 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
+<<<<<<< Updated upstream
     <number>7</number>
+=======
+    <number>4</number>
+>>>>>>> Stashed changes
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -1130,6 +1134,120 @@
       </rect>
      </property>
     </widget>
+<<<<<<< Updated upstream
+=======
+    <widget class="QCommandLinkButton" name="educationCommandLinkButton">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>230</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+              QCommandLinkButton
+              {
+              background-color : lightgreen;
+              border-radius: 90px;
+              }
+              QCommandLinkButton::!hover
+              {
+              background-color : yellow;
+              border-radius: 90px;
+              }
+            </string>
+     </property>
+     <property name="text">
+      <string>Education</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="holidayMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="healthMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="freeTimeMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="shoppingMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>130</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="educationMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>350</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="transportMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>560</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+>>>>>>> Stashed changes
    </widget>
    <widget class="QWidget" name="periodicallyIncomePage">
     <widget class="QComboBox" name="incomeOptions">

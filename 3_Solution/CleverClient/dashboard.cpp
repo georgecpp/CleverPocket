@@ -585,6 +585,63 @@ void Dashboard::insertBDProfiePicture(std::string& hexImg)
 	}
 }
 
+void Dashboard::load_spendingsTotals()
+{
+	float transportTotal = 0;
+	float educationTotal = 0;
+	float  shoppingTotal = 0;
+	float freeTimeTotal = 0;
+	float healthTotal = 0;
+	float holidayTotal = 0;
+
+	std::time_t t = std::time(0); // get time now.
+	std::tm* now = std::localtime(&t);
+	int month = 1 + (now->tm_mon);
+	std::string tranzMonth;
+
+	for (auto& it : this->all_user_tranzactions)
+	{
+		tranzMonth = it.getTranzactionTimestamp();
+		tranzMonth = tranzMonth.substr(5, 2); // yyyy-mm-dd hh:mm:ss
+		if (month == std::stof(tranzMonth))
+		{
+			if (it.getTranzactionCategoryName() == "Education")
+			{
+				educationTotal += it.getTranzactionValue();
+			}
+			if (it.getTranzactionCategoryName() == "Free Time")
+			{
+				freeTimeTotal += it.getTranzactionValue();
+			}
+			if (it.getTranzactionCategoryName() == "Health & Self-Care")
+			{
+				healthTotal += it.getTranzactionValue();
+			}
+			if (it.getTranzactionCategoryName() == "Holiday & Travel")
+			{
+				holidayTotal += it.getTranzactionValue();
+			}
+			if (it.getTranzactionCategoryName() == "Public Transport & Taxi")
+			{
+				transportTotal += it.getTranzactionValue();
+			}
+			if (it.getTranzactionCategoryName() == "Shopping")
+			{
+				shoppingTotal += it.getTranzactionValue();
+			}
+
+		}
+	}
+
+	ui.transportMonthSpentLabel->setText(std::to_string(transportTotal).c_str());
+	ui.freeTimeMonthSpentLabel->setText(std::to_string(freeTimeTotal).c_str());
+	ui.holidayMonthSpentLabel->setText(std::to_string(holidayTotal).c_str());
+	ui.healthMonthSpentLabel->setText(std::to_string(healthTotal).c_str());
+	ui.shoppingMonthSpentLabel->setText(std::to_string(shoppingTotal).c_str());
+	ui.educationMonthSpentLabel->setText(std::to_string(educationTotal).c_str());
+
+}
+
 void Dashboard::loadCurrencyISOS()
 {
 	// load CurrencyISO from resource text file into combobox.
@@ -994,6 +1051,7 @@ void Dashboard::on_TranzactionTypeSelected()
 void Dashboard::on_spendingsCategoriesPushButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+	load_spendingsTotals();
 }
 
 void Dashboard::on_backToTranzactionsPushButtton_clicked()
