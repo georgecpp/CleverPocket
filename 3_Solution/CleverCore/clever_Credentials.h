@@ -434,4 +434,82 @@ namespace clever
 		std::string m_FinanceTypeRecurencies;
 	};
 
+	class SavingHandler
+	{
+	public:
+		SavingHandler() {}
+		SavingHandler(std::string title, float goal, std::string currencyISO, std::string initialDate, float currMoney)
+			: m_SavingTitle(title), m_SavingGoal(goal), m_SavingCurrencyISO(currencyISO), m_SavingInitialDate(initialDate), m_SavingCurrMoney(currMoney)
+		{
+			this->m_SavingCompleted = false;
+		}
+		const char* getSavingTitle() const
+		{
+			if (m_SavingTitle != "")
+			{
+				return this->m_SavingTitle.c_str();
+			}
+			return NULL;
+		}
+		float getSavingGoal() const
+		{
+			return this->m_SavingGoal;
+		}
+		float getSavingCurrMoney() const
+		{
+			return this->m_SavingCurrMoney;
+		}
+		const char* getSavingCurrencyISO() const
+		{
+			if (this->m_SavingCurrencyISO != "")
+			{
+				return this->m_SavingCurrencyISO.c_str();
+			}
+			return NULL;
+		}
+		const char* getSavingInitialDate() const
+		{
+			if (this->m_SavingInitialDate != "")
+			{
+				return this->m_SavingInitialDate.c_str();
+			}
+			return NULL;
+		}
+		bool getSavingCompleted() const
+		{
+			return this->m_SavingCompleted;
+		}
+		void setSavingTitle(std::string newTitle)
+		{
+			this->m_SavingTitle = newTitle;
+		}
+		void setSavingGoal(float newGoal)
+		{
+			this->m_SavingGoal = newGoal;
+		}
+		void setSavingCurrencyISO(std::string currISO)
+		{
+			this->m_SavingCurrencyISO = currISO;
+		}
+		void setSavingInitialDate(std::string date)
+		{
+			this->m_SavingInitialDate = date;
+		}
+		void setSavingCurrMoney(float currMoney)
+		{
+			this->m_SavingCurrMoney = currMoney;
+		}
+		void setSavingCompleted()
+		{
+			m_SavingCompleted = true;
+		}
+	private:
+		std::string m_SavingTitle;
+		float m_SavingGoal;
+		float m_SavingCurrMoney;
+		std::string m_SavingCurrencyISO;
+		std::string m_SavingInitialDate;
+		bool m_SavingCompleted;
+	};
+
 }

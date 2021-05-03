@@ -52,7 +52,9 @@ public:
 	void UsernameGetRecurenciesDetails(const std::string& username);
 	void UsernameAddOutcome(const std::string& username, const clever::FinanceTypeCredentialHandler& outcomeCredHandler);
 	void UsernameAddSpendings(const std::string& username, std::vector<std::string>& spending_details);
-
+	void UsernameGetSavings(const std::string& username);
+	void UsernameAddFundsToSaving(const std::string& username, const std::string& value, const std::string& fromCardName, const std::string& toSaving);
+	void UsernameAddSaving(const std::string& username, const clever::SavingHandler& savingToAdd);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

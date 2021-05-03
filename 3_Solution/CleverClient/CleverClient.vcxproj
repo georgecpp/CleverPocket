@@ -115,6 +115,7 @@
     </QtMoc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="addfundstosavingdialog.cpp" />
     <ClCompile Include="addincomedialog.cpp" />
     <ClCompile Include="addoutcomedialog.cpp">
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">input</DynamicSource>
@@ -122,6 +123,7 @@
       <DynamicSource Condition="'$(Configuration)|$(Platform)'=='Release|x64'">input</DynamicSource>
       <QtMocFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(Filename).moc</QtMocFileName>
     </ClCompile>
+    <ClCompile Include="addsavingdialog.cpp" />
     <ClCompile Include="addspendingsdialog.cpp" />
     <ClCompile Include="infotranzactiondialog.cpp" />
     <ClCompile Include="tranzactionrowitem.cpp" />
@@ -132,6 +134,8 @@
     <QtMoc Include="addincomedialog.h" />
     <QtMoc Include="addoutcomedialog.h" />
     <QtMoc Include="addspendingsdialog.h" />
+    <QtMoc Include="addfundstosavingdialog.h" />
+    <QtMoc Include="addsavingdialog.h" />
     <ClInclude Include="Client.h" />
     <QtMoc Include="dashboard.h" />
     <QtMoc Include="editcarddialog.h" />
@@ -156,8 +160,10 @@
   <ItemGroup>
     <QtUic Include="addcarddialog.ui" />
     <QtUic Include="addfundsdialog.ui" />
+    <QtUic Include="addfundstosavingdialog.ui" />
     <QtUic Include="addincomedialog.ui" />
     <QtUic Include="addoutcomedialog.ui" />
+    <QtUic Include="addsavingdialog.ui" />
     <QtUic Include="addspendingsdialog.ui" />
     <QtUic Include="dashboard.ui" />
     <QtUic Include="datepickerdialog.ui" />

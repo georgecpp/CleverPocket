@@ -432,7 +432,6 @@ namespace clever
 
 				std::string queryAllReccurenciesToday = "SELECT [UserID], [RecurenciesName], [RecurenciesReceiver], [RecurenciesValue], [RecurenciesCard], [RecurenciesISO], [DayOfMonth], [RecurenciesTypeID] FROM [CleverPocket].[dbo].[Recurencies] WHERE DayOfMonth = " + thisDay;
 				std::string allReccurenciesToday = GetQueryExecRowsetResult(queryAllReccurenciesToday, 1, 8);
-				std::cout << allReccurenciesToday << "\n";
 				std::stringstream ss(allReccurenciesToday);
 				std::string row;
 				bool sentTranzactions = false;
@@ -758,6 +757,76 @@ namespace clever
 
 			std::string query = "INSERT INTO [CleverPocket].[dbo].[Recurencies](UserId, RecurenciesName, RecurenciesReceiver, RecurenciesValue, RecurenciesCard, RecurenciesISO, DayOfMonth, RecurenciesTypeID) VALUES (" + userID + "," + incomeName + "," + incomeSource + "," + incomeValue + "," + incomeToCard + "," + incomeCurrencyISO + "," + dayOfIncome + ", 1)";
 			ExecQuery(query);
+		}
+		void OnGetSavingsUsername(char username[], std::vector<clever::SavingHandler>& savings)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::cout << resultUserID;
+			std::string queryGetAllSavings = "SELECT [SavingTitle], [SavingGoal], [SavingCurrencyISO], [SavingInitialDate], [SavingCurrentMoney] FROM [CleverPocket].[dbo].[Savings] WHERE UserID = " + resultUserID;
+			std::string resultAllSavings = GetQueryExecRowsetResult(queryGetAllSavings, 1, 5);
+			std::stringstream ss(resultAllSavings);
+			std::string row;
+			while (std::getline(ss, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string savingTitle;
+				std::string savingGoal;
+				std::string savingCurrencyISO;
+				std::string savingInitialDate;
+				std::string savingCurrentMoney;
+
+				std::getline(ssfields, savingTitle, ';');
+				std::getline(ssfields, savingGoal, ';');
+				std::getline(ssfields, savingCurrencyISO, ';');
+				std::getline(ssfields, savingInitialDate, ';');
+				std::getline(ssfields, savingCurrentMoney, ';');
+
+				savings.push_back(clever::SavingHandler(savingTitle, std::stof(savingGoal), savingCurrencyISO, savingInitialDate, std::stof(savingCurrentMoney)));
+			}
+		}
+		void OnAddSavingUsername(char username[], const clever::SavingHandler& saving)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::string l_title = convertToSqlVarcharFormat(saving.getSavingTitle());
+			std::string l_goal = convertToSqlVarcharFormat(std::to_string(saving.getSavingGoal()).c_str());
+			std::string l_currMoney = convertToSqlVarcharFormat(std::to_string(saving.getSavingCurrMoney()).c_str());
+			std::string l_initialDate = convertToSqlVarcharFormat(saving.getSavingInitialDate());
+			std::string l_currencyISO = convertToSqlVarcharFormat(saving.getSavingCurrencyISO());
+
+			std::string queryInsertSaving = "INSERT INTO [CleverPocket].[dbo].[Savings] ([SavingTitle],[SavingGoal],[SavingCurrencyISO],[SavingInitialDate],[SavingCurrentMoney],[UserID]) VALUES (" + l_title + ", " + l_goal + ", " + l_currencyISO + ", " + l_initialDate + ", " + l_currMoney + ", " + resultUserID + ")";
+			ExecQuery(queryInsertSaving);
+		}
+		void OnAddFundsToSavingUsername(char username[], char fromCard[], char value[], char toSaving[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			std::string l_fromCard = convertToSqlVarcharFormat(fromCard);
+			std::string l_value = convertToSqlVarcharFormat(value);
+			std::string l_saving = convertToSqlVarcharFormat(toSaving);
+
+			// update card sold.
+			std::string querySoldCard = "UPDATE [CleverPocket].[dbo].[Cards] SET Sold -= " + l_value + " WHERE UserID = " + resultUserID + " AND CardName = " + l_fromCard;
+			ExecQuery(querySoldCard);
+
+			std::string querySavingMoney = "UPDATE [CleverPocket].[dbo].[Savings] SET [SavingCurrentMoney] += " + l_value + " WHERE UserID = " + resultUserID + " AND SavingTitle = " + l_saving;
+			ExecQuery(querySavingMoney);
 		}
 		void OnGetRecurenciesUsername(char username[], std::vector<clever::FinanceTypeCredentialHandler>& incomes)
 		{

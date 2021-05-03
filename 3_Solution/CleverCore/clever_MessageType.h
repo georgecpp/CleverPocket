@@ -50,5 +50,11 @@ namespace clever
 		ServerOutcomeResponse,
 		ServerSpendingsResponse,
 		AddSpendingUsernameRequest,
+		GetSavingsUsernameRequest,
+		ServerGetSavingsResponse,
+		AddSavingUsernameRequest,
+		ServerAddSavingResponse,
+		AddFundsToSavingUsernameRequest,
+		ServerAddFundsToSavingResponse,
 	};
 }

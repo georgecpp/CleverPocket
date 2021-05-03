@@ -79,6 +79,12 @@
     <ClCompile Include="addspendingsdialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="addfundstosavingdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="addsavingdialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="startup.h">
@@ -117,6 +123,12 @@
     <QtMoc Include="addspendingsdialog.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="addfundstosavingdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="addsavingdialog.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="startup.ui">
@@ -153,6 +165,12 @@
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="addspendingsdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addfundstosavingdialog.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="addsavingdialog.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

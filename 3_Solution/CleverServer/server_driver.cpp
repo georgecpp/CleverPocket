@@ -871,6 +871,103 @@ protected:
 		}
 		break;
 
+		case clever::MessageType::GetSavingsUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Savings (username) request\n";
+
+			char l_username[1024]; msg >> l_username;
+			std::vector<clever::SavingHandler> savings;
+			msg.header.id = clever::MessageType::ServerGetSavingsResponse;
+			try
+			{
+				OnGetSavingsUsername(l_username, savings);
+				int savingsToCome = (int)savings.size();
+				msg << savingsToCome;
+				client->Send(msg);
+				for (std::vector<clever::SavingHandler>::iterator iter = savings.begin(); iter != savings.end(); iter++)
+				{
+					char savingTitle[1024]; strcpy(savingTitle, iter->getSavingTitle());
+					float savingGoal = iter->getSavingGoal();
+					float savingCurrMoney = iter->getSavingCurrMoney();
+					char savingCurrencyISO[1024]; strcpy(savingCurrencyISO, iter->getSavingCurrencyISO());
+					char savingInitialDate[1024]; strcpy(savingInitialDate, iter->getSavingInitialDate());
+					msg << savingInitialDate << savingCurrencyISO << savingCurrMoney << savingGoal << savingTitle;
+					client->Send(msg);
+				}
+			}
+			catch (...)
+			{
+				char responseBack[1024];
+				strcpy(responseBack, "FailGetIncomes");
+				msg << responseBack;
+				client->Send(msg);
+			}
+		}
+		break;
+
+		case clever::MessageType::AddFundsToSavingUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add Funds to saving (username) request\n";
+			char l_username[1024];
+			char l_value[1024];
+			char l_fromCardName[1024]; 
+			char l_toSaving[1024]; 
+			msg >> l_toSaving;
+			msg >> l_fromCardName;
+			msg >> l_value;
+			msg >> l_username;
+
+			char responseBack[1024];
+			msg.header.id = clever::MessageType::ServerAddFundsToSavingResponse;
+			try
+			{
+				OnAddFundsToSavingUsername(l_username, l_fromCardName, l_value, l_toSaving);
+				strcpy(responseBack, "SuccessAddFundsToSaving");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddFundsToSaving");
+			}
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddSavingUsernameRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add new Saving (username) request\n";
+			char l_username[1024];
+			char l_title[1024];
+			float l_goal;
+			float l_currMoney;
+			char l_currencyISO[1024];
+			char l_initialDate[1024];
+
+			msg >> l_initialDate;
+			msg >> l_currencyISO;
+			msg >> l_currMoney;
+			msg >> l_goal;
+			msg >> l_title;
+			msg >> l_username;
+
+			char responseBack[1024];
+			msg.header.id = clever::MessageType::ServerAddSavingResponse;
+			try
+			{
+				clever::SavingHandler saving(l_title, l_goal, l_currencyISO, l_initialDate, l_currMoney);
+				OnAddSavingUsername(l_username, saving);
+				strcpy(responseBack, "SuccessAddSaving");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddSaving");
+			}
+			msg << responseBack;
+			client->Send(msg);
+		}
+
+		break;
+		
 		}
 
 	}

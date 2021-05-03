@@ -1257,19 +1257,6 @@
          <string>Income name</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="editIncomePushButton">
-        <property name="geometry">
-         <rect>
-          <x>310</x>
-          <y>10</y>
-          <width>75</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Edit Income</string>
-        </property>
-       </widget>
        <widget class="QLabel" name="label_5">
         <property name="geometry">
          <rect>
@@ -1577,6 +1564,177 @@
      <property name="text">
       <string>Take me back to Goals</string>
      </property>
+    </widget>
+    <widget class="QPushButton" name="addFundsSavingPushButton">
+     <property name="geometry">
+      <rect>
+       <x>580</x>
+       <y>520</y>
+       <width>141</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add Funds to Saving</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="addSavingPushButton">
+     <property name="geometry">
+      <rect>
+       <x>820</x>
+       <y>140</y>
+       <width>81</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add Saving</string>
+     </property>
+    </widget>
+    <widget class="QGroupBox" name="savingDetailsGroupBox">
+     <property name="geometry">
+      <rect>
+       <x>460</x>
+       <y>220</y>
+       <width>391</width>
+       <height>281</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>Details</string>
+     </property>
+     <widget class="QLabel" name="savingGoalLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>100</y>
+        <width>81</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Saving goal:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="savingSinceLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>210</y>
+        <width>161</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Date of establishment:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="savingNameLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>50</y>
+        <width>81</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Saving title:</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="savingCurrentProgressLabel">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>150</y>
+        <width>121</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Progress:</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="savingTitleLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>50</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="savingGoalLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>100</y>
+        <width>181</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QProgressBar" name="savingCurrProgressBar">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>150</y>
+        <width>221</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="value">
+       <number>0</number>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="savingDateEstablishmentLineEdit">
+      <property name="geometry">
+       <rect>
+        <x>190</x>
+        <y>210</y>
+        <width>111</width>
+        <height>22</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="savingISOLabel">
+      <property name="geometry">
+       <rect>
+        <x>310</x>
+        <y>100</y>
+        <width>55</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QComboBox" name="savingPicker">
+     <property name="geometry">
+      <rect>
+       <x>500</x>
+       <y>130</y>
+       <width>301</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>No Savings added to this account.</string>
+      </property>
+     </item>
     </widget>
    </widget>
    <widget class="QWidget" name="budgetPage">

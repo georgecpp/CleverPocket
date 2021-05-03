@@ -13,6 +13,8 @@
 #include <addincomedialog.h>
 #include <addoutcomedialog.h>
 #include<addspendingsdialog.h>
+#include <addfundstosavingdialog.h>
+#include <addsavingdialog.h>
 
 
 enum class TranzactionFilters
@@ -43,6 +45,7 @@ private:
 	std::vector<std::string> currencyISOS;
 	std::vector<clever::TranzactionHandler> all_user_tranzactions;
 	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
+	std::map<std::string, clever::SavingHandler> map_savings;
 	clever::CredentialHandler user_information;
 	std::string dailyMailState;
 	std::string profilePicture;
@@ -54,6 +57,7 @@ private:
 	void loadTranzactionsHistory();
 	void loadRecurencies();
 	void loadRecurenciesComboBoxes();
+	void loadSavings();
 	void addIncomeExec(AddIncomeDialog& adi);
 	void addOutcomeExec(AddOutComeDialog& ado);
 	void addSpendingExec(AddSpendingsDialog& ads);
@@ -71,6 +75,9 @@ private slots:
 	void on_financesTabWidget_currentChanged(int index);
 	void on_tranzactionTypePicker_currentTextChanged(const QString& newText);
 	void on_financeTypePicker_currentTextChanged(const QString& newText);
+	void on_savingPicker_currentTextChanged(const QString& SavingChosen);
+	void on_addSavingPushButton_clicked();
+	void on_addFundsSavingPushButton_clicked();
 	void on_addCardPushButton_clicked();
 	void on_addFundsPushButton_clicked();
 	void on_editCardPushButton_clicked();

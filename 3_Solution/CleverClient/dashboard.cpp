@@ -33,6 +33,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
+	loadSavings();
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -47,6 +48,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	loadCurrencyISOS();
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
+	loadSavings();
 }
 
 Dashboard::~Dashboard()
@@ -396,7 +398,7 @@ void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
 			std::string tranzTitle = ads.categoryTranzactionTitleLineEdit->text().toStdString();
 			std::string tranzSource = this->usernameLoggedIn;
 			std::string tranzDestination = ads.categoryTranzactionDestinationLineEdit->text().toStdString();
-			std::string timeStamp = this->getCurrentDateTime();
+			std::string timeStamp = this->getCurrentDateTime() + ".000";
 			std::string tranzFinanceName = ads.categoryFinancePicker->currentText().toStdString();
 			clever::TranzactionType trType = clever::TranzactionType::Spending;
 			float tranzVal = ads.categoryTranzactionValueLineEdit->text().toFloat();
@@ -415,8 +417,7 @@ void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
 				tranzDescription,
 				tranzCategoryName);
 
-
-			this->all_user_tranzactions.push_back(newTranzaction);
+			this->all_user_tranzactions.insert(this->all_user_tranzactions.begin(), 1, newTranzaction);
 		}
 	}
 }
@@ -875,8 +876,7 @@ void Dashboard::on_spendingsCategoriesPushButton_clicked()
 
 void Dashboard::on_backToTranzactionsPushButtton_clicked()
 {
-	ui.stackedWidget->setCurrentWidget(ui.tranzactionsHistoryPage);
-	updateTranzactionsDefault();
+	on_transactionsCommandLinkButton_clicked();
 }
 
 void Dashboard::on_showFinanceHistory_clicked()
@@ -1127,7 +1127,6 @@ void Dashboard::on_healthCommandLinkButton_clicked()
 
 void Dashboard::loadTranzactionsHistory()
 {
-	// TO DO.
 	// loads all transactions
 	bool allGood = false;
 	bool stillConnectedWaitingForAnswer = true;
@@ -1302,7 +1301,6 @@ void Dashboard::loadRecurenciesComboBoxes()
 		}
 	}
 }
-
 void Dashboard::addIncomeExec(AddIncomeDialog& adi)
 {
 	if (adi.exec())
@@ -1402,4 +1400,154 @@ std::string Dashboard::getCurrentDateTime()
 	dateTimeX += std::to_string(currSec);
 
 	return dateTimeX;
+}
+
+void Dashboard::loadSavings()
+{
+	bool allGood = false;
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UsernameGetSavings(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int savingsToCome = 0;
+	int savingsIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetSavingsResponse)
+		{
+			msg >> savingsToCome;
+		}
+	}
+	if (savingsToCome > 0)
+	{
+		if (ui.savingPicker->itemText(0) == "No Savings added to this account.")
+		{
+			ui.savingPicker->removeItem(0);
+		}
+		map_savings.clear();
+	}
+	else
+	{
+		return;
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			QTimer::singleShot(2250, msgBox, SLOT(close()));
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (savingsIndex == savingsToCome)
+		{
+			allGood = true;
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetSavingsResponse)
+			{
+				char savingTitle[1024]; msg >> savingTitle;
+				float savingGoal; msg >> savingGoal;
+				float savingCurrentMoney; msg >> savingCurrentMoney;
+				char savingCurrencyISO[1024]; msg >> savingCurrencyISO;
+				char savingInitialDate[1024]; msg >> savingInitialDate;
+
+				clever::SavingHandler newSaving(savingTitle, savingGoal, savingCurrencyISO, savingInitialDate, savingCurrentMoney);
+				map_savings.insert(std::pair<std::string, clever::SavingHandler>(savingTitle, newSaving));
+				ui.savingPicker->addItem(newSaving.getSavingTitle());
+				savingsIndex++;
+			}
+		}
+	}
+}
+void Dashboard::on_savingPicker_currentTextChanged(const QString& SavingChosen)
+{
+	ui.savingTitleLineEdit->setText(SavingChosen);
+	float val = this->map_savings[SavingChosen.toStdString()].getSavingGoal();
+	std::string valToShow = std::to_string(val);
+	if (valToShow.find('.'))
+	{
+		valToShow.erase(valToShow.find('.') + 3);
+	}
+	ui.savingGoalLineEdit->setText(valToShow.c_str());
+	ui.savingISOLabel->setText(this->map_savings[SavingChosen.toStdString()].getSavingCurrencyISO());
+	float currMoney = this->map_savings[SavingChosen.toStdString()].getSavingCurrMoney();
+	int percent = (int)((currMoney / val) * 100.0);
+	ui.savingCurrProgressBar->setValue(percent);
+	ui.savingDateEstablishmentLineEdit->setText(this->map_savings[SavingChosen.toStdString()].getSavingInitialDate());
+}
+
+void Dashboard::on_addSavingPushButton_clicked()
+{
+	std::string datetime = this->getCurrentDateTime();
+	std::stringstream ss(datetime);
+	std::string date;
+	std::getline(ss, date, ' ');
+	AddSavingDialog asd(date,this->usernameLoggedIn, this);
+	asd.isoLabel->setText(ui.preferenceCurrencyComboBox->currentText());
+	if (asd.exec())
+	{
+		if (asd.result() == QDialog::Accepted)
+		{
+			std::string savingTitle = asd.savingTitleLineEdit->text().toStdString();
+			float goal = asd.savingGoalLineEdit->text().toFloat();
+			std::string savingCurrencyISO = asd.isoLabel->text().toStdString();
+			clever::SavingHandler newSaving(savingTitle, goal, savingCurrencyISO, date, 0.0f);
+			map_savings.insert(std::pair<std::string, clever::SavingHandler>(savingTitle, newSaving));
+			ui.savingPicker->addItem(newSaving.getSavingTitle());
+			ui.savingPicker->setCurrentText(newSaving.getSavingTitle());
+		}
+	}
+}
+
+void Dashboard::on_addFundsSavingPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.savingPicker->itemText(0) == "No Savings added to this account.")
+	{
+		msgBox->setText("First add savings!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (ui.savingCurrProgressBar->value() == 100)
+	{
+		msgBox->setText("Saving goal is completed! Congrats!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	AddFundsToSavingDialog afts(this->usernameLoggedIn,this->map_cards,this);
+	afts.savingTitle->setText(ui.savingPicker->currentText());
+	if (afts.exec())
+	{
+		if (afts.result() == QDialog::Accepted)
+		{
+			// update current money of saving and update progress bar.
+			this->map_cards = afts.getMapCardsUpdated();
+			float currMoneyOld = this->map_savings[afts.savingTitle->text().toStdString()].getSavingCurrMoney();
+			this->map_savings[afts.savingTitle->text().toStdString()].setSavingCurrMoney(currMoneyOld+afts.valueLineEdit->text().toFloat());
+			float currMoney = this->map_savings[afts.savingTitle->text().toStdString()].getSavingCurrMoney();
+			float val = this->map_savings[afts.savingTitle->text().toStdString()].getSavingGoal();
+			int percent = (int)((currMoney / val) * 100.0);
+			ui.savingCurrProgressBar->setValue(percent);
+		}
+	}
 }

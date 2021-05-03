@@ -408,6 +408,44 @@ void Client::UsernameAddSpendings(const std::string& username, std::vector<std::
 	Send(msg);
 }
 
+void Client::UsernameGetSavings(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::GetSavingsUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
+
+void Client::UsernameAddFundsToSaving(const std::string& username, const std::string& value, const std::string& fromCardName, const std::string& toSaving)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddFundsToSavingUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_value[1024]; strcpy(l_value, value.c_str());
+	char l_fromCardName[1024]; strcpy(l_fromCardName, fromCardName.c_str());
+	char l_toSaving[1024]; strcpy(l_toSaving, toSaving.c_str());
+
+	msg << l_username << l_value << l_fromCardName << l_toSaving;
+	Send(msg);
+}
+
+void Client::UsernameAddSaving(const std::string& username, const clever::SavingHandler& savingToAdd)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddSavingUsernameRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_title[1024]; strcpy(l_title, savingToAdd.getSavingTitle());
+	float l_goal = savingToAdd.getSavingGoal();
+	float l_currmoney = savingToAdd.getSavingCurrMoney();
+	char l_currencyISO[1024]; strcpy(l_currencyISO, savingToAdd.getSavingCurrencyISO());
+	char l_initialdate[1024]; strcpy(l_initialdate, savingToAdd.getSavingInitialDate());
+
+	msg << l_username << l_title << l_goal << l_currmoney << l_currencyISO << l_initialdate;
+	Send(msg);
+}
+
+
 std::string Client::getIpAddressTo()
 {
 	return instance->ip_address_to;
