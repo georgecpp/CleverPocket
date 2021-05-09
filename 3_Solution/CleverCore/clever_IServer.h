@@ -758,6 +758,70 @@ namespace clever
 			std::string query = "INSERT INTO [CleverPocket].[dbo].[Recurencies](UserId, RecurenciesName, RecurenciesReceiver, RecurenciesValue, RecurenciesCard, RecurenciesISO, DayOfMonth, RecurenciesTypeID) VALUES (" + userID + "," + incomeName + "," + incomeSource + "," + incomeValue + "," + incomeToCard + "," + incomeCurrencyISO + "," + dayOfIncome + ", 1)";
 			ExecQuery(query);
 		}
+		void OnGetBudgetUsername(char username[], clever::BudgetHandler& budget)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}	
+			std::string queryGetBudget = "SELECT [BudgetStartDate], [BudgetEndDate], [BudgetSetValue] FROM [CleverPocket].[dbo].[Budgets] WHERE UserID = " + resultUserID;
+			std::string resultBudget = GetQueryExecRowsetResult(queryGetBudget, 1, 3);
+			if (resultBudget == "")
+			{
+				throw NoBudgetSetForCurrentUser("No budget for this user...");
+			}
+			std::stringstream ss(resultBudget);
+			std::string row;
+			if (std::getline(ss, row, '\n'))
+			{
+				std::stringstream ssfields(row);
+				std::string startDate;
+				std::string endDate;
+				std::string value;
+
+				std::getline(ssfields, startDate, ';');
+				std::getline(ssfields, endDate, ';');
+				std::getline(ssfields, value, ';');
+
+				budget.setBudgetValue(std::stof(value));
+				budget.setBudgetStartDate(startDate);
+				budget.setBudgetEndDate(endDate);
+			}
+		}
+		void OnAddBudget(char username[], const clever::BudgetHandler& budgetToAdd)
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			resultUserID = convertToSqlVarcharFormat(resultUserID.c_str());
+			std::string l_startDate = convertToSqlVarcharFormat(budgetToAdd.getBudgetStartDate());
+			std::string l_endDate = convertToSqlVarcharFormat(budgetToAdd.getBudgetEndDate());
+			std::string l_val = convertToSqlVarcharFormat(std::to_string(budgetToAdd.getBudgetValue()).c_str());
+			std::string l_currSpent = convertToSqlVarcharFormat("0");
+
+			std::string queryInsertBudget = "INSERT INTO [dbo].[Budgets] ([UserID],[BudgetStartDate],[BudgetEndDate],[BudgetSetValue],[BudgetCurrentSpentMoney]) VALUES (" + resultUserID + ", " + l_startDate + ", " + l_endDate + ", " + l_val + ", " + l_currSpent + ")";
+			ExecQuery(queryInsertBudget);
+		}
+		void OnDeleteBudget(char username[])
+		{
+			std::string l_username = convertToSqlVarcharFormat(username);
+			std::string userIDQuery = "SELECT UserID FROM CleverPocket.dbo.Users WHERE Username = " + l_username;
+			std::string resultUserID = GetQueryExecResult(userIDQuery);
+			if (resultUserID == "")
+			{
+				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
+			}
+			resultUserID = convertToSqlVarcharFormat(resultUserID.c_str());
+			std::string deleteBudgetQuery = "DELETE FROM [dbo].[Budgets] WHERE UserID = " + resultUserID;
+			ExecQuery(deleteBudgetQuery);
+		}
 		void OnGetSavingsUsername(char username[], std::vector<clever::SavingHandler>& savings)
 		{
 			std::string l_username = convertToSqlVarcharFormat(username);
@@ -767,7 +831,6 @@ namespace clever
 			{
 				throw UsernameInvalidLoginError("We couldn't find any user with this username... operation down");
 			}
-			std::cout << resultUserID;
 			std::string queryGetAllSavings = "SELECT [SavingTitle], [SavingGoal], [SavingCurrencyISO], [SavingInitialDate], [SavingCurrentMoney] FROM [CleverPocket].[dbo].[Savings] WHERE UserID = " + resultUserID;
 			std::string resultAllSavings = GetQueryExecRowsetResult(queryGetAllSavings, 1, 5);
 			std::stringstream ss(resultAllSavings);

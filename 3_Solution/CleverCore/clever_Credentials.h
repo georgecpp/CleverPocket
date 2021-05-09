@@ -512,4 +512,52 @@ namespace clever
 		bool m_SavingCompleted;
 	};
 
+	class BudgetHandler
+	{
+	public:
+		BudgetHandler() {}
+		BudgetHandler(std::string startDate, std::string endDate, float value)
+			: m_budgetStartDate(startDate), m_budgetEndDate(endDate), m_budgetValue(value)
+		{
+
+		}
+		const char* getBudgetStartDate() const
+		{
+			if (m_budgetStartDate != "")
+			{
+				return this->m_budgetStartDate.c_str();
+			}
+			return NULL;
+		}
+		const char* getBudgetEndDate() const
+		{
+			if (m_budgetEndDate != "")
+			{
+				return this->m_budgetEndDate.c_str();
+			}
+			return NULL;
+		}
+		float getBudgetValue() const
+		{
+			return m_budgetValue;
+		}
+		void setBudgetStartDate(std::string newStartDate)
+		{
+			this->m_budgetStartDate = newStartDate;
+		}
+		void setBudgetEndDate(std::string newEndDate)
+		{
+			this->m_budgetEndDate = newEndDate;
+		}
+		void setBudgetValue(float newValue)
+		{
+			this->m_budgetValue = newValue;
+		}
+
+	private:
+		std::string m_budgetStartDate;
+		std::string m_budgetEndDate;
+		float m_budgetValue;
+	};
+
 }

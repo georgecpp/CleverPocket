@@ -55,6 +55,9 @@ public:
 	void UsernameGetSavings(const std::string& username);
 	void UsernameAddFundsToSaving(const std::string& username, const std::string& value, const std::string& fromCardName, const std::string& toSaving);
 	void UsernameAddSaving(const std::string& username, const clever::SavingHandler& savingToAdd);
+	void UserGetBudget(const std::string& username);
+	void UserAddBudget(const std::string& username, const clever::BudgetHandler& budgetToAdd);
+	void UserDeleteBudget(const std::string& username);
 public:
 	std::string getIpAddressTo();
 	int getPortTo();

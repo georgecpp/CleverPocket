@@ -56,5 +56,11 @@ namespace clever
 		ServerAddSavingResponse,
 		AddFundsToSavingUsernameRequest,
 		ServerAddFundsToSavingResponse,
+		GetBudgetRequest,
+		ServerGetBudgetResponse,
+		AddBudgetRequest,
+		ServerAddBudgetResponse,
+		DeleteBudgetRequest,
+		ServerDeleteBudgetResponse,
 	};
 }

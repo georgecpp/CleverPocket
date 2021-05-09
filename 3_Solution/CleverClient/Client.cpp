@@ -445,6 +445,39 @@ void Client::UsernameAddSaving(const std::string& username, const clever::Saving
 	Send(msg);
 }
 
+void Client::UserGetBudget(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::GetBudgetRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	msg << l_username;
+	Send(msg);
+}
+
+void Client::UserAddBudget(const std::string& username, const clever::BudgetHandler& budgetToAdd)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::AddBudgetRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+	char l_startDate[1024]; strcpy(l_startDate, budgetToAdd.getBudgetStartDate());
+	char l_endDate[1024]; strcpy(l_endDate, budgetToAdd.getBudgetEndDate());
+	float l_value = budgetToAdd.getBudgetValue();
+
+	msg << l_username << l_startDate << l_endDate << l_value;
+	Send(msg);
+
+}
+
+void Client::UserDeleteBudget(const std::string& username)
+{
+	clever::message<clever::MessageType> msg;
+	msg.header.id = clever::MessageType::DeleteBudgetRequest;
+	char l_username[1024]; strcpy(l_username, username.c_str());
+
+	msg << l_username;
+	Send(msg);
+}
+
 
 std::string Client::getIpAddressTo()
 {

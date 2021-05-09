@@ -34,6 +34,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
 	loadSavings();
+	loadBudgets();
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -49,6 +50,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	ui.preferenceCurrencyComboBox->setCurrentText(QString(userCashCurrencyISO.c_str()));
 	loadTranzactionsHistory();
 	loadSavings();
+	loadBudgets();
 }
 
 Dashboard::~Dashboard()
@@ -418,6 +420,7 @@ void Dashboard::addSpendingExec(AddSpendingsDialog& ads)
 				tranzCategoryName);
 
 			this->all_user_tranzactions.insert(this->all_user_tranzactions.begin(), 1, newTranzaction);
+			load_spendingsTotals();
 		}
 	}
 }
@@ -519,6 +522,66 @@ void Dashboard::insertBDProfiePicture(std::string& hexImg)
 			stillConnectedWaitingAnswer = false;
 		}
 	}
+}
+
+void Dashboard::load_spendingsTotals()
+{
+	float transportTotal = 0;
+	float educationTotal = 0;
+	float  shoppingTotal = 0;
+	float freeTimeTotal = 0;
+	float healthTotal = 0;
+	float holidayTotal = 0;
+
+	std::time_t t = std::time(0); // get time now.
+	std::tm* now = std::localtime(&t);
+	int month = 1 + (now->tm_mon);
+	std::string tranzMonth;
+	std::string currMonth = "";
+	if (month < 10)
+	{
+		currMonth += "0";
+	}
+	currMonth += std::to_string(month);
+	for (auto& it : this->all_user_tranzactions)
+	{
+		tranzMonth = it.getTranzactionTimestamp();
+		tranzMonth = tranzMonth.substr(5, 2); // yyyy-mm-dd hh:mm:ss
+		if (currMonth == tranzMonth)
+		{
+			if (strcmp(it.getTranzactionCategoryName(),"Education")==0)
+			{
+				educationTotal += it.getTranzactionValue();
+			}
+			if (strcmp(it.getTranzactionCategoryName(), "Free Time")==0)
+			{
+				freeTimeTotal += it.getTranzactionValue();
+			}
+			if (strcmp(it.getTranzactionCategoryName(), "Health & Self-Care")==0)
+			{
+				healthTotal += it.getTranzactionValue();
+			}
+			if (strcmp(it.getTranzactionCategoryName(), "Holiday & Travel")==0)
+			{
+				holidayTotal += it.getTranzactionValue();
+			}
+			if (strcmp(it.getTranzactionCategoryName(), "Public Transport & Taxi")==0)
+			{
+				transportTotal += it.getTranzactionValue();
+			}
+			if (strcmp(it.getTranzactionCategoryName(),"Shopping")==0)
+			{
+				shoppingTotal += it.getTranzactionValue();
+			}
+		}
+	}
+
+	ui.transportMonthSpentLabel->setText(getFloatText2Decimal(transportTotal).c_str());
+	ui.freeTimeMonthSpentLabel->setText(getFloatText2Decimal(freeTimeTotal).c_str());
+	ui.holidayMonthSpentLabel->setText(getFloatText2Decimal(holidayTotal).c_str());
+	ui.healthMonthSpentLabel->setText(getFloatText2Decimal(healthTotal).c_str());
+	ui.shoppingMonthSpentLabel->setText(getFloatText2Decimal(shoppingTotal).c_str());
+	ui.educationMonthSpentLabel->setText(getFloatText2Decimal(educationTotal).c_str());
 }
 
 void Dashboard::loadCurrencyISOS()
@@ -872,6 +935,8 @@ void Dashboard::on_TranzactionTypeSelected()
 void Dashboard::on_spendingsCategoriesPushButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
+	load_spendingsTotals();
+	drawTotalSpendingsChart();
 }
 
 void Dashboard::on_backToTranzactionsPushButtton_clicked()
@@ -1104,7 +1169,9 @@ void Dashboard::on_savingsCommandLinkButton_clicked()
 
 void Dashboard::on_budgetCommandLinkButton_clicked()
 {
+	turnIntoBudgetSet(this->currentlyOnBudget);
 	ui.stackedWidget->setCurrentWidget(ui.budgetPage);
+	ui.budgetISOLabel->setText(this->userCashCurrencyISO.c_str());
 }
 
 void Dashboard::on_savingsbackToGoalsPushButton_clicked()
@@ -1115,6 +1182,145 @@ void Dashboard::on_savingsbackToGoalsPushButton_clicked()
 void Dashboard::on_budgetbackToGoalsPushButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_backToDashboardGoalsLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
+}
+
+void Dashboard::on_budgetpickStartDatePushButton_clicked()
+{
+	DatePickerDialog datePicker(this);
+	datePicker.calendarWidget->setMinimumDate(QDate::currentDate());
+	if (datePicker.exec())
+	{
+		if (datePicker.result() == QDialog::Accepted)
+		{
+			ui.budgetStartDateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+		}
+	}
+}
+
+void Dashboard::on_budgetpickEndDatePushButton_clicked()
+{
+	DatePickerDialog datePicker(this);
+	datePicker.calendarWidget->setMinimumDate(QDate::currentDate().addDays(1));
+	if (datePicker.exec())
+	{
+		if (datePicker.result() == QDialog::Accepted)
+		{
+			ui.budgetEndDateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+		}
+	}
+}
+
+void Dashboard::on_budgetSetPushButton_clicked()
+{
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.budgetStartDateLineEdit->text() == "" || ui.budgetEndDateLineEdit->text() == "" || ui.valueNotToExceedLineEdit->text() == "")
+	{
+		msgBox->setText("Please fill all the boxes!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	float valBudget = ui.valueNotToExceedLineEdit->text().toFloat();
+	if (valBudget < 0)
+	{
+		msgBox->setText("Only positive numbers allowed!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	std::string startDate = QDate::fromString(ui.budgetStartDateLineEdit->text()).toString("yyyy-MM-dd").toStdString();
+	std::string endDate = QDate::fromString(ui.budgetEndDateLineEdit->text()).toString("yyyy-MM-dd").toStdString();
+	
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	clever::BudgetHandler newBudget(startDate, endDate, valBudget);
+	c.UserAddBudget(this->usernameLoggedIn, newBudget);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerAddBudgetResponse)
+		{
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessAddBudget") == 0)
+			{
+				msgBox->setText("Budget added with succes!");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+				this->user_budget = newBudget;
+				this->currentlyOnBudget = true;
+				turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				msgBox->setText("Failed to add budget. Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+			}
+		}
+	}
+}
+
+void Dashboard::on_deleteBudgetPushButton_clicked()
+{
+	// delete current budget and restore context on budgetPage.
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserDeleteBudget (this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerDeleteBudgetResponse)
+		{
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessDeleteBudget") == 0)
+			{
+				msgBox->setText("Budget deleted with succes!");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+				ui.budgetEndDateLineEdit->clear();
+				ui.budgetStartDateLineEdit->clear();
+				ui.valueNotToExceedLineEdit->clear();
+				this->currentlyOnBudget = false;
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				msgBox->setText("Failed to delet budget. Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+			}
+		}
+	}
 }
 
 void Dashboard::on_healthCommandLinkButton_clicked()
@@ -1402,6 +1608,16 @@ std::string Dashboard::getCurrentDateTime()
 	return dateTimeX;
 }
 
+std::string Dashboard::getFloatText2Decimal(float value)
+{
+	std::string valToShow = std::to_string(value);
+	if (valToShow.find('.'))
+	{
+		valToShow.erase(valToShow.find('.') + 3);
+	}
+	return valToShow;
+}
+
 void Dashboard::loadSavings()
 {
 	bool allGood = false;
@@ -1477,6 +1693,7 @@ void Dashboard::loadSavings()
 		}
 	}
 }
+
 void Dashboard::on_savingPicker_currentTextChanged(const QString& SavingChosen)
 {
 	ui.savingTitleLineEdit->setText(SavingChosen);
@@ -1550,4 +1767,116 @@ void Dashboard::on_addFundsSavingPushButton_clicked()
 			ui.savingCurrProgressBar->setValue(percent);
 		}
 	}
+}
+void Dashboard::loadBudgets()
+{
+
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserGetBudget(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetBudgetResponse)
+		{
+			char responseBack[1024]; msg >> responseBack;
+			if (strcmp(responseBack, "SuccessGetBudget") == 0)
+			{
+				char budgetStartDate[1024]; msg >> budgetStartDate;
+				char budgetEndDate[1024]; msg >> budgetEndDate;
+				float budgetValue; msg >> budgetValue;
+				
+				this->user_budget.setBudgetStartDate(budgetStartDate);
+				this->user_budget.setBudgetEndDate(budgetEndDate);
+				this->user_budget.setBudgetValue(budgetValue);
+				this->currentlyOnBudget = true;
+				
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				this->currentlyOnBudget = false;
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+		}
+	}
+}
+
+void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
+{
+	ui.deleteBudgetPushButton->setEnabled(isUserOnBudget); ui.deleteBudgetPushButton->setVisible(isUserOnBudget);
+	ui.currentlyOnBudgetLabel->setEnabled(isUserOnBudget); ui.currentlyOnBudgetLabel->setVisible(isUserOnBudget);
+	ui.budgetStartDateLineEdit->setReadOnly(isUserOnBudget); ui.budgetStartDateLineEdit->setEnabled(!isUserOnBudget);
+	ui.budgetEndDateLineEdit->setReadOnly(isUserOnBudget); ui.budgetEndDateLineEdit->setEnabled(!isUserOnBudget);
+	ui.budgetSetPushButton->setEnabled(!isUserOnBudget);
+	ui.valueNotToExceedLineEdit->setReadOnly(isUserOnBudget); ui.valueNotToExceedLineEdit->setEnabled(!isUserOnBudget);
+
+	if (isUserOnBudget)
+	{
+		ui.budgetStartDateLineEdit->setText(user_budget.getBudgetStartDate());
+		ui.budgetEndDateLineEdit->setText(user_budget.getBudgetEndDate());
+		ui.valueNotToExceedLineEdit->setText(std::to_string(user_budget.getBudgetValue()).c_str());
+	}
+	else
+	{
+		ui.budgetStartDateLineEdit->setText(QDate::currentDate().toString());
+	}
+}
+
+void Dashboard::drawTotalSpendingsChart()
+{
+	QPieSeries* series = new QPieSeries;
+	series->append("Jane",1);
+	series->append("Joe", 2);
+	series->append("Andy", 3);
+	series->append("Barbara", 4);
+	series->append("Axel", 5);
+
+	QChart* totalSpendingsChart = new QChart;
+	totalSpendingsChart->addSeries(series);
+	totalSpendingsChart->setTitle("Total Spendings");
+	totalSpendingsChart->legend()->hide();
+
+	series->setLabelsVisible();
+	series->setLabelsPosition(QtCharts::QPieSlice::LabelInsideHorizontal);
+
+	///*for (QList<QPieSlice*>::iterator it = series->slices().begin(); it != series->slices().end(); it++)
+	//{
+	//	
+	//}*/
+
+	QChartView* chartView = new QChartView(totalSpendingsChart);
+	chartView->setRenderHint(QPainter::Antialiasing);
+	
+	//chart = QtChart.QChart()
+	//	chart.addSeries(series)
+	//	chart.setTitle("Simple piechart example")
+	//	chart.legend().hide()
+
+	//	series.setLabelsVisible()
+	//	series.setLabelsPosition(QtChart.QPieSlice.LabelInsideHorizontal)
+
+	//	for slice in series.slices() :
+	//		slice.setLabel("{:.1f}%".format(100 * slice.percentage()))
+
+	//		chartView = QtChart.QChartView(chart)
+	//		chartView.setRenderHint(QtGui.QPainter.Antialiasing)
+
+	//		window = QtWidgets.QMainWindow()
+	//		window.setCentralWidget(chartView)
+	//		window.resize(640, 480)
+	//		window.show()
+
 }

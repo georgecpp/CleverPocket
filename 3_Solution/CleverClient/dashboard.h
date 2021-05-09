@@ -15,6 +15,11 @@
 #include<addspendingsdialog.h>
 #include <addfundstosavingdialog.h>
 #include <addsavingdialog.h>
+#include <QtCharts/qpieseries.h>
+#include <QtCharts/qchart.h>
+#include <QtCharts/qchartview.h>
+
+using namespace QtCharts;
 
 
 enum class TranzactionFilters
@@ -47,8 +52,10 @@ private:
 	std::map<std::string, clever::FinanceTypeCredentialHandler> map_recurencies;
 	std::map<std::string, clever::SavingHandler> map_savings;
 	clever::CredentialHandler user_information;
+	clever::BudgetHandler user_budget;
 	std::string dailyMailState;
 	std::string profilePicture;
+	bool currentlyOnBudget;
 private:
 	void logout();
 	void loadCash();
@@ -58,6 +65,7 @@ private:
 	void loadRecurencies();
 	void loadRecurenciesComboBoxes();
 	void loadSavings();
+	void loadBudgets();
 	void addIncomeExec(AddIncomeDialog& adi);
 	void addOutcomeExec(AddOutComeDialog& ado);
 	void addSpendingExec(AddSpendingsDialog& ads);
@@ -69,6 +77,7 @@ private:
 	void toggleTranzactionsButtons(int state);
 	void populateTranzactionsFinanceType();
 	void insertBDProfiePicture(std::string& hexImg);
+	void load_spendingsTotals();
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
@@ -110,11 +119,19 @@ private slots:
 	void on_budgetCommandLinkButton_clicked();
 	void on_savingsbackToGoalsPushButton_clicked();
 	void on_budgetbackToGoalsPushButton_clicked();
+	void on_backToDashboardGoalsLinkButton_clicked();
+	void on_budgetpickStartDatePushButton_clicked();
+	void on_budgetpickEndDatePushButton_clicked();
+	void on_budgetSetPushButton_clicked();
+	void on_deleteBudgetPushButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void prepareAllOptionsComboBox();
 	void refreshCash();
+	void drawTotalSpendingsChart();
+	void turnIntoBudgetSet(bool isUserOnBudget);
 	std::string getCurrentDateTime();
+	std::string getFloatText2Decimal(float value);
 private:
 	std::string currFinanceName;
 	std::string currTranzType;

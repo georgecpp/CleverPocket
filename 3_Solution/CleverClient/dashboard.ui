@@ -37,7 +37,7 @@
     <string notr="true"/>
    </property>
    <property name="currentIndex">
-    <number>9</number>
+    <number>5</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="financesCommandLinkButton">
@@ -1150,6 +1150,84 @@
       <string>Education</string>
      </property>
     </widget>
+    <widget class="QLabel" name="holidayMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>690</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="healthMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>480</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="freeTimeMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>120</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="shoppingMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>60</x>
+       <y>130</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="educationMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>350</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="transportMonthSpentLabel">
+     <property name="geometry">
+      <rect>
+       <x>80</x>
+       <y>560</y>
+       <width>71</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="periodicallyIncomePage">
     <widget class="QComboBox" name="incomeOptions">
@@ -1540,6 +1618,19 @@
       <string>Budget</string>
      </property>
     </widget>
+    <widget class="QCommandLinkButton" name="backToDashboardGoalsLinkButton">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>650</y>
+       <width>222</width>
+       <height>48</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Back to Dashboard</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="savingsPage">
     <widget class="QComboBox" name="savingsOptions">
@@ -1751,14 +1842,187 @@
     <widget class="QPushButton" name="budgetbackToGoalsPushButton">
      <property name="geometry">
       <rect>
-       <x>480</x>
-       <y>670</y>
+       <x>120</x>
+       <y>690</y>
        <width>171</width>
        <height>51</height>
       </rect>
      </property>
      <property name="text">
       <string>Take me back to Goals</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="budgetStartDateLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>280</y>
+       <width>191</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="budgetEndDateLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>760</x>
+       <y>280</y>
+       <width>201</width>
+       <height>31</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label">
+     <property name="geometry">
+      <rect>
+       <x>340</x>
+       <y>470</y>
+       <width>231</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>I don't want to spend more than:</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="valueNotToExceedLineEdit">
+     <property name="geometry">
+      <rect>
+       <x>580</x>
+       <y>470</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="budgetISOLabel">
+     <property name="geometry">
+      <rect>
+       <x>720</x>
+       <y>470</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>TextLabel</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="budgetSetPushButton">
+     <property name="geometry">
+      <rect>
+       <x>580</x>
+       <y>540</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Let's go!</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>250</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>From</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>760</x>
+       <y>250</y>
+       <width>55</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>To</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="budgetpickStartDatePushButton">
+     <property name="geometry">
+      <rect>
+       <x>310</x>
+       <y>330</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PickDate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>350</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Icon</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="budgetpickEndDatePushButton">
+     <property name="geometry">
+      <rect>
+       <x>760</x>
+       <y>330</y>
+       <width>71</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>PickDate</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>780</x>
+       <y>350</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Icon</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="currentlyOnBudgetLabel">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>80</y>
+       <width>411</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>You are currently on a budget. Do you want us to remove it?</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteBudgetPushButton">
+     <property name="geometry">
+      <rect>
+       <x>620</x>
+       <y>110</y>
+       <width>93</width>
+       <height>28</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete it</string>
      </property>
     </widget>
    </widget>

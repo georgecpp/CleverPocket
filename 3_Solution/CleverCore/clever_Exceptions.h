@@ -112,4 +112,12 @@ namespace clever
 
 		}
 	};
+	class NoBudgetSetForCurrentUser : public IException
+	{
+	public:
+		NoBudgetSetForCurrentUser(std::string err, int errcode = 12) : IException(err, errcode)
+		{
+
+		}
+	};
 }

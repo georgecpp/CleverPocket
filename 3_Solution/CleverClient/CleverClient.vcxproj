@@ -65,8 +65,9 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\;.\</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);D:\Qt\5.15.2\msvc2019_64\lib\Qt5Charts.lib;D:\Qt\5.15.2\msvc2019_64\lib\Qt5Chartsd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -74,8 +75,9 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>$(Qt_INCLUDEPATH_);%(AdditionalIncludeDirectories);$(IntDir)uic\;.\</AdditionalIncludeDirectories>
     </ClCompile>
+    <Link />
     <Link>
-      <AdditionalDependencies>$(Qt_LIBS_);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);D:\Qt\5.15.2\msvc2019_64\lib\Qt5Charts.lib;D:\Qt\5.15.2\msvc2019_64\lib\Qt5Chartsd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
@@ -142,6 +144,7 @@
     <QtMoc Include="rechargecashdialog.h" />
     <QtMoc Include="datepickerdialog.h" />
     <QtMoc Include="infotranzactiondialog.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClCompile Include="addcarddialog.cpp" />
     <ClCompile Include="addfundsdialog.cpp" />
@@ -181,6 +184,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="startup.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CleverClient.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

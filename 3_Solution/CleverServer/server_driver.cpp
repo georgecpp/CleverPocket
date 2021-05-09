@@ -967,7 +967,88 @@ protected:
 		}
 
 		break;
-		
+
+		case clever::MessageType::GetBudgetRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Get Budget (username) request\n";
+			char l_username[1024];
+
+			msg >> l_username;
+
+			char responseBack[1024];
+			clever::BudgetHandler budget;
+			msg.header.id = clever::MessageType::ServerGetBudgetResponse;
+			try
+			{
+				OnGetBudgetUsername(l_username, budget);
+				char budgetStartDate[1024]; strcpy(budgetStartDate, budget.getBudgetStartDate());
+				char budgetEndDate[1024]; strcpy(budgetEndDate, budget.getBudgetEndDate());
+				float budgetValue = budget.getBudgetValue();
+				strcpy(responseBack, "SuccessGetBudget");
+				msg << budgetValue << budgetEndDate << budgetStartDate << responseBack;
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailGetBudget");
+				msg << responseBack;
+			}
+
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::AddBudgetRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Add Budget (username) request\n";
+			char l_username[1024];
+			char l_startDate[1024];
+			char l_endDate[1024];
+			float l_value;
+
+			msg >> l_value;
+			msg >> l_endDate;
+			msg >> l_startDate;
+			msg >> l_username;
+
+			char responseBack[1024];
+			msg.header.id = clever::MessageType::ServerAddBudgetResponse;
+			clever::BudgetHandler budget(l_startDate, l_endDate, l_value);
+			try
+			{
+				OnAddBudget(l_username, budget);
+				strcpy(responseBack, "SuccessAddBudget");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailAddBudget");
+			}
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
+		case clever::MessageType::DeleteBudgetRequest:
+		{
+			std::cout << "[" << client->GetID() << "]: Delete Budget (username) request\n";
+			char l_username[1024];
+			msg >> l_username;
+
+			char responseBack[1024];
+			msg.header.id = clever::MessageType::ServerDeleteBudgetResponse;
+			try
+			{
+				OnDeleteBudget(l_username);
+				strcpy(responseBack, "SuccessDeleteBudget");
+			}
+			catch (...)
+			{
+				strcpy(responseBack, "FailDeleteBudget");
+			}
+			msg << responseBack;
+			client->Send(msg);
+		}
+		break;
+
 		}
 
 	}
