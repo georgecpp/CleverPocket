@@ -33,6 +33,7 @@ namespace clever
 			: m_asioAcceptor(m_asioContext, asio::ip::tcp::endpoint(asio::ip::address::from_string("0.0.0.0"), port))
 		{
 			didntSendTodayNotification = true;
+			didntUpdatedBudgetsForToday = true;
 		}
 
 		virtual ~server_interface()
@@ -278,6 +279,7 @@ namespace clever
 		}
 		private:
 			bool didntSendTodayNotification;
+			bool didntUpdatedBudgetsForToday;
 			std::string getToDaysDate()
 			{
 				std::string dateX = ""; // DD.MM.YYYY
@@ -405,6 +407,33 @@ namespace clever
 
 				return dateTimeX;
 			}
+		bool checkIfToVerifyBudgets()
+		{
+			std::time_t t = std::time(0); // get time now.
+			std::tm* now = std::localtime(&t);
+			// minimum 23:00:00
+			if (now->tm_hour < 23)
+			{
+				return false;
+			}
+			if (didntUpdatedBudgetsForToday)
+			{
+				std::string date = getToDaysDate();
+				FILE* fin = fopen("ServerCheckBudgets.txt", "r");
+				if (fin)
+				{
+					char buff[256]; fgets(buff, sizeof(buff), fin);
+					if (strcmp(buff, date.c_str()) == 0)
+					{
+						std::cout << "[SERVER]: Already Verified and Updated budgets for this day!\n";
+						return false;
+					}
+					fclose(fin);
+					return true;
+				}
+			}
+			return false;
+		}
 		bool checkIfToSendReccurencies()
 		{
 			std::string date = getToDaysDate();
@@ -421,6 +450,84 @@ namespace clever
 				return true;
 			}
 			return false;
+		}
+		void UpdateAndCheckBudgets()
+		{
+			if (checkIfToVerifyBudgets())
+			{
+				std::string queryAllBudgetsToday = "SELECT [UserID] FROM [CleverPocket].[dbo].[Budgets] WHERE BudgetEndDate >= CONVERT(date,GETDATE())";
+				std::string allBudgetsToday = GetQueryExecRowsetResult(queryAllBudgetsToday, 1, 1);
+				std::stringstream ss(allBudgetsToday);
+				std::string row;
+				bool updatedBudgets = false;
+				while (std::getline(ss, row, '\n'))
+				{
+					updatedBudgets = true;
+					std::stringstream ssfields(row);
+					std::string userID;
+					
+					std::getline(ssfields, userID, ';');
+					userID = convertToSqlVarcharFormat(userID.c_str());
+
+					std::string queryGetAllSpendingsForToday = "SELECT [UserID], SUM([Valoare]) FROM [CleverPocket].[dbo].[Tranzactions] WHERE CONVERT(date,Timestamp) = CONVERT(date,GETDATE()) AND TypeTranzaction = 2 AND CategoryName != 'Recurring' GROUP BY [UserID] HAVING [UserID] = " + userID;
+					std::string resultUserIDAndSpendingToday = GetQueryExecRowsetResult(queryGetAllSpendingsForToday, 1, 2);
+
+					std::stringstream ss2(resultUserIDAndSpendingToday);
+					std::string row2;
+					if (std::getline(ss2, row2, '\n'))
+					{
+						std::stringstream ssfields2(row2);
+						std::string userTO;
+						std::string spentToday;
+
+						std::getline(ssfields2, userTO, ';');
+						std::getline(ssfields2, spentToday, ';');
+
+						std::string queryBudgetSituation = "SELECT [BudgetSetValue], [BudgetCurrentSpentMoney] FROM [CleverPocket].[dbo].[Budgets] WHERE UserID = " + userTO;
+						std::string setValueVsCurrentSpent = GetQueryExecRowsetResult(queryBudgetSituation, 1, 2);
+						std::stringstream ss3(setValueVsCurrentSpent);
+
+						std::string targetMoney; std::getline(ss3, targetMoney, ';');
+						std::string currentSpentMoney; std::getline(ss3, targetMoney, ';');
+
+						float targetMoneyVal = std::stof(targetMoney);
+						float currentSpentMoneyVal = std::stof(currentSpentMoney);
+
+						userTO = convertToSqlVarcharFormat(userTO.c_str());
+						spentToday = convertToSqlVarcharFormat(spentToday.c_str());
+
+						std::string queryUpdateBudget = "UPDATE [CleverPocket].[dbo].[Budgets] SET [BudgetCurrentSpentMoney] += " + spentToday + " WHERE UserID = " + userTO;
+						ExecQuery(queryUpdateBudget);
+
+						if (currentSpentMoneyVal > targetMoneyVal || (targetMoneyVal / currentSpentMoneyVal) <= 2.0)
+						{
+							std::string queryGetEmail = "SELECT Email FROM Users WHERE UserID = " + userTO;
+							std::string emailTo = GetQueryExecResult(queryGetEmail);
+							std::string msg;
+							if (currentSpentMoneyVal > targetMoneyVal)
+							{
+								msg = "Hello there!\nIt appears that you have exceeded your budget target :(. No worry, you can always replan it using CleverPocket! \n\n";
+								msg += "\n\nAll the best,\nCleverPocket developers";
+							}
+							if ((targetMoneyVal / currentSpentMoneyVal) <= 2.0)
+							{
+								msg = "Hello there!\nIt appears that your budget target has reached half-value. Keep it down if you wanna reach the target by the end of the goal!\n\n";
+								msg += "\n\nAll the best,\nCleverPocket developers";
+							}
+							SendSMTPEmail(emailTo, msg);
+						}
+					}
+				}
+				
+				if (updatedBudgets)
+				{
+					std::cout << "[SERVER]: Finished Updating Budget Goals for this day!\n";
+					FILE* fout = fopen("ServerCheckBudgets.txt", "w");
+					std::string date = getToDaysDate();
+					fputs(date.c_str(), fout);
+					fclose(fout);
+				}
+			}
 		}
 		void InitReccurentTransactions()
 		{

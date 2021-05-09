@@ -1064,6 +1064,10 @@ int main()
 		{
 			server.SendDailyNotification();
 		}
+		if (server.checkIfToVerifyBudgets())
+		{
+			server.UpdateAndCheckBudgets();
+		}
 		server.Update(-1, true);
 	}
 	return 0;

@@ -863,39 +863,6 @@
     </widget>
    </widget>
    <widget class="QWidget" name="categoriesPage">
-    <widget class="QCommandLinkButton" name="totalSpendingsCommandLinkButton">
-     <property name="geometry">
-      <rect>
-       <x>550</x>
-       <y>300</y>
-       <width>331</width>
-       <height>311</height>
-      </rect>
-     </property>
-     <property name="mouseTracking">
-      <bool>true</bool>
-     </property>
-     <property name="tabletTracking">
-      <bool>true</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">
-              QCommandLinkButton
-              {
-              background-color : lightgreen;
-              border-radius: 90px;
-              }
-              QCommandLinkButton::!hover
-              {
-              background-color : yellow;
-              border-radius: 90px;
-              }
-            </string>
-     </property>
-     <property name="text">
-      <string>TOTAL SPENDINGS</string>
-     </property>
-    </widget>
     <widget class="QCommandLinkButton" name="shoppingCommandLinkButton">
      <property name="geometry">
       <rect>
@@ -1226,6 +1193,16 @@
      </property>
      <property name="text">
       <string>0</string>
+     </property>
+    </widget>
+    <widget class="QChartView" name="graphicsView">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>240</y>
+       <width>461</width>
+       <height>351</height>
+      </rect>
      </property>
     </widget>
    </widget>
@@ -2029,6 +2006,13 @@
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QChartView</class>
+   <extends>QGraphicsView</extends>
+   <header>QtCharts</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="startup.qrc"/>
  </resources>

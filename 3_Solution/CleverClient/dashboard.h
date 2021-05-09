@@ -19,6 +19,7 @@
 #include <QtCharts/qchart.h>
 #include <QtCharts/qchartview.h>
 
+
 using namespace QtCharts;
 
 

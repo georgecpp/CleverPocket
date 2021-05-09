@@ -1,5 +1,5 @@
-#include "dashboard.h"
 #include "Client.h"
+#include "dashboard.h"
 #include <qmessagebox.h>
 #include <qtimer.h>
 #include <qfiledialog.h>
@@ -582,6 +582,27 @@ void Dashboard::load_spendingsTotals()
 	ui.healthMonthSpentLabel->setText(getFloatText2Decimal(healthTotal).c_str());
 	ui.shoppingMonthSpentLabel->setText(getFloatText2Decimal(shoppingTotal).c_str());
 	ui.educationMonthSpentLabel->setText(getFloatText2Decimal(educationTotal).c_str());
+
+	QPieSeries* series = new QPieSeries;
+
+	series->append("Education", educationTotal);
+	series->append("Free Time", freeTimeTotal);
+	series->append("Health & Self-Care", healthTotal);
+	series->append("Holiday & Travel", holidayTotal);
+	series->append("Public Transport & Taxi", transportTotal);
+	series->append("Shopping", shoppingTotal);
+
+
+	QChart* totalSpendingsChart = new QChart;
+	totalSpendingsChart->addSeries(series);
+	totalSpendingsChart->setTitle("Total Spendings");
+	totalSpendingsChart->legend()->hide();
+	totalSpendingsChart->setAnimationOptions(QChart::AllAnimations);
+
+	series->setLabelsVisible();
+
+	ui.graphicsView->setChart(totalSpendingsChart);
+	ui.graphicsView->setRenderHint(QPainter::Antialiasing);
 }
 
 void Dashboard::loadCurrencyISOS()
@@ -936,7 +957,6 @@ void Dashboard::on_spendingsCategoriesPushButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.categoriesPage);
 	load_spendingsTotals();
-	drawTotalSpendingsChart();
 }
 
 void Dashboard::on_backToTranzactionsPushButtton_clicked()
@@ -1838,6 +1858,7 @@ void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
 void Dashboard::drawTotalSpendingsChart()
 {
 	QPieSeries* series = new QPieSeries;
+
 	series->append("Jane",1);
 	series->append("Joe", 2);
 	series->append("Andy", 3);
@@ -1857,8 +1878,10 @@ void Dashboard::drawTotalSpendingsChart()
 	//	
 	//}*/
 
-	QChartView* chartView = new QChartView(totalSpendingsChart);
-	chartView->setRenderHint(QPainter::Antialiasing);
+	//QChartView* chartView = new QChartView(totalSpendingsChart);
+	//chartView->setRenderHint(QPainter::Antialiasing);
+
+	ui.graphicsView->setChart(totalSpendingsChart);
 	
 	//chart = QtChart.QChart()
 	//	chart.addSeries(series)
@@ -1870,13 +1893,5 @@ void Dashboard::drawTotalSpendingsChart()
 
 	//	for slice in series.slices() :
 	//		slice.setLabel("{:.1f}%".format(100 * slice.percentage()))
-
-	//		chartView = QtChart.QChartView(chart)
-	//		chartView.setRenderHint(QtGui.QPainter.Antialiasing)
-
-	//		window = QtWidgets.QMainWindow()
-	//		window.setCentralWidget(chartView)
-	//		window.resize(640, 480)
-	//		window.show()
 
 }
