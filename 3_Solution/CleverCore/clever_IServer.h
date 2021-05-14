@@ -1,6 +1,6 @@
 #pragma once
-#include <tchar.h>
-#include "easendmailobj.tlh"
+//#include <tchar.h>
+//#include "easendmailobj.tlh"
 #include <ctime>
 #include "clever_inclusions.h"
 #include "clever_TSQueue.h"
@@ -9,9 +9,11 @@
 #include "clever_DBConnection.h"
 #include "clever_Exceptions.h"
 #include "clever_Credentials.h"
+#include <CkMailMan.h>
+#include <CkEmail.h>
 #include <map>
 
-using namespace EASendMailObjLib;
+//using namespace EASendMailObjLib;
 enum class ConnectSMTPCodes
 {
 	ConnectNormal,
@@ -741,47 +743,47 @@ namespace clever
 		}
 		void SendSMTPEmail(const std::string& emailTo, const std::string& body)
 		{
-			::CoInitialize(NULL); //?
-			IMailPtr oSMTP = NULL;
-			oSMTP.CreateInstance(__uuidof(EASendMailObjLib::Mail));
-			oSMTP->LicenseCode = _T("TryIt");
+			CkMailMan mailman;
 
-			// set from gmail address
-			oSMTP->FromAddr = _T("steelparrot.inc@gmail.com");
+			// Set the SMTP server.
+			mailman.put_SmtpHost("smtp.gmail.com");
+			mailman.put_SmtpPort(587);
 
-			// to gmail address.
-			oSMTP->AddRecipientEx(_bstr_t(emailTo.c_str()), 0);
+			// Set the SMTP login/password (if required)
+			mailman.put_SmtpUsername("steelparrot.inc@gmail.com");
+			mailman.put_SmtpPassword("papagaluu1");
 
-			// set email subject.
-			oSMTP->Subject = _T("CleverPocket Daily Summary");
+			// Create a new email object
+			CkEmail email;
 
-			// set email body.
-			//std::string msg = "Hello!\nLooks like you requested us to update your password, since you forgot it. Here's the validation code: " + valid_code + "\n\nAll the best,\nCleverPocket developers";
-			oSMTP->BodyText = _bstr_t(body.c_str()); // generate random code, save local to server in a file, and read it then delete.
+			email.put_Subject("CleverPocket Daily Summary");
+			email.put_Body(body.c_str());
+			email.put_From("steelparrot.inc@gmail.com");
+			bool success = email.AddTo("customer", emailTo.c_str());
+			// To add more recipients, call AddTo, AddCC, or AddBcc once per recipient.
 
-
-			// gmail SMTP Server Address.
-			oSMTP->ServerAddr = _T("smtp.gmail.com");
-
-			// gmail user authentication should use your gmail address as username
-			// extract secured from file or smt. TO DO!!
-			oSMTP->UserName = _T("steelparrot.inc@gmail.com");
-			oSMTP->Password = _T("papagaluu1");
-
-			// set port 25 or 587.
-			oSMTP->ServerPort = 587;
-
-			// detect SSL/TLS automatically
-			oSMTP->ConnectType = (long)ConnectSMTPCodes::ConnectSSLAuto;
-
-			if (oSMTP->SendMail() == 0)
-			{
-				std::cout << "[SERVER]: email was sent successfully!\r\n";
+			// Call SendEmail to connect to the SMTP server and send.
+			// The connection (i.e. session) to the SMTP server remains
+			// open so that subsequent SendEmail calls may use the
+			// same connection.  
+			success = mailman.SendEmail(email);
+			if (success != true) {
+				std::cout << mailman.lastErrorText() << "\r\n";
+				return;
 			}
-			else
-			{
-				std::cout << "[SERVER]: failed to send email with the following error:\r\n" << (const TCHAR*)oSMTP->GetLastErrDescription();
+
+			// Some SMTP servers do not actually send the email until 
+			// the connection is closed.  In these cases, it is necessary to
+			// call CloseSmtpConnection for the mail to be  sent.  
+			// Most SMTP servers send the email immediately, and it is 
+			// not required to close the connection.  We'll close it here
+			// for the example:
+			success = mailman.CloseSmtpConnection();
+			if (success != true) {
+				std::cout << "[SERVER]: Connection to SMTP server not closed cleanly." << "\r\n";
+				return;
 			}
+			std::cout << "[SERVER]: email was sent successfully!\r\n";
 		}
 		void OnAddSpendingsUsername(char username[], const std::vector<std::string>& spending_details)
 		{
@@ -1659,20 +1661,20 @@ namespace clever
 		}
 		void SendSMTPEmailValidationCodeTo(const std::string& emailTo)
 		{
-			::CoInitialize(NULL); //?
-			IMailPtr oSMTP = NULL;
-			oSMTP.CreateInstance(__uuidof(EASendMailObjLib::Mail));
-			oSMTP->LicenseCode = _T("TryIt");
+			CkMailMan mailman;
 
-			// set from gmail address
-			oSMTP->FromAddr = _T("steelparrot.inc@gmail.com");
+			// Set the SMTP server.
+			mailman.put_SmtpHost("smtp.gmail.com");
+			mailman.put_SmtpPort(587);
 
-			// to gmail address.
-			oSMTP->AddRecipientEx(_bstr_t(emailTo.c_str()), 0);
+			// Set the SMTP login/password (if required)
+			mailman.put_SmtpUsername("steelparrot.inc@gmail.com");
+			mailman.put_SmtpPassword("papagaluu1");
 
-			// set email subject.
-			oSMTP->Subject = _T("CleverPocket Forgot Password");
+			// Create a new email object
+			CkEmail email;
 
+			email.put_Subject("CleverPocket Forgot Password");
 			// set email body.
 			srand(time(NULL));
 			std::string valid_code = "";
@@ -1684,31 +1686,33 @@ namespace clever
 			fputs(valid_code.c_str(), fout);
 			fclose(fout); // remove file from disk at validation.
 			std::string msg = "Hello!\nLooks like you requested us to update your password, since you forgot it. Here's the validation code: " + valid_code+"\n\nAll the best,\nCleverPocket developers";
-			oSMTP->BodyText = _bstr_t(msg.c_str()); // generate random code, save local to server in a file, and read it then delete.
+			email.put_Body(msg.c_str());
+			email.put_From("steelparrot.inc@gmail.com");
+			bool success = email.AddTo("customer", emailTo.c_str());
+			// To add more recipients, call AddTo, AddCC, or AddBcc once per recipient.
 
-
-			// gmail SMTP Server Address.
-			oSMTP->ServerAddr = _T("smtp.gmail.com");
-
-			// gmail user authentication should use your gmail address as username
-			// extract secured from file or smt. TO DO!!
-			oSMTP->UserName = _T("steelparrot.inc@gmail.com");
-			oSMTP->Password = _T("papagaluu1"); 
-
-			// set port 25 or 587.
-			oSMTP->ServerPort = 587;
-
-			// detect SSL/TLS automatically
-			oSMTP->ConnectType = (long)ConnectSMTPCodes::ConnectSSLAuto;
-
-			if (oSMTP->SendMail() == 0)
-			{
-				std::cout << "[SERVER]: email was sent successfully!\r\n";
+			// Call SendEmail to connect to the SMTP server and send.
+			// The connection (i.e. session) to the SMTP server remains
+			// open so that subsequent SendEmail calls may use the
+			// same connection.  
+			success = mailman.SendEmail(email);
+			if (success != true) {
+				std::cout << mailman.lastErrorText() << "\r\n";
+				return;
 			}
-			else
-			{
-				std::cout<<"[SERVER]: failed to send email with the following error:\r\n"<< (const TCHAR*)oSMTP->GetLastErrDescription();
+
+			// Some SMTP servers do not actually send the email until 
+			// the connection is closed.  In these cases, it is necessary to
+			// call CloseSmtpConnection for the mail to be  sent.  
+			// Most SMTP servers send the email immediately, and it is 
+			// not required to close the connection.  We'll close it here
+			// for the example:
+			success = mailman.CloseSmtpConnection();
+			if (success != true) {
+				std::cout << "[SERVER]: Connection to SMTP server not closed cleanly." << "\r\n";
+				return;
 			}
+			std::cout << "[SERVER]: email was sent successfully!\r\n";
 		}
 	protected:
 		// Thread Safe Queue for incoming message packets
