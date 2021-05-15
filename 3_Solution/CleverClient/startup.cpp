@@ -467,6 +467,16 @@ void Startup::on_phoneNumberEdited()
 	}
 }
 
+void Startup::enterEvent(QEvent* event)
+{
+	if (ui.stackedWidget->currentIndex() == 0)
+	{
+		this->setFixedSize(QSize(800, 600));
+		ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+		this->m_dshptr = Q_NULLPTR;
+	}
+}
+
 void Startup::on_backToLoginLinkButton_clicked()
 {
 	QObject::connect(ui.backToLoginLinkButton, SIGNAL(clicked()), this, SLOT(on_backToLoginLinkButton_clicked()));

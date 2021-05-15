@@ -30,6 +30,8 @@ private:
 	std::string currPAT;
 	std::map<std::string, std::string> countries; // countryName - phoneCode
 
+protected:
+	virtual void enterEvent(QEvent* event);
 private slots:
 	void on_registerLinkButton_clicked();
 	void on_alreadyRegisteredLinkButton_clicked();

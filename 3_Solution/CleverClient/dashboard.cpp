@@ -124,6 +124,7 @@ void Dashboard::logout()
 		this->fromStackedWidget->removeWidget(this);
 		this->fromStackedWidget->setCurrentIndex(0);
 	}
+
 }
 
 void Dashboard::loadCash()
@@ -1822,8 +1823,13 @@ void Dashboard::loadBudgets()
 				this->user_budget.setBudgetEndDate(budgetEndDate);
 				this->user_budget.setBudgetValue(budgetValue);
 				this->currentlyOnBudget = true;
-				
+
 				this->turnIntoBudgetSet(currentlyOnBudget);
+				if (strcmp(this->user_budget.getBudgetEndDate(), this->getCurrentDateTime().substr(0,10).c_str()) == 0)
+				{
+					std::string result = "The budget goal is over! We can remove it for you to start another one!";
+					ui.currentlyOnBudgetLabel->setText(result.c_str());
+				}
 			}
 			else
 			{
@@ -1842,6 +1848,8 @@ void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
 	ui.budgetEndDateLineEdit->setReadOnly(isUserOnBudget); ui.budgetEndDateLineEdit->setEnabled(!isUserOnBudget);
 	ui.budgetSetPushButton->setEnabled(!isUserOnBudget);
 	ui.valueNotToExceedLineEdit->setReadOnly(isUserOnBudget); ui.valueNotToExceedLineEdit->setEnabled(!isUserOnBudget);
+	ui.budgetpickStartDatePushButton->setEnabled(!isUserOnBudget);
+	ui.budgetpickEndDatePushButton->setEnabled(!isUserOnBudget);
 
 	if (isUserOnBudget)
 	{
