@@ -19,6 +19,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	connect(ui.incomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	connect(ui.outcomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	toggleTranzactionsButtons(0);
+	ui.statisticsTabWidget->setTabPosition(QTabWidget::TabPosition::South);
 }
 
 Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -35,6 +36,7 @@ Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QW
 	loadTranzactionsHistory();
 	loadSavings();
 	loadBudgets();
+	init_statistics();
 }
 
 Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -51,6 +53,7 @@ Dashboard::Dashboard(const std::string& username, QStackedWidget* parentStackedW
 	loadTranzactionsHistory();
 	loadSavings();
 	loadBudgets();
+	init_statistics();
 }
 
 Dashboard::~Dashboard()
@@ -594,16 +597,19 @@ void Dashboard::load_spendingsTotals()
 	series->append("Shopping", shoppingTotal);
 
 
+
 	QChart* totalSpendingsChart = new QChart;
 	totalSpendingsChart->addSeries(series);
 	totalSpendingsChart->setTitle("Total Spendings");
 	totalSpendingsChart->legend()->hide();
 	totalSpendingsChart->setAnimationOptions(QChart::AllAnimations);
+	totalSpendingsChart->setBackgroundVisible(false);
 
 	series->setLabelsVisible();
 
 	ui.graphicsView->setChart(totalSpendingsChart);
 	ui.graphicsView->setRenderHint(QPainter::Antialiasing);
+
 }
 
 void Dashboard::loadCurrencyISOS()
@@ -711,6 +717,7 @@ void Dashboard::prepareAllOptionsComboBox()
 	this->prepareOptionsComboBox(ui.goalsOptions);
 	this->prepareOptionsComboBox(ui.savingsOptions);
 	this->prepareOptionsComboBox(ui.budgetOptions);
+	this->prepareOptionsComboBox(ui.statisticsOptions);
 }
 
 void Dashboard::refreshCash()
@@ -1344,6 +1351,12 @@ void Dashboard::on_deleteBudgetPushButton_clicked()
 	}
 }
 
+void Dashboard::on_statisticsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.statisticsPage);
+	this->init_statistics();
+}
+
 void Dashboard::on_healthCommandLinkButton_clicked()
 {
 	refreshCash();
@@ -1639,6 +1652,8 @@ std::string Dashboard::getFloatText2Decimal(float value)
 	return valToShow;
 }
 
+
+
 void Dashboard::loadSavings()
 {
 	bool allGood = false;
@@ -1863,43 +1878,94 @@ void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
 	}
 }
 
-void Dashboard::drawTotalSpendingsChart()
+QChart* Dashboard::generateChartForMonth(std::string monthCode)
 {
 	QPieSeries* series = new QPieSeries;
 
-	series->append("Jane",1);
-	series->append("Joe", 2);
-	series->append("Andy", 3);
-	series->append("Barbara", 4);
-	series->append("Axel", 5);
+	series->append("Income", 1);
+	series->append("Outcome", 1);
 
-	QChart* totalSpendingsChart = new QChart;
-	totalSpendingsChart->addSeries(series);
-	totalSpendingsChart->setTitle("Total Spendings");
-	totalSpendingsChart->legend()->hide();
+
+
+	QChart* chart = new QChart;
+	chart->addSeries(series);
+	chart->setTitle(monthCode.c_str());
+	chart->legend()->hide();
+	chart->setAnimationOptions(QChart::AllAnimations);
+	chart->setBackgroundVisible(false);
 
 	series->setLabelsVisible();
-	series->setLabelsPosition(QtCharts::QPieSlice::LabelInsideHorizontal);
 
-	///*for (QList<QPieSlice*>::iterator it = series->slices().begin(); it != series->slices().end(); it++)
-	//{
-	//	
-	//}*/
+	return chart;
+}
 
-	//QChartView* chartView = new QChartView(totalSpendingsChart);
-	//chartView->setRenderHint(QPainter::Antialiasing);
+void Dashboard::init_statistics()
+{
 
-	ui.graphicsView->setChart(totalSpendingsChart);
-	
-	//chart = QtChart.QChart()
-	//	chart.addSeries(series)
-	//	chart.setTitle("Simple piechart example")
-	//	chart.legend().hide()
+	std::map<int, std::string> month_code;
+	month_code.insert(std::pair<int, std::string>(1, "JAN"));
+	month_code.insert(std::pair<int, std::string>(2, "FEB"));
+	month_code.insert(std::pair<int, std::string>(3, "MAR"));
+	month_code.insert(std::pair<int, std::string>(4, "APR"));
+	month_code.insert(std::pair<int, std::string>(5, "MAY"));
+	month_code.insert(std::pair<int, std::string>(6, "JUN"));
+	month_code.insert(std::pair<int, std::string>(7, "JUL"));
+	month_code.insert(std::pair<int, std::string>(8, "AUG"));
+	month_code.insert(std::pair<int, std::string>(9, "SEP"));
+	month_code.insert(std::pair<int, std::string>(10, "OCT"));
+	month_code.insert(std::pair<int, std::string>(11, "NOV"));
+	month_code.insert(std::pair<int, std::string>(12, "DEC"));
 
-	//	series.setLabelsVisible()
-	//	series.setLabelsPosition(QtChart.QPieSlice.LabelInsideHorizontal)
+	int startMonth = QDate::currentDate().month();
+	startMonth -= 5;
+	if (startMonth <= 0)
+	{
+		startMonth = 12 - abs(startMonth);
+	}
+	std::string startMonthString = month_code[startMonth];
+	ui.firstMonthStatsChart->setChart(generateChartForMonth(startMonthString));
+	ui.firstMonthStatsChart->setRenderHint(QPainter::Antialiasing);
 
-	//	for slice in series.slices() :
-	//		slice.setLabel("{:.1f}%".format(100 * slice.percentage()))
+	std::string secondMonthString = month_code[((startMonth + 1) % 12 == 0)? 12 : (startMonth + 1) % 12];
+	ui.secondMonthStatsChart->setChart(generateChartForMonth(secondMonthString));
+	ui.secondMonthStatsChart->setRenderHint(QPainter::Antialiasing);
 
+	std::string thirdMonthString = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12];
+	ui.thirdMonthStatsChart->setChart(generateChartForMonth(thirdMonthString));
+	ui.thirdMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+
+	std::string fourthMonthString = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12];
+	ui.fourthMonthStatsChart->setChart(generateChartForMonth(fourthMonthString));
+	ui.fourthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+
+	std::string fifthMonthString = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12];
+	ui.fifthMonthStatsChart->setChart(generateChartForMonth(fifthMonthString));
+	ui.fifthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+
+	std::string sixthMonthString = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12];
+	ui.sixthMonthStatsChart->setChart(generateChartForMonth(sixthMonthString));
+	ui.sixthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+
+
+
+	ui.statisticsTabWidget->setTabText(0, "IN/OUT");
+	ui.statisticsTabWidget->setTabText(1, "Your Capital");
+	ui.statisticsUserLabel->setText(ui.firstLastNameLabel->text());
+	float allFinancesVal = 0.0f;
+	for (auto it : map_cards)
+	{
+		if (strcmp(it.second.getCardCurrencyISO(),userCashCurrencyISO.c_str())==0)
+		{
+			allFinancesVal += it.second.getCardSold();
+		}
+	}
+	allFinancesVal += std::stof(currUserCash);
+	std::string valToShow = std::to_string(allFinancesVal);
+	if (valToShow.find('.'))
+	{
+		valToShow.erase(valToShow.find('.') + 3);
+	}
+	valToShow += " ";
+	valToShow += userCashCurrencyISO;
+	ui.statisticsUserTotalFinance->setText(valToShow.c_str());
 }

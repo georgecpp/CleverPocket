@@ -79,6 +79,7 @@ private:
 	void populateTranzactionsFinanceType();
 	void insertBDProfiePicture(std::string& hexImg);
 	void load_spendingsTotals();
+	void init_statistics();
 private slots:
 	void on_financesCommandLinkButton_clicked();
 	void on_menuItemSelected(int index);
@@ -125,14 +126,15 @@ private slots:
 	void on_budgetpickEndDatePushButton_clicked();
 	void on_budgetSetPushButton_clicked();
 	void on_deleteBudgetPushButton_clicked();
+	void on_statisticsCommandLinkButton_clicked();
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void prepareAllOptionsComboBox();
 	void refreshCash();
-	void drawTotalSpendingsChart();
 	void turnIntoBudgetSet(bool isUserOnBudget);
 	std::string getCurrentDateTime();
 	std::string getFloatText2Decimal(float value);
+	QChart* generateChartForMonth(std::string monthCode);
 private:
 	std::string currFinanceName;
 	std::string currTranzType;
