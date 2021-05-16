@@ -193,10 +193,11 @@ void Dashboard::loadCash()
 				this->profilePicture = picture;
 
 				// loading profile picture
-				QByteArray ss(this->profilePicture.c_str(), this->profilePicture.length());
-				QByteArray by = QByteArray::fromBase64(ss);
-				QImage img = QImage::fromData(by, "png");
-				ui.profilePictureLabel->setPixmap(QPixmap::fromImage(img));
+				if (this->profilePicture != "")
+				{
+					QPixmap pix(QString::fromStdString(this->profilePicture));
+					ui.profilePictureLabel->setPixmap(pix);
+				}
 
 				//loading profile info
 				strcat(firstName, " ");
@@ -529,23 +530,20 @@ void Dashboard::populateTranzactionsFinanceType()
 	ui.financeTypePicker->addItem("Cash");
 }
 
-void Dashboard::insertBDProfiePicture(std::string& hexImg)
+void Dashboard::insertBDProfiePicture(std::string &filename)
 {
 	QMessageBox* msgBox = new QMessageBox;
-	if (hexImg.empty())
-	{
-		return;
-	}
+
 	bool stillConnectedWaitingAnswer = true;
 	Client& c = Client::getInstance(); // handles connection too, if it is not connected.!!
 	c.Incoming().clear();
 	if (this->usernameLoggedIn == "")
 	{
-		c.AddPATPicture(this->PATLoggedIn.toStdString(), hexImg);
+		c.AddPATPicture(this->PATLoggedIn.toStdString(), filename);
 	}
 	else
 	{
-		c.AddUsernamePicture(this->usernameLoggedIn, hexImg);
+		c.AddUsernamePicture(this->usernameLoggedIn, filename);
 	}
 	while (c.Incoming().empty())
 	{
@@ -964,6 +962,7 @@ void Dashboard::on_choseImagePushButton_clicked()
 		{
 			image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
 			ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+<<<<<<< Updated upstream
 			QByteArray imgByteArray;
 			QBuffer inByteArray(&imgByteArray);
 			image.save(&inByteArray, "png");
@@ -971,6 +970,9 @@ void Dashboard::on_choseImagePushButton_clicked()
 			insertBDProfiePicture(hexImg.toStdString());
 			this->profilePicture = hexImg.toStdString();
 			
+=======
+			insertBDProfiePicture(filename.toStdString());
+>>>>>>> Stashed changes
 		}
 		else
 		{
@@ -1165,3 +1167,871 @@ void Dashboard::loadTranzactionsHistory()
 		}
 	}
 }
+<<<<<<< Updated upstream
+=======
+
+void Dashboard::on_educationCommandLinkButton_clicked()
+{
+	refreshCash();
+	std::string categoryName = "Education";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_shoppingCommandLinkButton_clicked()
+{
+	refreshCash();
+	std::string categoryName = "Shopping";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_freeTimeCommandLinkButton_clicked()
+{
+	refreshCash();
+	std::string categoryName = "Free Time";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_holidayCommandLinkButton_clicked()
+{
+	refreshCash();
+	std::string categoryName = "Holiday & Travel";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::on_goalsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_savingsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.savingsPage);
+}
+
+void Dashboard::on_budgetCommandLinkButton_clicked()
+{
+	turnIntoBudgetSet(this->currentlyOnBudget);
+	ui.stackedWidget->setCurrentWidget(ui.budgetPage);
+	ui.budgetISOLabel->setText(this->userCashCurrencyISO.c_str());
+}
+
+void Dashboard::on_savingsbackToGoalsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_budgetbackToGoalsPushButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.goalsPage);
+}
+
+void Dashboard::on_backToDashboardGoalsLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.dashboardPage);
+}
+
+void Dashboard::on_budgetpickStartDatePushButton_clicked()
+{
+	DatePickerDialog datePicker(this);
+	datePicker.calendarWidget->setMinimumDate(QDate::currentDate());
+	if (datePicker.exec())
+	{
+		if (datePicker.result() == QDialog::Accepted)
+		{
+			ui.budgetStartDateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+		}
+	}
+}
+
+void Dashboard::on_budgetpickEndDatePushButton_clicked()
+{
+	DatePickerDialog datePicker(this);
+	datePicker.calendarWidget->setMinimumDate(QDate::currentDate().addDays(1));
+	if (datePicker.exec())
+	{
+		if (datePicker.result() == QDialog::Accepted)
+		{
+			ui.budgetEndDateLineEdit->setText(datePicker.calendarWidget->selectedDate().toString());
+		}
+	}
+}
+
+void Dashboard::on_budgetSetPushButton_clicked()
+{
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.budgetStartDateLineEdit->text() == "" || ui.budgetEndDateLineEdit->text() == "" || ui.valueNotToExceedLineEdit->text() == "")
+	{
+		msgBox->setText("Please fill all the boxes!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	float valBudget = ui.valueNotToExceedLineEdit->text().toFloat();
+	if (valBudget < 0)
+	{
+		msgBox->setText("Only positive numbers allowed!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	std::string startDate = QDate::fromString(ui.budgetStartDateLineEdit->text()).toString("yyyy-MM-dd").toStdString();
+	std::string endDate = QDate::fromString(ui.budgetEndDateLineEdit->text()).toString("yyyy-MM-dd").toStdString();
+	
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	clever::BudgetHandler newBudget(startDate, endDate, valBudget);
+	c.UserAddBudget(this->usernameLoggedIn, newBudget);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerAddBudgetResponse)
+		{
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessAddBudget") == 0)
+			{
+				msgBox->setText("Budget added with succes!");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+				this->user_budget = newBudget;
+				this->currentlyOnBudget = true;
+				turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				msgBox->setText("Failed to add budget. Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+			}
+		}
+	}
+}
+
+void Dashboard::on_deleteBudgetPushButton_clicked()
+{
+	// delete current budget and restore context on budgetPage.
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserDeleteBudget (this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerDeleteBudgetResponse)
+		{
+			char responseBack[1024];
+			msg >> responseBack;
+			if (strcmp(responseBack, "SuccessDeleteBudget") == 0)
+			{
+				msgBox->setText("Budget deleted with succes!");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+				ui.budgetEndDateLineEdit->clear();
+				ui.budgetStartDateLineEdit->clear();
+				ui.valueNotToExceedLineEdit->clear();
+				this->currentlyOnBudget = false;
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				msgBox->setText("Failed to delet budget. Server problem. Try again.");
+				msgBox->show();
+				QTimer::singleShot(2250, msgBox, SLOT(close()));
+				QString a();
+			}
+		}
+	}
+}
+
+void Dashboard::on_calculatePushButton_1_clicked()
+{
+	std::vector<float> yearValues;
+	float initialInvestment = ui.investmentValueLineEdit_1->text().toFloat();
+	float anualRate = ui.annualrateLineEdit_1->text().toFloat();
+	float monthlyContribution = ui.contributionLineEdit->text().toFloat();
+	float yearPeriod = ui.periodLineEdit->text().toFloat();
+	float totalRevenue = initialInvestment;
+	if (ui.investmentValueLineEdit_1->text() == "" || ui.annualrateLineEdit_1->text() == "0" || ui.periodLineEdit->text() == "0")
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please fill all the boxes! ");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+
+	QLineSeries* series = new QLineSeries();
+	series->append(0, totalRevenue);
+	yearValues.push_back(totalRevenue);
+
+	for (int i = 1; i < yearPeriod + 1; i++)
+	{
+		totalRevenue += totalRevenue * anualRate + 12 * monthlyContribution;
+		series->append(i, totalRevenue);
+		yearValues.push_back(totalRevenue);
+	}
+
+	for (int i = yearPeriod; i >= 0; i--)
+	{
+		*series << QPointF(qreal(i), qreal(yearValues.back());
+		yearValues.pop_back();
+	}
+	QChart* chart = new QChart();
+	chart->legend()->hide();
+	chart->addSeries(series);
+	chart->createDefaultAxes();
+	QString Title = "Investment revenue \n" + QString::number(totalRevenue);
+	chart->setTitle(Title);
+
+	QChartView* chartView = new QChartView(chart);
+	chartView->setRenderHint(QPainter::Antialiasing);
+
+}
+
+void Dashboard::on_calculatePushButton_2_clicked()
+{
+	std::vector<float> yearValues;
+	float initialInvestment = ui.investmentValueLineEdit_2->text().toFloat();
+	float anualRate = ui.annualrateLineEdit_2->text().toFloat();
+	float monthlyContribution = ui.contributionLineEdit_2->text().toFloat();
+	float yearPeriod = 0;
+	float investmentGoal = ui.investmentGoalLineEdit->text().toFloat();
+	float totalRevenue = initialInvestment;
+	float months = 0;
+	if (ui.investmentValueLineEdit_2->text() == "" || ui.annualrateLineEdit_2->text() == "0" || ui.investmentGoalLineEdit->text() == "")
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please fill all the boxes! ");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	if (initialInvestment >= investmentGoal)
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please set a greater value for Investment Goal!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+
+	QLineSeries* series = new QLineSeries();
+	series->append(0, totalRevenue);
+	yearValues.push_back(totalRevenue);
+	while (totalRevenue <= investmentGoal)
+	{
+		yearPeriod += 1;
+		totalRevenue += totalRevenue * anualRate + 12 * monthlyContribution;
+		series->append(yearPeriod, totalRevenue);
+		yearValues.push_back(totalRevenue);
+	}
+
+	float x = yearValues.back();
+	yearValues.pop_back();
+	x += x * anualRate;
+	for (int i = 0; i < 12; i++)
+	{
+		x += monthlyContribution;
+		if (x >= investmentGoal)
+		{
+			months = (i + 1)/12;
+			break;
+		}
+	}
+
+	*series << QPointF(qreal(yearPeriod + months), qreal(investmentGoal));
+	for (int i = yearPeriod; i >= 0; i--)
+	{
+		*series << QPointF(qreal(i), qreal(yearValues.back());
+		yearValues.pop_back();
+	}
+	QChart* chart = new QChart();
+	chart->legend()->hide();
+	chart->addSeries(series);
+	chart->createDefaultAxes();
+	QString Title = "Length of Time in Years \n" + QString::number(yearPeriod + months);
+	chart->setTitle(Title);
+
+	QChartView* chartView = new QChartView(chart);
+	chartView->setRenderHint(QPainter::Antialiasing);
+}
+
+void Dashboard::on_healthCommandLinkButton_clicked()
+{
+	refreshCash();
+	std::string categoryName = "Health & Self-Care";
+	AddSpendingsDialog addspendingsdialog(categoryName, this->cash_details, this->map_cards, this->usernameLoggedIn);
+	addSpendingExec(addspendingsdialog);
+}
+
+void Dashboard::loadTranzactionsHistory()
+{
+	// loads all transactions
+	bool allGood = false;
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserGetTranzactions(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int tranzactionsToCome = 0;
+	int tranzactionIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetTranzactionsResponse)
+		{
+			msg >> tranzactionsToCome;
+		}
+	}
+	if (tranzactionsToCome > 0)
+	{
+		ui.listWidget->clear();
+		all_user_tranzactions.clear();
+	}
+	else
+	{
+		return;
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (tranzactionIndex == tranzactionsToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			allGood = true;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetTranzactionsResponse)
+			{
+				char tranzactionTitle[1024]; msg >> tranzactionTitle;
+				char tranzactionSource[1024]; msg >> tranzactionSource;
+				char tranzactionDestination[1024]; msg >> tranzactionDestination;
+				char tranzactionTimestamp[1024]; msg >> tranzactionTimestamp;
+				char tranzactionFinanceName[1024]; msg >> tranzactionFinanceName;
+				unsigned int tranzType; msg >> tranzType;
+				float tranzVal; msg >> tranzVal;
+
+				char tranzactionCurrencyISO[1024]; msg >> tranzactionCurrencyISO;
+				char tranzactionDescription[1024]; msg >> tranzactionDescription;
+				char tranzactionCategoryName[1024]; msg >> tranzactionCategoryName;
+
+				clever::TranzactionType trType = (tranzType == 1) ? clever::TranzactionType::Income : clever::TranzactionType::Spending;
+
+				clever::TranzactionHandler newTranzaction(tranzactionTitle,
+					tranzactionSource,
+					tranzactionDestination,
+					tranzactionTimestamp,
+					tranzactionFinanceName,
+					trType,
+					tranzVal,
+					tranzactionCurrencyISO,
+					tranzactionDescription,
+					tranzactionCategoryName);
+
+				all_user_tranzactions.push_back(newTranzaction);
+				tranzactionIndex++;
+			}
+		}
+	}
+	if (allGood)
+	{
+		// now add to that listWidget custom items.
+		// listWidget->addItem...
+		updateTranzactionsDefault();
+	}
+}
+
+void Dashboard::loadRecurencies()
+{
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UsernameGetRecurenciesDetails(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int recurenciesToCome = 0;
+	int recurenciesIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetRecurenciesResponse)
+		{
+			msg >> recurenciesToCome;
+		}
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (recurenciesIndex == recurenciesToCome)
+		{
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetRecurenciesResponse)
+			{
+				char recurenciesName[1024]; msg >> recurenciesName;
+				char recurenciesReceiver[1024]; msg >> recurenciesReceiver;
+				char recurenciesCard[1024]; msg >> recurenciesCard;
+				char recurenciesISO[1024]; msg >> recurenciesISO;
+				char dayOfMonth[1024]; msg >> dayOfMonth;
+				char recurenciesTypeID[1024]; msg >> recurenciesTypeID;
+				float recurenciesValue; msg >> recurenciesValue;
+
+				clever::FinanceTypeCredentialHandler newIncome(recurenciesName, recurenciesReceiver, recurenciesISO, dayOfMonth, recurenciesCard, recurenciesValue, recurenciesTypeID);
+				map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(recurenciesName, newIncome));
+				recurenciesIndex++;
+			}
+		}
+	}
+	loadRecurenciesComboBoxes();
+}
+
+void Dashboard::loadRecurenciesComboBoxes()
+{
+	ui.incomePicker->clear();
+	ui.outcomePicker->clear();
+
+	for (auto& it : map_recurencies)
+	{
+		if (strcmp(it.second.getFinanceTypeRecurencies(), "1") == 0)
+		{
+			ui.incomePicker->addItem(it.second.getFinanceTypeName());
+		}
+		else
+		{
+			ui.outcomePicker->addItem(it.second.getFinanceTypeName());
+		}
+	}
+}
+void Dashboard::addIncomeExec(AddIncomeDialog& adi)
+{
+	if (adi.exec())
+	{
+		if (adi.result() == QDialog::Accepted)
+		{
+			ui.incomePicker->addItem(adi.incomeNameLineEdit->text());
+			ui.incomePicker->setCurrentText(adi.incomeNameLineEdit->text());
+			ui.incomeNameLineEdit->setText(adi.incomeNameLineEdit->text());
+			ui.incomeValueLineEdit->setText(adi.incomeValue->text());
+			ui.dayOfMonthLineEdit->setText(adi.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(adi.incomeNameLineEdit->text().toStdString(), adi.incomeSourceLineEdit->text().toStdString(), adi.cardCurrencyISO->text().toStdString(), adi.dayOfMonthComboBox->currentText().toStdString(), adi.cardsIncomeComboBox->currentText().toStdString(), adi.incomeValue->text().toFloat(), "1");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(adi.incomeNameLineEdit->text().toStdString(), newRecurencies));
+
+		}
+	}
+}
+
+void Dashboard::addOutcomeExec(AddOutComeDialog& ado)
+{
+	if (ado.exec())
+	{
+		if (ado.result() == QDialog::Accepted)
+		{
+			ui.outcomePicker->addItem(ado.OutcomeNameLineEdit->text());
+			ui.outcomePicker->setCurrentText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeNameLineEdit->setText(ado.OutcomeNameLineEdit->text());
+			ui.outcomeValueLineEdit->setText(ado.outcomeValue->text());
+			ui.outcomeDayOfMonthLineEdit->setText(ado.dayOfMonthComboBox->currentText());
+			clever::FinanceTypeCredentialHandler newRecurencies(ado.OutcomeNameLineEdit->text().toStdString(), ado.OutcomeDestinationLineEdit->text().toStdString(), ado.cardCurrencyISO->text().toStdString(), ado.dayOfMonthComboBox->currentText().toStdString(), ado.cardsOutcomeComboBox->currentText().toStdString(), ado.outcomeValue->text().toFloat(), "2");
+			this->map_recurencies.insert(std::pair<std::string, clever::FinanceTypeCredentialHandler>(ado.OutcomeNameLineEdit->text().toStdString(), newRecurencies));
+		}
+	}
+}
+
+void Dashboard::filterTranzactionsBy(TranzactionFilters filterApplied)
+{
+	switch (filterApplied)
+	{
+
+	case TranzactionFilters::TranzactionFinanceName:
+		// do stuff.
+		break;
+
+	case TranzactionFilters::TranzactionDate:
+		// do stuff;
+		break;
+	case TranzactionFilters::TranzactionType:
+		// do stuff;
+		break;
+	default:
+		break;
+	}
+}
+
+std::string Dashboard::getCurrentDateTime()
+{
+	std::string dateTimeX = "";
+	std::time_t t = std::time(0); // get time now.
+	std::tm* now = std::localtime(&t);
+	dateTimeX += std::to_string(1900 + (now->tm_year));
+	dateTimeX += "-";
+	int currMonth = 1 + (now->tm_mon);
+	if (currMonth < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currMonth);
+	dateTimeX += "-";
+	int currDay = now->tm_mday;
+	if (currDay < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currDay);
+	dateTimeX += " ";
+	int currHour = now->tm_hour;
+	if (currHour < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currHour);
+	dateTimeX += ":";
+	int currMin = now->tm_min;
+	if (currMin < 10)
+	{
+		dateTimeX += "0";
+
+	}
+	dateTimeX += std::to_string(currMin);
+	dateTimeX += ":";
+	int currSec = now->tm_sec;
+	if (currSec < 10)
+	{
+		dateTimeX += "0";
+	}
+	dateTimeX += std::to_string(currSec);
+
+	return dateTimeX;
+}
+
+std::string Dashboard::getFloatText2Decimal(float value)
+{
+	std::string valToShow = std::to_string(value);
+	if (valToShow.find('.'))
+	{
+		valToShow.erase(valToShow.find('.') + 3);
+	}
+	return valToShow;
+}
+
+void Dashboard::loadSavings()
+{
+	bool allGood = false;
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UsernameGetSavings(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	int savingsToCome = 0;
+	int savingsIndex = 0;
+	if (!c.Incoming().empty())
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetSavingsResponse)
+		{
+			msg >> savingsToCome;
+		}
+	}
+	if (savingsToCome > 0)
+	{
+		if (ui.savingPicker->itemText(0) == "No Savings added to this account.")
+		{
+			ui.savingPicker->removeItem(0);
+		}
+		map_savings.clear();
+	}
+	else
+	{
+		return;
+	}
+	while (stillConnectedWaitingForAnswer)
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			QTimer::singleShot(2250, msgBox, SLOT(close()));
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (savingsIndex == savingsToCome)
+		{
+			allGood = true;
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+		if (!c.Incoming().empty())
+		{
+			auto msg = c.Incoming().pop_front().msg;
+			if (msg.header.id == clever::MessageType::ServerGetSavingsResponse)
+			{
+				char savingTitle[1024]; msg >> savingTitle;
+				float savingGoal; msg >> savingGoal;
+				float savingCurrentMoney; msg >> savingCurrentMoney;
+				char savingCurrencyISO[1024]; msg >> savingCurrencyISO;
+				char savingInitialDate[1024]; msg >> savingInitialDate;
+
+				clever::SavingHandler newSaving(savingTitle, savingGoal, savingCurrencyISO, savingInitialDate, savingCurrentMoney);
+				map_savings.insert(std::pair<std::string, clever::SavingHandler>(savingTitle, newSaving));
+				ui.savingPicker->addItem(newSaving.getSavingTitle());
+				savingsIndex++;
+			}
+		}
+	}
+}
+
+void Dashboard::on_savingPicker_currentTextChanged(const QString& SavingChosen)
+{
+	ui.savingTitleLineEdit->setText(SavingChosen);
+	float val = this->map_savings[SavingChosen.toStdString()].getSavingGoal();
+	std::string valToShow = std::to_string(val);
+	if (valToShow.find('.'))
+	{
+		valToShow.erase(valToShow.find('.') + 3);
+	}
+	ui.savingGoalLineEdit->setText(valToShow.c_str());
+	ui.savingISOLabel->setText(this->map_savings[SavingChosen.toStdString()].getSavingCurrencyISO());
+	float currMoney = this->map_savings[SavingChosen.toStdString()].getSavingCurrMoney();
+	int percent = (int)((currMoney / val) * 100.0);
+	ui.savingCurrProgressBar->setValue(percent);
+	ui.savingDateEstablishmentLineEdit->setText(this->map_savings[SavingChosen.toStdString()].getSavingInitialDate());
+}
+
+void Dashboard::on_addSavingPushButton_clicked()
+{
+	std::string datetime = this->getCurrentDateTime();
+	std::stringstream ss(datetime);
+	std::string date;
+	std::getline(ss, date, ' ');
+	AddSavingDialog asd(date,this->usernameLoggedIn, this);
+	asd.isoLabel->setText(ui.preferenceCurrencyComboBox->currentText());
+	if (asd.exec())
+	{
+		if (asd.result() == QDialog::Accepted)
+		{
+			std::string savingTitle = asd.savingTitleLineEdit->text().toStdString();
+			float goal = asd.savingGoalLineEdit->text().toFloat();
+			std::string savingCurrencyISO = asd.isoLabel->text().toStdString();
+			clever::SavingHandler newSaving(savingTitle, goal, savingCurrencyISO, date, 0.0f);
+			map_savings.insert(std::pair<std::string, clever::SavingHandler>(savingTitle, newSaving));
+			ui.savingPicker->addItem(newSaving.getSavingTitle());
+			ui.savingPicker->setCurrentText(newSaving.getSavingTitle());
+		}
+	}
+}
+
+void Dashboard::on_addFundsSavingPushButton_clicked()
+{
+	QMessageBox* msgBox = new QMessageBox;
+	if (ui.savingPicker->itemText(0) == "No Savings added to this account.")
+	{
+		msgBox->setText("First add savings!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	if (ui.savingCurrProgressBar->value() == 100)
+	{
+		msgBox->setText("Saving goal is completed! Congrats!");
+		msgBox->show();
+		QTimer::singleShot(2000, msgBox, SLOT(close()));
+		return;
+	}
+	AddFundsToSavingDialog afts(this->usernameLoggedIn,this->map_cards,this);
+	afts.savingTitle->setText(ui.savingPicker->currentText());
+	if (afts.exec())
+	{
+		if (afts.result() == QDialog::Accepted)
+		{
+			// update current money of saving and update progress bar.
+			this->map_cards = afts.getMapCardsUpdated();
+			float currMoneyOld = this->map_savings[afts.savingTitle->text().toStdString()].getSavingCurrMoney();
+			this->map_savings[afts.savingTitle->text().toStdString()].setSavingCurrMoney(currMoneyOld+afts.valueLineEdit->text().toFloat());
+			float currMoney = this->map_savings[afts.savingTitle->text().toStdString()].getSavingCurrMoney();
+			float val = this->map_savings[afts.savingTitle->text().toStdString()].getSavingGoal();
+			int percent = (int)((currMoney / val) * 100.0);
+			ui.savingCurrProgressBar->setValue(percent);
+		}
+	}
+}
+void Dashboard::loadBudgets()
+{
+
+	bool stillConnectedWaitingForAnswer = true;
+	QMessageBox* msgBox = new QMessageBox;
+	Client& c = Client::getInstance();
+	c.Incoming().clear();
+	c.UserGetBudget(this->usernameLoggedIn);
+	while (c.Incoming().empty())
+	{
+		if (!c.IsConnected())
+		{
+			msgBox->setText("Server down! Client disconnected!");
+			msgBox->show();
+			stillConnectedWaitingForAnswer = false;
+			break;
+		}
+	}
+	if (!c.Incoming().empty() && stillConnectedWaitingForAnswer)
+	{
+		auto msg = c.Incoming().pop_front().msg;
+		if (msg.header.id == clever::MessageType::ServerGetBudgetResponse)
+		{
+			char responseBack[1024]; msg >> responseBack;
+			if (strcmp(responseBack, "SuccessGetBudget") == 0)
+			{
+				char budgetStartDate[1024]; msg >> budgetStartDate;
+				char budgetEndDate[1024]; msg >> budgetEndDate;
+				float budgetValue; msg >> budgetValue;
+				
+				this->user_budget.setBudgetStartDate(budgetStartDate);
+				this->user_budget.setBudgetEndDate(budgetEndDate);
+				this->user_budget.setBudgetValue(budgetValue);
+				this->currentlyOnBudget = true;
+				
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+			else
+			{
+				this->currentlyOnBudget = false;
+				this->turnIntoBudgetSet(currentlyOnBudget);
+			}
+		}
+	}
+}
+
+void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
+{
+	ui.deleteBudgetPushButton->setEnabled(isUserOnBudget); ui.deleteBudgetPushButton->setVisible(isUserOnBudget);
+	ui.currentlyOnBudgetLabel->setEnabled(isUserOnBudget); ui.currentlyOnBudgetLabel->setVisible(isUserOnBudget);
+	ui.budgetStartDateLineEdit->setReadOnly(isUserOnBudget); ui.budgetStartDateLineEdit->setEnabled(!isUserOnBudget);
+	ui.budgetEndDateLineEdit->setReadOnly(isUserOnBudget); ui.budgetEndDateLineEdit->setEnabled(!isUserOnBudget);
+	ui.budgetSetPushButton->setEnabled(!isUserOnBudget);
+	ui.valueNotToExceedLineEdit->setReadOnly(isUserOnBudget); ui.valueNotToExceedLineEdit->setEnabled(!isUserOnBudget);
+
+	if (isUserOnBudget)
+	{
+		ui.budgetStartDateLineEdit->setText(user_budget.getBudgetStartDate());
+		ui.budgetEndDateLineEdit->setText(user_budget.getBudgetEndDate());
+		ui.valueNotToExceedLineEdit->setText(std::to_string(user_budget.getBudgetValue()).c_str());
+	}
+	else
+	{
+		ui.budgetStartDateLineEdit->setText(QDate::currentDate().toString());
+	}
+}
+
+void Dashboard::drawTotalSpendingsChart()
+{
+	QPieSeries* series = new QPieSeries;
+
+	series->append("Jane",1);
+	series->append("Joe", 2);
+	series->append("Andy", 3);
+	series->append("Barbara", 4);
+	series->append("Axel", 5);
+
+	QChart* totalSpendingsChart = new QChart;
+	totalSpendingsChart->addSeries(series);
+	totalSpendingsChart->setTitle("Total Spendings");
+	totalSpendingsChart->legend()->hide();
+
+	series->setLabelsVisible();
+	series->setLabelsPosition(QtCharts::QPieSlice::LabelInsideHorizontal);
+
+	///*for (QList<QPieSlice*>::iterator it = series->slices().begin(); it != series->slices().end(); it++)
+	//{
+	//	
+	//}*/
+
+	//QChartView* chartView = new QChartView(totalSpendingsChart);
+	//chartView->setRenderHint(QPainter::Antialiasing);
+
+	ui.graphicsView->setChart(totalSpendingsChart);
+	
+	//chart = QtChart.QChart()
+	//	chart.addSeries(series)
+	//	chart.setTitle("Simple piechart example")
+	//	chart.legend().hide()
+
+	//	series.setLabelsVisible()
+	//	series.setLabelsPosition(QtChart.QPieSlice.LabelInsideHorizontal)
+
+	//	for slice in series.slices() :
+	//		slice.setLabel("{:.1f}%".format(100 * slice.percentage()))
+
+}
+>>>>>>> Stashed changes

@@ -11,6 +11,28 @@
 #include <tranzactionrowitem.h>
 #include <addincomedialog.h>
 #include <addoutcomedialog.h>
+<<<<<<< Updated upstream
+=======
+#include<addspendingsdialog.h>
+#include <addfundstosavingdialog.h>
+#include <addsavingdialog.h>
+#include <QtCharts/qpieseries.h>
+#include <QtCharts/qchart.h>
+#include <QtCharts/qchartview.h>
+#include <QtCharts/qlineseries.h>
+
+
+
+using namespace QtCharts;
+
+
+enum class TranzactionFilters
+{
+	TranzactionFinanceName,
+	TranzactionType,
+	TranzactionDate,
+};
+>>>>>>> Stashed changes
 
 class Dashboard : public QWidget, public Ui::Dashboard
 {
@@ -51,7 +73,7 @@ private:
 	void rechargeCashExec(RechargeCashDialog& rcd);
 	void toggleTranzactionsButtons(int state);
 	void populateTranzactionsFinanceType();
-	void insertBDProfiePicture(std::string& hexImg);
+	void insertBDProfiePicture(std::string &filename);
 	void load_spendingsTotals();
 private slots:
 	void on_financesCommandLinkButton_clicked();
@@ -77,6 +99,28 @@ private slots:
 	void on_recurrentSpendingsCommandLInkButton_clicked();
 	void on_outcomeBackToCategoriesPushButton_clicked();
 	void on_addoutcomePushButton_clicked();
+<<<<<<< Updated upstream
+=======
+	void on_transportCommandLinkButton_clicked();
+	void on_educationCommandLinkButton_clicked();
+	void on_shoppingCommandLinkButton_clicked();
+	void on_freeTimeCommandLinkButton_clicked();
+	void on_healthCommandLinkButton_clicked();
+	void on_holidayCommandLinkButton_clicked();
+	void on_goalsCommandLinkButton_clicked();
+	void on_savingsCommandLinkButton_clicked();
+	void on_budgetCommandLinkButton_clicked();
+	void on_savingsbackToGoalsPushButton_clicked();
+	void on_budgetbackToGoalsPushButton_clicked();
+	void on_backToDashboardGoalsLinkButton_clicked();
+	void on_budgetpickStartDatePushButton_clicked();
+	void on_budgetpickEndDatePushButton_clicked();
+	void on_budgetSetPushButton_clicked();
+	void on_deleteBudgetPushButton_clicked();
+	void on_calculatePushButton_1_clicked();
+	void on_calculatePushButton_2_clicked();
+
+>>>>>>> Stashed changes
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 };
