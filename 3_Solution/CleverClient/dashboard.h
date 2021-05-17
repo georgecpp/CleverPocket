@@ -57,6 +57,7 @@ private:
 	std::string dailyMailState;
 	std::string profilePicture;
 	bool currentlyOnBudget;
+	std::map<int, std::string> month_code_map;
 private:
 	void logout();
 	void loadCash();
@@ -134,7 +135,13 @@ private:
 	void turnIntoBudgetSet(bool isUserOnBudget);
 	std::string getCurrentDateTime();
 	std::string getFloatText2Decimal(float value);
-	QChart* generateChartForMonth(std::string monthCode);
+	float generateIncomeForMonth(std::string monthCode);
+	float generateOutcomeForMonth(std::string monthCode);
+	void initMonthCodeMap();
+	std::map<int, std::string>& getMonthCodeMap();
+	float getTransactionsIncomeForMonthCode(int monthCodeInt);
+	float getTransactionsOutcomeForMonthCode(int monthCodeInt);
+
 private:
 	std::string currFinanceName;
 	std::string currTranzType;

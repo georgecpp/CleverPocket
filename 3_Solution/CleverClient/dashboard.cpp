@@ -20,6 +20,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	connect(ui.outcomePicker, SIGNAL(activated(int)), this, SLOT(on_recurenciesSelected()));
 	toggleTranzactionsButtons(0);
 	ui.statisticsTabWidget->setTabPosition(QTabWidget::TabPosition::South);
+	initMonthCodeMap();
 }
 
 Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
@@ -1878,44 +1879,99 @@ void Dashboard::turnIntoBudgetSet(bool isUserOnBudget)
 	}
 }
 
-QChart* Dashboard::generateChartForMonth(std::string monthCode)
+float Dashboard::generateIncomeForMonth(std::string monthCode)
 {
-	QPieSeries* series = new QPieSeries;
+	std::map<int, std::string> month_code = getMonthCodeMap();
+	int monthCodeIntForTransactions = 0;
+	for (auto it = month_code.begin(); it != month_code.end(); ++it)
+	{
+		if (it->second == monthCode)
+		{
+			monthCodeIntForTransactions = it->first;
+			break;
+		}
+	}
+	float incomeForMonth = getTransactionsIncomeForMonthCode(monthCodeIntForTransactions);
+	return incomeForMonth;
+}
 
-	series->append("Income", 1);
-	series->append("Outcome", 1);
+float Dashboard::generateOutcomeForMonth(std::string monthCode)
+{
+	std::map<int, std::string> month_code = getMonthCodeMap();
+	int monthCodeIntForTransactions = 0;
+	for (auto it = month_code.begin(); it != month_code.end(); ++it)
+	{
+		if (it->second == monthCode)
+		{
+			monthCodeIntForTransactions = it->first;
+			break;
+		}
+	}
+	float outcomeForMonth = getTransactionsOutcomeForMonthCode(monthCodeIntForTransactions);
+	return outcomeForMonth;
+}
 
+void Dashboard::initMonthCodeMap()
+{
+	month_code_map.insert(std::pair<int, std::string>(1, "JAN"));
+	month_code_map.insert(std::pair<int, std::string>(2, "FEB"));
+	month_code_map.insert(std::pair<int, std::string>(3, "MAR"));
+	month_code_map.insert(std::pair<int, std::string>(4, "APR"));
+	month_code_map.insert(std::pair<int, std::string>(5, "MAY"));
+	month_code_map.insert(std::pair<int, std::string>(6, "JUN"));
+	month_code_map.insert(std::pair<int, std::string>(7, "JUL"));
+	month_code_map.insert(std::pair<int, std::string>(8, "AUG"));
+	month_code_map.insert(std::pair<int, std::string>(9, "SEP"));
+	month_code_map.insert(std::pair<int, std::string>(10, "OCT"));
+	month_code_map.insert(std::pair<int, std::string>(11, "NOV"));
+	month_code_map.insert(std::pair<int, std::string>(12, "DEC"));
+}
 
+std::map<int, std::string>& Dashboard::getMonthCodeMap()
+{
+	return this->month_code_map;
+}
 
-	QChart* chart = new QChart;
-	chart->addSeries(series);
-	chart->setTitle(monthCode.c_str());
-	chart->legend()->hide();
-	chart->setAnimationOptions(QChart::AllAnimations);
-	chart->setBackgroundVisible(false);
+float Dashboard::getTransactionsIncomeForMonthCode(int monthCodeInt)
+{
+	float totalIn = 0.0f;
+	for (auto it = all_user_tranzactions.begin(); it != all_user_tranzactions.end(); ++it)
+	{
+		if (it->getTranzactionType() == clever::TranzactionType::Income)
+		{
+			std::string tranMonth = it->getTranzactionTimestamp();
+			tranMonth = tranMonth.substr(5, 2); // yyyy-mm-dd hh:mm:ss
+			if (std::stoi(tranMonth) == monthCodeInt)
+			{
+				totalIn += it->getTranzactionValue();
+			}
+		}
+	}
+	return totalIn;
+}
 
-	series->setLabelsVisible();
-
-	return chart;
+float Dashboard::getTransactionsOutcomeForMonthCode(int monthCodeInt)
+{
+	float totalOut = 0.0f;
+	for (auto it = all_user_tranzactions.begin(); it != all_user_tranzactions.end(); ++it)
+	{
+		if (it->getTranzactionType() == clever::TranzactionType::Spending)
+		{
+			std::string tranMonth = it->getTranzactionTimestamp();
+			tranMonth = tranMonth.substr(5, 2); // yyyy-mm-dd hh:mm:ss
+			if (std::stoi(tranMonth) == monthCodeInt)
+			{
+				totalOut += it->getTranzactionValue();
+			}
+		}
+	}
+	return totalOut;
 }
 
 void Dashboard::init_statistics()
 {
 
-	std::map<int, std::string> month_code;
-	month_code.insert(std::pair<int, std::string>(1, "JAN"));
-	month_code.insert(std::pair<int, std::string>(2, "FEB"));
-	month_code.insert(std::pair<int, std::string>(3, "MAR"));
-	month_code.insert(std::pair<int, std::string>(4, "APR"));
-	month_code.insert(std::pair<int, std::string>(5, "MAY"));
-	month_code.insert(std::pair<int, std::string>(6, "JUN"));
-	month_code.insert(std::pair<int, std::string>(7, "JUL"));
-	month_code.insert(std::pair<int, std::string>(8, "AUG"));
-	month_code.insert(std::pair<int, std::string>(9, "SEP"));
-	month_code.insert(std::pair<int, std::string>(10, "OCT"));
-	month_code.insert(std::pair<int, std::string>(11, "NOV"));
-	month_code.insert(std::pair<int, std::string>(12, "DEC"));
-
+	std::map<int, std::string> month_code = getMonthCodeMap();
 	int startMonth = QDate::currentDate().month();
 	startMonth -= 5;
 	if (startMonth <= 0)
@@ -1923,30 +1979,42 @@ void Dashboard::init_statistics()
 		startMonth = 12 - abs(startMonth);
 	}
 	std::string startMonthString = month_code[startMonth];
-	ui.firstMonthStatsChart->setChart(generateChartForMonth(startMonthString));
-	ui.firstMonthStatsChart->setRenderHint(QPainter::Antialiasing);
 
-	std::string secondMonthString = month_code[((startMonth + 1) % 12 == 0)? 12 : (startMonth + 1) % 12];
-	ui.secondMonthStatsChart->setChart(generateChartForMonth(secondMonthString));
-	ui.secondMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+	QBarSeries* barSeries = new QBarSeries;
+	QBarCategoryAxis* axisX = new QBarCategoryAxis;
+	std::string firstMonth = month_code[startMonth].c_str();
+	std::string secondMonth = month_code[((startMonth + 1) % 12 == 0) ? 12 : (startMonth + 1) % 12].c_str();
+	std::string thirdMonth = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12].c_str();
+	std::string fourthMonth = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12].c_str();
+	std::string fifthMonth = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12].c_str();
+	std::string sixthMonth = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12].c_str();
 
-	std::string thirdMonthString = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12];
-	ui.thirdMonthStatsChart->setChart(generateChartForMonth(thirdMonthString));
-	ui.thirdMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+	axisX->append(firstMonth.c_str());
+	axisX->append(secondMonth.c_str());
+	axisX->append(thirdMonth.c_str());
+	axisX->append(fourthMonth.c_str());
+	axisX->append(fifthMonth.c_str());
+	axisX->append(sixthMonth.c_str());
 
-	std::string fourthMonthString = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12];
-	ui.fourthMonthStatsChart->setChart(generateChartForMonth(fourthMonthString));
-	ui.fourthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+	
+	barSeries->attachAxis(axisX);
+	QBarSet* setIncome = new QBarSet("Income");
+	QBarSet* setOutcome = new QBarSet("Outcome");
+	*setIncome << generateIncomeForMonth(firstMonth) << generateIncomeForMonth(secondMonth) << generateIncomeForMonth(thirdMonth) << generateIncomeForMonth(fourthMonth) << generateIncomeForMonth(fifthMonth) << generateIncomeForMonth(sixthMonth);
+	*setOutcome << generateOutcomeForMonth(firstMonth) << generateOutcomeForMonth(secondMonth) << generateOutcomeForMonth(thirdMonth) << generateOutcomeForMonth(fourthMonth) << generateOutcomeForMonth(fifthMonth) << generateOutcomeForMonth(sixthMonth);
 
-	std::string fifthMonthString = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12];
-	ui.fifthMonthStatsChart->setChart(generateChartForMonth(fifthMonthString));
-	ui.fifthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+	barSeries->append(setIncome);
+	barSeries->append(setOutcome);
 
-	std::string sixthMonthString = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12];
-	ui.sixthMonthStatsChart->setChart(generateChartForMonth(sixthMonthString));
-	ui.sixthMonthStatsChart->setRenderHint(QPainter::Antialiasing);
+	QChart* chart = new QChart;
+	chart->addAxis(axisX, Qt::AlignTop);
+	chart->addSeries(barSeries);
+	chart->legend()->hide();
+	chart->setAnimationOptions(QChart::AllAnimations);
+	chart->setBackgroundVisible(false);
 
-
+	ui.monthsStatsChart->setChart(chart);
+	ui.monthsStatsChart->setRenderHint(QPainter::Antialiasing);
 
 	ui.statisticsTabWidget->setTabText(0, "IN/OUT");
 	ui.statisticsTabWidget->setTabText(1, "Your Capital");
