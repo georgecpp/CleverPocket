@@ -146,6 +146,9 @@ bool Startup::tryLoginRemembered()
 	FILE* fin = fopen("PAT.txt", "r");
 	if (fin)
 	{
+		//QPixmap pixmap("./papagal.png");
+		//QSplashScreen splash(pixmap);
+		//splash.show();
 		bool stillConnectedWaitingForAnswer = true;
 		Client& c = Client::getInstance();
 		if (!c.IsConnected())

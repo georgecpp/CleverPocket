@@ -81,7 +81,7 @@ private:
 	void rechargeCashExec(RechargeCashDialog& rcd);
 	void toggleTranzactionsButtons(int state);
 	void populateTranzactionsFinanceType();
-	void insertBDProfiePicture(std::string& hexImg);
+	void insertBDProfiePicture(std::string& filename);
 	void load_spendingsTotals();
 	void init_statistics();
 private slots:
@@ -133,6 +133,9 @@ private slots:
 	void on_statisticsCommandLinkButton_clicked();
 	void on_setIncome_hovered(bool status, int index);
 	void on_setOutcome_hovered(bool status, int index);
+	void on_investmentsCommandLinkButton_clicked();
+	void on_calculatePushButton_1_clicked();
+	void on_calculatePushButton_2_clicked();
 
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);

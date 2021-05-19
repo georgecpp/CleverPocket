@@ -192,11 +192,17 @@ void Dashboard::loadCash()
 
 
 				// loading profile picture
-				QByteArray ss(this->profilePicture.c_str(), this->profilePicture.length());
-				QByteArray by = QByteArray::fromBase64(ss);
-				QImage img = QImage::fromData(by, "png");
-				ui.profilePictureLabel->setPixmap(QPixmap::fromImage(img));
+				if (this->profilePicture != "")
+				{
+					QImage image;
+					bool valid = image.load(profilePicture.c_str());
 
+					if (valid)
+					{
+						image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
+						ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+					}
+				}
 				//loading profile info
 				strcat(firstName, " ");
 				strcat(firstName, lastName);
@@ -473,10 +479,10 @@ void Dashboard::populateTranzactionsFinanceType()
 	ui.financeTypePicker->addItem("Cash");
 }
 
-void Dashboard::insertBDProfiePicture(std::string& hexImg)
+void Dashboard::insertBDProfiePicture(std::string& filename)
 {
 	QMessageBox* msgBox = new QMessageBox;
-	if (hexImg.empty())
+	if (filename.empty())
 	{
 		return;
 	}
@@ -485,11 +491,11 @@ void Dashboard::insertBDProfiePicture(std::string& hexImg)
 	c.Incoming().clear();
 	if (this->usernameLoggedIn == "")
 	{
-		c.AddPATPicture(this->PATLoggedIn.toStdString(), hexImg);
+		c.AddPATPicture(this->PATLoggedIn.toStdString(), filename);
 	}
 	else
 	{
-		c.AddUsernamePicture(this->usernameLoggedIn, hexImg);
+		c.AddUsernamePicture(this->usernameLoggedIn, filename);
 	}
 	while (c.Incoming().empty())
 	{
@@ -719,6 +725,9 @@ void Dashboard::prepareAllOptionsComboBox()
 	this->prepareOptionsComboBox(ui.savingsOptions);
 	this->prepareOptionsComboBox(ui.budgetOptions);
 	this->prepareOptionsComboBox(ui.statisticsOptions);
+	this->prepareOptionsComboBox(ui.comboBox); // INVESTMENT MENU COMBOBOX.
+	this->prepareOptionsComboBox(ui.comboBox_2);
+
 }
 
 void Dashboard::refreshCash()
@@ -862,7 +871,7 @@ void Dashboard::on_cardSelected()
 
 void Dashboard::on_choseImagePushButton_clicked()
 {
-	QString filename = QFileDialog::getOpenFileName(this, tr("Chose"), "", tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)")); // title of file dialog-default folder-file format
+	QString filename = QFileDialog::getOpenFileName(this, tr("Choose"), "", tr("Images(*.png *.jpg *.jpeg *.bmp *.gif)")); // title of file dialog-default folder-file format
 
 	if (QString::compare(filename, QString()) != 0)
 	{
@@ -873,12 +882,7 @@ void Dashboard::on_choseImagePushButton_clicked()
 		{
 			image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
 			ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
-			QByteArray imgByteArray;
-			QBuffer inByteArray(&imgByteArray);
-			image.save(&inByteArray, "png");
-			QByteArray hexImg = imgByteArray.toBase64();
-			insertBDProfiePicture(hexImg.toStdString());
-			this->profilePicture = hexImg.toStdString();
+			insertBDProfiePicture(filename.toStdString());
 		}
 		else
 		{
@@ -2055,6 +2059,124 @@ void Dashboard::on_setOutcome_hovered(bool status, int index)
 		ui.deltaValueLabel->setText(valDifferenceToShow.c_str());
 	}
 }
+void Dashboard::on_investmentsCommandLinkButton_clicked()
+{
+	ui.stackedWidget->setCurrentWidget(ui.investmentPage);
+}
+void Dashboard::on_calculatePushButton_1_clicked()
+{
+	std::vector<float> yearValues;
+	float initialInvestment = ui.investmentValueLineEdit_1->text().toFloat();
+	float anualRate = ui.annualrateLineEdit_1->text().toFloat();
+	float monthlyContribution = ui.contributionLineEdit->text().toFloat();
+	float yearPeriod = ui.periodLineEdit->text().toFloat();
+	float totalRevenue = initialInvestment;
+	if (ui.investmentValueLineEdit_1->text() == "" || ui.annualrateLineEdit_1->text() == "0" || ui.periodLineEdit->text() == "0")
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please fill all the boxes! ");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	std::string currYear = "Year 0";
+	QBarCategoryAxis* axisX = new QBarCategoryAxis;
+	QBarCategoryAxis* axisY = new QBarCategoryAxis;
+	
+	QLineSeries* series = new QLineSeries();
+	series->append(0, 0);
+	axisX->append(currYear.c_str());
+	for (int i = 1; i < yearPeriod + 1; i++)
+	{
+		series->append(i, totalRevenue);
+		currYear = "Year " + std::to_string(i);
+		axisX->append(currYear.c_str());
+		axisY->append(std::to_string((int)totalRevenue).c_str());
+		totalRevenue += totalRevenue * (anualRate/100.0) + 12.0 * monthlyContribution;
+	}
+	QChart* chart = new QChart();
+	chart->addAxis(axisX, Qt::AlignBottom);
+	chart->addAxis(axisY, Qt::AlignLeft);
+	chart->addSeries(series);
+	chart->legend()->hide();
+	QString Title = "Investment revenue \n" + QString::number(totalRevenue);
+	chart->setTitle(Title);
+	chart->setAnimationOptions(QChart::AllAnimations);
+
+	ui.investment1_chartView->setChart(chart);
+	ui.investment1_chartView->setRenderHint(QPainter::Antialiasing);
+}
+void Dashboard::on_calculatePushButton_2_clicked()
+{
+	std::vector<float> yearValues;
+	float initialInvestment = ui.investmentValueLineEdit_2->text().toFloat();
+	float anualRate = ui.annualrateLineEdit_2->text().toFloat();
+	float monthlyContribution = ui.contributionLineEdit_2->text().toFloat();
+	float yearPeriod = 0;
+	float investmentGoal = ui.investmentGoalLineEdit->text().toFloat();
+	float totalRevenue = initialInvestment;
+	float months = 0;
+	if (ui.investmentValueLineEdit_2->text() == "" || ui.annualrateLineEdit_2->text() == "0" || ui.investmentGoalLineEdit->text() == "")
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please fill all the boxes! ");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	if (initialInvestment >= investmentGoal)
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Please set a greater value for Investment Goal!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+		return;
+	}
+	std::string currYear = "Year 0";
+	QBarCategoryAxis* axisX = new QBarCategoryAxis;
+	QBarCategoryAxis* axisY = new QBarCategoryAxis;
+
+	QLineSeries* series = new QLineSeries();
+	series->append(0, 0);
+	axisX->append(currYear.c_str());
+	yearValues.push_back(totalRevenue);
+	while (totalRevenue <= investmentGoal)
+	{
+		yearPeriod += 1;
+		currYear = "Year " + std::to_string(yearPeriod);
+		currYear.erase(currYear.find('.'));
+		axisX->append(currYear.c_str());
+		axisY->append(std::to_string((int)totalRevenue).c_str());
+		totalRevenue += totalRevenue * (anualRate/100.0) + 12.0 * monthlyContribution;
+		series->append(yearPeriod, totalRevenue);
+		yearValues.push_back(totalRevenue);
+	}
+
+	float x = yearValues.back();
+	yearValues.pop_back();
+	x += x * (anualRate/100.0);
+	for (int i = 0; i < 12; i++)
+	{
+		x += monthlyContribution;
+		if (x >= investmentGoal)
+		{
+			months = ((float)(i + 1) / 12.0);
+			break;
+		}
+	}
+	QString Title = "Length of Time in Years \n" + QString::number(yearPeriod + months);
+	QChart* chart = new QChart();
+	chart->addAxis(axisX, Qt::AlignBottom);
+	chart->addAxis(axisY, Qt::AlignLeft);
+	chart->addSeries(series);
+	chart->legend()->hide();
+	chart->setTitle(Title);
+	chart->setAnimationOptions(QChart::AllAnimations);
+
+	ui.investment2_chartView->setChart(chart);
+	ui.investment2_chartView->setRenderHint(QPainter::Antialiasing);
+}
+
 void Dashboard::init_statistics()
 {
 	std::map<int, std::string> month_code = getMonthCodeMap();
@@ -2118,7 +2240,6 @@ void Dashboard::init_statistics()
 	lineSeries->append(4, 0);
 	lineSeries->append(5, 50);
 	lineSeries->append(6, 100);
-
 
 
 	QBarCategoryAxis* capitalX = new QBarCategoryAxis;
