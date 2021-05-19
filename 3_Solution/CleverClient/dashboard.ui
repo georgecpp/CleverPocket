@@ -2095,7 +2095,7 @@
          <x>100</x>
          <y>20</y>
          <width>1191</width>
-         <height>341</height>
+         <height>351</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -2140,8 +2140,8 @@
       <widget class="QLabel" name="incomingValueLabel">
        <property name="geometry">
         <rect>
-         <x>980</x>
-         <y>380</y>
+         <x>1150</x>
+         <y>400</y>
          <width>131</width>
          <height>31</height>
         </rect>
@@ -2153,8 +2153,8 @@
       <widget class="QLabel" name="outgoingValueLabel">
        <property name="geometry">
         <rect>
-         <x>980</x>
-         <y>430</y>
+         <x>1150</x>
+         <y>450</y>
          <width>131</width>
          <height>31</height>
         </rect>
@@ -2166,8 +2166,8 @@
       <widget class="QLabel" name="deltaValueLabel">
        <property name="geometry">
         <rect>
-         <x>980</x>
-         <y>520</y>
+         <x>1150</x>
+         <y>530</y>
          <width>131</width>
          <height>31</height>
         </rect>
@@ -2200,6 +2200,112 @@
       <attribute name="title">
        <string>Tab 2</string>
       </attribute>
+      <widget class="QChartView" name="monthsCapitalChart">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>30</y>
+         <width>1191</width>
+         <height>351</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-color: transparent;</string>
+       </property>
+       <property name="backgroundBrush">
+        <brush brushstyle="NoBrush">
+         <color alpha="255">
+          <red>0</red>
+          <green>0</green>
+          <blue>0</blue>
+         </color>
+        </brush>
+       </property>
+      </widget>
+      <widget class="QLabel" name="endDateCapitalLabel">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>440</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>end date</string>
+       </property>
+      </widget>
+      <widget class="Line" name="line_2">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>500</y>
+         <width>1180</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QLabel" name="capitalStartMonthLabel">
+       <property name="geometry">
+        <rect>
+         <x>1150</x>
+         <y>400</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>start date capital RON</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="capitalEndMonthLabel">
+       <property name="geometry">
+        <rect>
+         <x>1150</x>
+         <y>450</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>end date capital RON</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="startDateCapitalLabel">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>390</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>start date</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="deltaCapitalValueLabel">
+       <property name="geometry">
+        <rect>
+         <x>1150</x>
+         <y>530</y>
+         <width>131</width>
+         <height>31</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>total Diff RON</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>

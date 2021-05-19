@@ -58,6 +58,9 @@ private:
 	std::string profilePicture;
 	bool currentlyOnBudget;
 	std::map<int, std::string> month_code_map;
+	QBarSet* setIncome;
+	QBarSet* setOutcome;
+
 private:
 	void logout();
 	void loadCash();
@@ -128,6 +131,9 @@ private slots:
 	void on_budgetSetPushButton_clicked();
 	void on_deleteBudgetPushButton_clicked();
 	void on_statisticsCommandLinkButton_clicked();
+	void on_setIncome_hovered(bool status, int index);
+	void on_setOutcome_hovered(bool status, int index);
+
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void prepareAllOptionsComboBox();

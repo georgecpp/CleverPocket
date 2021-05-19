@@ -1968,9 +1968,95 @@ float Dashboard::getTransactionsOutcomeForMonthCode(int monthCodeInt)
 	return totalOut;
 }
 
+void Dashboard::on_setIncome_hovered(bool status, int index)
+{
+	if (status)
+	{
+		float currValIncomeMonth=this->setIncome->at(index);
+		float currValOutcomeMonth=this->setOutcome->at(index);
+		std::string valIncomeToShow = "+";
+		valIncomeToShow += std::to_string(currValIncomeMonth);
+		if (valIncomeToShow.find('.'))
+		{
+			valIncomeToShow.erase(valIncomeToShow.find('.') + 3);
+		}
+		valIncomeToShow += " " + userCashCurrencyISO;
+		std::string valOutcomeToShow = "-";
+		valOutcomeToShow += std::to_string(currValOutcomeMonth);
+		if (valOutcomeToShow.find('.'))
+		{
+			valOutcomeToShow.erase(valOutcomeToShow.find('.') + 3);
+		}
+		valOutcomeToShow += " " + userCashCurrencyISO;
+		ui.incomingValueLabel->setStyleSheet("QLabel {color : green; }");
+		ui.outgoingValueLabel->setStyleSheet("QLabel {color : red; }");
+		ui.incomingValueLabel->setText(valIncomeToShow.c_str());
+		ui.outgoingValueLabel->setText(valOutcomeToShow.c_str());
+		float currValDifference = currValIncomeMonth - currValOutcomeMonth;
+		if (currValDifference < 0)
+		{
+			ui.deltaValueLabel->setStyleSheet("QLabel {color : red; }");
+		}
+		else
+		{
+			ui.deltaValueLabel->setStyleSheet("QLabel {color : green; }");
+		}
+		std::string valDifferenceToShow = std::to_string(currValDifference);
+		if (valDifferenceToShow.find('.'))
+		{
+			valDifferenceToShow.erase(valDifferenceToShow.find('.') + 3);
+		}
+		valDifferenceToShow += " " + userCashCurrencyISO;
+		
+		ui.deltaValueLabel->setText(valDifferenceToShow.c_str());
+	}
+}
+
+void Dashboard::on_setOutcome_hovered(bool status, int index)
+{
+	if (status)
+	{
+		float currValIncomeMonth = this->setIncome->at(index);
+		float currValOutcomeMonth = this->setOutcome->at(index);
+		std::string valIncomeToShow = "+";
+		valIncomeToShow += std::to_string(currValIncomeMonth);
+		if (valIncomeToShow.find('.'))
+		{
+			valIncomeToShow.erase(valIncomeToShow.find('.') + 3);
+		}
+		valIncomeToShow += " " + userCashCurrencyISO;
+		std::string valOutcomeToShow = "-";
+		valOutcomeToShow += std::to_string(currValOutcomeMonth);
+		if (valOutcomeToShow.find('.'))
+		{
+			valOutcomeToShow.erase(valOutcomeToShow.find('.') + 3);
+		}
+		valOutcomeToShow += " " + userCashCurrencyISO;
+		ui.incomingValueLabel->setStyleSheet("QLabel {color : green; }");
+		ui.outgoingValueLabel->setStyleSheet("QLabel {color : red; }");
+		ui.incomingValueLabel->setText(valIncomeToShow.c_str());
+		ui.outgoingValueLabel->setText(valOutcomeToShow.c_str());
+		float currValDifference = currValIncomeMonth - currValOutcomeMonth;
+		if (currValDifference < 0)
+		{
+			ui.deltaValueLabel->setStyleSheet("QLabel {color : red; }");
+		}
+		else
+		{
+			ui.deltaValueLabel->setStyleSheet("QLabel {color : green; }");
+		}
+		std::string valDifferenceToShow = std::to_string(currValDifference);
+		if (valDifferenceToShow.find('.'))
+		{
+			valDifferenceToShow.erase(valDifferenceToShow.find('.') + 3);
+		}
+		valDifferenceToShow += " " + userCashCurrencyISO;
+
+		ui.deltaValueLabel->setText(valDifferenceToShow.c_str());
+	}
+}
 void Dashboard::init_statistics()
 {
-
 	std::map<int, std::string> month_code = getMonthCodeMap();
 	int startMonth = QDate::currentDate().month();
 	startMonth -= 5;
@@ -1998,10 +2084,14 @@ void Dashboard::init_statistics()
 
 	
 	barSeries->attachAxis(axisX);
-	QBarSet* setIncome = new QBarSet("Income");
-	QBarSet* setOutcome = new QBarSet("Outcome");
+	setIncome = new QBarSet("Income"); setIncome->setColor("green");
+	setOutcome = new QBarSet("Outcome"); setOutcome->setColor("red");
+
 	*setIncome << generateIncomeForMonth(firstMonth) << generateIncomeForMonth(secondMonth) << generateIncomeForMonth(thirdMonth) << generateIncomeForMonth(fourthMonth) << generateIncomeForMonth(fifthMonth) << generateIncomeForMonth(sixthMonth);
 	*setOutcome << generateOutcomeForMonth(firstMonth) << generateOutcomeForMonth(secondMonth) << generateOutcomeForMonth(thirdMonth) << generateOutcomeForMonth(fourthMonth) << generateOutcomeForMonth(fifthMonth) << generateOutcomeForMonth(sixthMonth);
+	on_setIncome_hovered(true, 5);
+	connect(setIncome, SIGNAL(hovered(bool, int)), this, SLOT(on_setIncome_hovered(bool, int)));
+	connect(setOutcome, SIGNAL(hovered(bool, int)), this, SLOT(on_setOutcome_hovered(bool, int)));
 
 	barSeries->append(setIncome);
 	barSeries->append(setOutcome);
@@ -2013,8 +2103,43 @@ void Dashboard::init_statistics()
 	chart->setAnimationOptions(QChart::AllAnimations);
 	chart->setBackgroundVisible(false);
 
+
 	ui.monthsStatsChart->setChart(chart);
 	ui.monthsStatsChart->setRenderHint(QPainter::Antialiasing);
+
+
+	
+	QLineSeries* lineSeries = new QLineSeries;
+
+	lineSeries->append(0, 0);
+	lineSeries->append(1, 100);
+	lineSeries->append(2, 0);
+	lineSeries->append(3, 0);
+	lineSeries->append(4, 0);
+	lineSeries->append(5, 50);
+	lineSeries->append(6, 100);
+
+
+
+	QBarCategoryAxis* capitalX = new QBarCategoryAxis;
+	capitalX->append(firstMonth.c_str());
+	capitalX->append(secondMonth.c_str());
+	capitalX->append(thirdMonth.c_str());
+	capitalX->append(fourthMonth.c_str());
+	capitalX->append(fifthMonth.c_str());
+	capitalX->append(sixthMonth.c_str());
+
+
+	QChart* capitalChart = new QChart;
+	capitalChart->addAxis(capitalX,Qt::AlignBottom);
+	capitalChart->addSeries(lineSeries);
+	capitalChart->legend()->hide();
+	capitalChart->setAnimationOptions(QChart::AllAnimations);
+	capitalChart->setBackgroundVisible(false);
+
+	ui.monthsCapitalChart->setChart(capitalChart);
+	ui.monthsCapitalChart->setRenderHint(QPainter::Antialiasing);
+	
 
 	ui.statisticsTabWidget->setTabText(0, "IN/OUT");
 	ui.statisticsTabWidget->setTabText(1, "Your Capital");
