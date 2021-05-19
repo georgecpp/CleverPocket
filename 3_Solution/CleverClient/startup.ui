@@ -52,7 +52,9 @@
     </property>
     <property name="font">
      <font>
-      <family>Rockwell</family>
+      <family>Whitney</family>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -64,7 +66,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QGroupBox" name="loginGroupBox">
@@ -105,8 +107,8 @@ border:none;}</string>
         <font>
          <family>Whitney</family>
          <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
+         <weight>50</weight>
+         <bold>false</bold>
         </font>
        </property>
        <property name="styleSheet">
@@ -599,7 +601,7 @@ QPushButton {
         <rect>
          <x>50</x>
          <y>350</y>
-         <width>120</width>
+         <width>131</width>
          <height>30</height>
         </rect>
        </property>
@@ -627,7 +629,7 @@ QPushButton {
        </property>
        <property name="font">
         <font>
-         <family>Segoe UI</family>
+         <family>Whitney</family>
          <pointsize>9</pointsize>
          <underline>false</underline>
          <strikeout>false</strikeout>
@@ -661,7 +663,7 @@ border:none;
       </property>
       <property name="font">
        <font>
-        <family>Segoe UI</family>
+        <family>Whitney</family>
         <pointsize>12</pointsize>
        </font>
       </property>
@@ -983,7 +985,7 @@ QPushButton {
         <rect>
          <x>40</x>
          <y>481</y>
-         <width>81</width>
+         <width>91</width>
          <height>17</height>
         </rect>
        </property>
@@ -1005,7 +1007,7 @@ QPushButton {
         <rect>
          <x>124</x>
          <y>473</y>
-         <width>131</width>
+         <width>151</width>
          <height>31</height>
         </rect>
        </property>
@@ -1045,7 +1047,7 @@ border:none;
        </property>
        <property name="font">
         <font>
-         <family>Whitney</family>
+         <family>Segoe UI</family>
          <pointsize>11</pointsize>
         </font>
        </property>
