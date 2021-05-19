@@ -4,4 +4,14 @@
     <qresource prefix="/fonts">
         <file>whitneymedium.otf</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>Images/img1.png</file>
+        <file>Images/img2.png</file>
+        <file>Images/img3.jpg</file>
+        <file>Images/img4.png</file>
+        <file>Images/img5.png</file>
+        <file>Images/img6.png</file>
+        <file>Images/img7.png</file>
+        <file>Images/img8.jpg</file>
+    </qresource>
 </RCC>

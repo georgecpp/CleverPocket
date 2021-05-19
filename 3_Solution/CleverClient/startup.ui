@@ -32,7 +32,7 @@
   <property name="windowTitle">
    <string>CleverPocket</string>
   </property>
-  <widget class="QWidget" name="Startup" native="true">
+  <widget class="QWidget" name="Startup_2" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -66,7 +66,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QGroupBox" name="loginGroupBox">
@@ -629,7 +629,7 @@ QPushButton {
        </property>
        <property name="font">
         <font>
-         <family>Whitney</family>
+         <family>Segoe UI</family>
          <pointsize>9</pointsize>
          <underline>false</underline>
          <strikeout>false</strikeout>
@@ -663,7 +663,7 @@ border:none;
       </property>
       <property name="font">
        <font>
-        <family>Whitney</family>
+        <family>Segoe UI</family>
         <pointsize>12</pointsize>
        </font>
       </property>
@@ -909,9 +909,7 @@ border:none;}</string>
 color:white;
 background-color: rgb(44, 47, 51);
 }
-QComboBox:editable {
-    background: white;
-}
+
 QComboBox QAbstractItemView {
    color:white;
     selection-background-color:rgb(88, 101, 242);
@@ -1079,7 +1077,7 @@ border:none;</string>
       </property>
       <property name="font">
        <font>
-        <family>Whitney</family>
+        <family>Segoe UI</family>
         <pointsize>12</pointsize>
        </font>
       </property>

@@ -34,45 +34,14 @@
     <bool>false</bool>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">background-color:rgb(35, 39, 42);
+
+</string>
    </property>
    <property name="currentIndex">
-    <number>12</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
-    <widget class="QCommandLinkButton" name="financesCommandLinkButton">
-     <property name="geometry">
-      <rect>
-       <x>390</x>
-       <y>80</y>
-       <width>180</width>
-       <height>180</height>
-      </rect>
-     </property>
-     <property name="mouseTracking">
-      <bool>true</bool>
-     </property>
-     <property name="tabletTracking">
-      <bool>true</bool>
-     </property>
-     <property name="styleSheet">
-      <string notr="true">
-              QCommandLinkButton
-              {
-              background-color : lightgreen;
-              border-radius: 90px;
-              }
-              QCommandLinkButton::!hover
-              {
-              background-color : yellow;
-              border-radius: 90px;
-              }
-            </string>
-     </property>
-     <property name="text">
-      <string>Finante</string>
-     </property>
-    </widget>
     <widget class="QCommandLinkButton" name="transactionsCommandLinkButton">
      <property name="geometry">
       <rect>
@@ -111,9 +80,11 @@
      </property>
      <property name="styleSheet">
       <string notr="true">
-              QCommandLinkButton
+              QCommandLinkButton::hover
               {
-              background-color : lightgreen;
+             
+	
+	border-image: url(:/images/Images/img4.png);
               border-radius: 90px;
               }
               QCommandLinkButton::!hover
@@ -157,11 +128,46 @@
     <widget class="QComboBox" name="dashboardOptions">
      <property name="geometry">
       <rect>
-       <x>1230</x>
+       <x>1189</x>
        <y>30</y>
-       <width>90</width>
+       <width>131</width>
        <height>30</height>
       </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <weight>50</weight>
+       <bold>false</bold>
+       <underline>false</underline>
+       <strikeout>false</strikeout>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QComboBox
+{
+color:white;
+background-color: rgb(44, 47, 51);
+}
+QComboBox QAbstractItemView {
+   color:white;
+    selection-background-color:rgb(88, 101, 242);
+	backgroud-color:rgb(44, 47, 51);	
+}
+
+QComboBox QScrollBar
+{
+background: #5865F2
+}
+
+QComboBox QAbstractItemView QScrollBar
+{
+background: #5865F2
+}
+
+
+
+</string>
      </property>
      <property name="currentText">
       <string/>
@@ -192,6 +198,69 @@
      </property>
      <property name="text">
       <string>Goals</string>
+     </property>
+    </widget>
+    <widget class="QCommandLinkButton" name="financesCommandLinkButton_2">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>90</y>
+       <width>180</width>
+       <height>180</height>
+      </rect>
+     </property>
+     <property name="mouseTracking">
+      <bool>true</bool>
+     </property>
+     <property name="tabletTracking">
+      <bool>true</bool>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">
+              QCommandLinkButton ::hover
+              {
+              
+	border-image: url(:/images/Images/img4.png);
+             
+              }
+              QCommandLinkButton::!hover
+              {
+              background-color : rgb(35, 39, 42);
+            
+              }
+
+            </string>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>450</x>
+       <y>170</y>
+       <width>71</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>12</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Finance</string>
      </property>
     </widget>
    </widget>
