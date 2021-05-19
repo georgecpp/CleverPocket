@@ -1348,7 +1348,7 @@ void Dashboard::on_deleteBudgetPushButton_clicked()
 			}
 			else
 			{
-				msgBox->setText("Failed to delet budget. Server problem. Try again.");
+				msgBox->setText("Failed to delete budget. Server problem. Try again.");
 				msgBox->show();
 				QTimer::singleShot(2250, msgBox, SLOT(close()));
 			}
@@ -1358,8 +1358,18 @@ void Dashboard::on_deleteBudgetPushButton_clicked()
 
 void Dashboard::on_statisticsCommandLinkButton_clicked()
 {
-	ui.stackedWidget->setCurrentWidget(ui.statisticsPage);
-	this->init_statistics();
+	if (this->all_user_tranzactions.empty())
+	{
+		QMessageBox* msgBox = new QMessageBox;
+		msgBox->setText("Statistics unavailable since you have 0 transactions!");
+		msgBox->show();
+		QTimer::singleShot(2250, msgBox, SLOT(close()));
+	}
+	else
+	{
+		ui.stackedWidget->setCurrentWidget(ui.statisticsPage);
+		this->init_statistics();
+	}
 }
 
 void Dashboard::on_healthCommandLinkButton_clicked()
@@ -2179,107 +2189,110 @@ void Dashboard::on_calculatePushButton_2_clicked()
 
 void Dashboard::init_statistics()
 {
-	std::map<int, std::string> month_code = getMonthCodeMap();
-	int startMonth = QDate::currentDate().month();
-	startMonth -= 5;
-	if (startMonth <= 0)
+	if (!all_user_tranzactions.empty())
 	{
-		startMonth = 12 - abs(startMonth);
-	}
-	std::string startMonthString = month_code[startMonth];
-
-	QBarSeries* barSeries = new QBarSeries;
-	QBarCategoryAxis* axisX = new QBarCategoryAxis;
-	std::string firstMonth = month_code[startMonth].c_str();
-	std::string secondMonth = month_code[((startMonth + 1) % 12 == 0) ? 12 : (startMonth + 1) % 12].c_str();
-	std::string thirdMonth = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12].c_str();
-	std::string fourthMonth = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12].c_str();
-	std::string fifthMonth = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12].c_str();
-	std::string sixthMonth = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12].c_str();
-
-	axisX->append(firstMonth.c_str());
-	axisX->append(secondMonth.c_str());
-	axisX->append(thirdMonth.c_str());
-	axisX->append(fourthMonth.c_str());
-	axisX->append(fifthMonth.c_str());
-	axisX->append(sixthMonth.c_str());
-
-	
-	barSeries->attachAxis(axisX);
-	setIncome = new QBarSet("Income"); setIncome->setColor("green");
-	setOutcome = new QBarSet("Outcome"); setOutcome->setColor("red");
-
-	*setIncome << generateIncomeForMonth(firstMonth) << generateIncomeForMonth(secondMonth) << generateIncomeForMonth(thirdMonth) << generateIncomeForMonth(fourthMonth) << generateIncomeForMonth(fifthMonth) << generateIncomeForMonth(sixthMonth);
-	*setOutcome << generateOutcomeForMonth(firstMonth) << generateOutcomeForMonth(secondMonth) << generateOutcomeForMonth(thirdMonth) << generateOutcomeForMonth(fourthMonth) << generateOutcomeForMonth(fifthMonth) << generateOutcomeForMonth(sixthMonth);
-	on_setIncome_hovered(true, 5);
-	connect(setIncome, SIGNAL(hovered(bool, int)), this, SLOT(on_setIncome_hovered(bool, int)));
-	connect(setOutcome, SIGNAL(hovered(bool, int)), this, SLOT(on_setOutcome_hovered(bool, int)));
-
-	barSeries->append(setIncome);
-	barSeries->append(setOutcome);
-
-	QChart* chart = new QChart;
-	chart->addAxis(axisX, Qt::AlignTop);
-	chart->addSeries(barSeries);
-	chart->legend()->hide();
-	chart->setAnimationOptions(QChart::AllAnimations);
-	chart->setBackgroundVisible(false);
-
-
-	ui.monthsStatsChart->setChart(chart);
-	ui.monthsStatsChart->setRenderHint(QPainter::Antialiasing);
-
-
-	
-	QLineSeries* lineSeries = new QLineSeries;
-
-	lineSeries->append(0, 0);
-	lineSeries->append(1, 100);
-	lineSeries->append(2, 0);
-	lineSeries->append(3, 0);
-	lineSeries->append(4, 0);
-	lineSeries->append(5, 50);
-	lineSeries->append(6, 100);
-
-
-	QBarCategoryAxis* capitalX = new QBarCategoryAxis;
-	capitalX->append(firstMonth.c_str());
-	capitalX->append(secondMonth.c_str());
-	capitalX->append(thirdMonth.c_str());
-	capitalX->append(fourthMonth.c_str());
-	capitalX->append(fifthMonth.c_str());
-	capitalX->append(sixthMonth.c_str());
-
-
-	QChart* capitalChart = new QChart;
-	capitalChart->addAxis(capitalX,Qt::AlignBottom);
-	capitalChart->addSeries(lineSeries);
-	capitalChart->legend()->hide();
-	capitalChart->setAnimationOptions(QChart::AllAnimations);
-	capitalChart->setBackgroundVisible(false);
-
-	ui.monthsCapitalChart->setChart(capitalChart);
-	ui.monthsCapitalChart->setRenderHint(QPainter::Antialiasing);
-	
-
-	ui.statisticsTabWidget->setTabText(0, "IN/OUT");
-	ui.statisticsTabWidget->setTabText(1, "Your Capital");
-	ui.statisticsUserLabel->setText(ui.firstLastNameLabel->text());
-	float allFinancesVal = 0.0f;
-	for (auto it : map_cards)
-	{
-		if (strcmp(it.second.getCardCurrencyISO(),userCashCurrencyISO.c_str())==0)
+		std::map<int, std::string> month_code = getMonthCodeMap();
+		int startMonth = QDate::currentDate().month();
+		startMonth -= 5;
+		if (startMonth <= 0)
 		{
-			allFinancesVal += it.second.getCardSold();
+			startMonth = 12 - abs(startMonth);
 		}
+		std::string startMonthString = month_code[startMonth];
+
+		QBarSeries* barSeries = new QBarSeries;
+		QBarCategoryAxis* axisX = new QBarCategoryAxis;
+		std::string firstMonth = month_code[startMonth].c_str();
+		std::string secondMonth = month_code[((startMonth + 1) % 12 == 0) ? 12 : (startMonth + 1) % 12].c_str();
+		std::string thirdMonth = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12].c_str();
+		std::string fourthMonth = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12].c_str();
+		std::string fifthMonth = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12].c_str();
+		std::string sixthMonth = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12].c_str();
+
+		axisX->append(firstMonth.c_str());
+		axisX->append(secondMonth.c_str());
+		axisX->append(thirdMonth.c_str());
+		axisX->append(fourthMonth.c_str());
+		axisX->append(fifthMonth.c_str());
+		axisX->append(sixthMonth.c_str());
+
+
+		barSeries->attachAxis(axisX);
+		setIncome = new QBarSet("Income"); setIncome->setColor("green");
+		setOutcome = new QBarSet("Outcome"); setOutcome->setColor("red");
+
+		*setIncome << generateIncomeForMonth(firstMonth) << generateIncomeForMonth(secondMonth) << generateIncomeForMonth(thirdMonth) << generateIncomeForMonth(fourthMonth) << generateIncomeForMonth(fifthMonth) << generateIncomeForMonth(sixthMonth);
+		*setOutcome << generateOutcomeForMonth(firstMonth) << generateOutcomeForMonth(secondMonth) << generateOutcomeForMonth(thirdMonth) << generateOutcomeForMonth(fourthMonth) << generateOutcomeForMonth(fifthMonth) << generateOutcomeForMonth(sixthMonth);
+		on_setIncome_hovered(true, 5);
+		connect(setIncome, SIGNAL(hovered(bool, int)), this, SLOT(on_setIncome_hovered(bool, int)));
+		connect(setOutcome, SIGNAL(hovered(bool, int)), this, SLOT(on_setOutcome_hovered(bool, int)));
+
+		barSeries->append(setIncome);
+		barSeries->append(setOutcome);
+
+		QChart* chart = new QChart;
+		chart->addAxis(axisX, Qt::AlignTop);
+		chart->addSeries(barSeries);
+		chart->legend()->hide();
+		chart->setAnimationOptions(QChart::AllAnimations);
+		chart->setBackgroundVisible(false);
+
+
+		ui.monthsStatsChart->setChart(chart);
+		ui.monthsStatsChart->setRenderHint(QPainter::Antialiasing);
+
+
+
+		QLineSeries* lineSeries = new QLineSeries;
+
+		lineSeries->append(0, 0);
+		lineSeries->append(1, 100);
+		lineSeries->append(2, 0);
+		lineSeries->append(3, 0);
+		lineSeries->append(4, 0);
+		lineSeries->append(5, 50);
+		lineSeries->append(6, 100);
+
+
+		QBarCategoryAxis* capitalX = new QBarCategoryAxis;
+		capitalX->append(firstMonth.c_str());
+		capitalX->append(secondMonth.c_str());
+		capitalX->append(thirdMonth.c_str());
+		capitalX->append(fourthMonth.c_str());
+		capitalX->append(fifthMonth.c_str());
+		capitalX->append(sixthMonth.c_str());
+
+
+		QChart* capitalChart = new QChart;
+		capitalChart->addAxis(capitalX, Qt::AlignBottom);
+		capitalChart->addSeries(lineSeries);
+		capitalChart->legend()->hide();
+		capitalChart->setAnimationOptions(QChart::AllAnimations);
+		capitalChart->setBackgroundVisible(false);
+
+		ui.monthsCapitalChart->setChart(capitalChart);
+		ui.monthsCapitalChart->setRenderHint(QPainter::Antialiasing);
+
+
+		ui.statisticsTabWidget->setTabText(0, "IN/OUT");
+		ui.statisticsTabWidget->setTabText(1, "Your Capital");
+		ui.statisticsUserLabel->setText(ui.firstLastNameLabel->text());
+		float allFinancesVal = 0.0f;
+		for (auto it : map_cards)
+		{
+			if (strcmp(it.second.getCardCurrencyISO(), userCashCurrencyISO.c_str()) == 0)
+			{
+				allFinancesVal += it.second.getCardSold();
+			}
+		}
+		allFinancesVal += std::stof(currUserCash);
+		std::string valToShow = std::to_string(allFinancesVal);
+		if (valToShow.find('.'))
+		{
+			valToShow.erase(valToShow.find('.') + 3);
+		}
+		valToShow += " ";
+		valToShow += userCashCurrencyISO;
+		ui.statisticsUserTotalFinance->setText(valToShow.c_str());
 	}
-	allFinancesVal += std::stof(currUserCash);
-	std::string valToShow = std::to_string(allFinancesVal);
-	if (valToShow.find('.'))
-	{
-		valToShow.erase(valToShow.find('.') + 3);
-	}
-	valToShow += " ";
-	valToShow += userCashCurrencyISO;
-	ui.statisticsUserTotalFinance->setText(valToShow.c_str());
 }
