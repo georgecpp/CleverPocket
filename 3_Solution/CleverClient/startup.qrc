@@ -1,7 +1,7 @@
 <RCC>
-  <qresource prefix="/QtTest"/>
-  <qresource prefix="/newPrefix">
-    <!--<file>9ffb90687de7ec908d1608cd319d1d80.jpg</file> -->
-    <!--file>exemplulogo.png</file> -->
-  </qresource>
+    <qresource prefix="/QtTest"/>
+    <qresource prefix="/newPrefix"/>
+    <qresource prefix="/fonts">
+        <file>whitneymedium.otf</file>
+    </qresource>
 </RCC>
