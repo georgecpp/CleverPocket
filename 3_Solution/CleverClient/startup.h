@@ -24,6 +24,7 @@ private:
 	bool tryLoginRemembered();
 	void resizeToTermsAndConditionsPage();
 	void clearGaps();
+	void windowAppCenter();
 	void fillCountries();
 	Dashboard* m_dshptr;
 	std::string currEmail;
