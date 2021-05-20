@@ -58,8 +58,11 @@ private:
 	std::string profilePicture;
 	bool currentlyOnBudget;
 	std::map<int, std::string> month_code_map;
+	std::map<std::string, std::string> endMonthsContextMap;
+	std::vector<std::string> currLastSixMonths;
 	QBarSet* setIncome;
 	QBarSet* setOutcome;
+	QLineSeries* lineSeries;
 
 private:
 	void logout();
@@ -133,6 +136,7 @@ private slots:
 	void on_statisticsCommandLinkButton_clicked();
 	void on_setIncome_hovered(bool status, int index);
 	void on_setOutcome_hovered(bool status, int index);
+	void on_lineSeries_hovered(const QPointF& point, bool state);
 	void on_investmentsCommandLinkButton_clicked();
 	void on_calculatePushButton_1_clicked();
 	void on_calculatePushButton_2_clicked();
@@ -140,6 +144,7 @@ private slots:
 private:
 	void prepareOptionsComboBox(QComboBox* comboBoxToPrepare);
 	void prepareAllOptionsComboBox();
+	void prepareCapitalLabelWithValue(QLabel* capitalLabelToPrepare, std::string& stringWith);
 	void refreshCash();
 	void turnIntoBudgetSet(bool isUserOnBudget);
 	std::string getCurrentDateTime();
@@ -148,6 +153,8 @@ private:
 	float generateOutcomeForMonth(std::string monthCode);
 	void initMonthCodeMap();
 	std::map<int, std::string>& getMonthCodeMap();
+	std::map<std::string, std::string>& getEndMonthCodeMap();
+
 	float getTransactionsIncomeForMonthCode(int monthCodeInt);
 	float getTransactionsOutcomeForMonthCode(int monthCodeInt);
 	float generateCapitalForMonth(std::string monthCode);

@@ -730,7 +730,6 @@ void Dashboard::prepareAllOptionsComboBox()
 	this->prepareOptionsComboBox(ui.comboBox_2);
 
 }
-
 void Dashboard::refreshCash()
 {
 	this->cash_details.first = this->currUserCash;
@@ -1940,11 +1939,31 @@ void Dashboard::initMonthCodeMap()
 	month_code_map.insert(std::pair<int, std::string>(10, "OCT"));
 	month_code_map.insert(std::pair<int, std::string>(11, "NOV"));
 	month_code_map.insert(std::pair<int, std::string>(12, "DEC"));
+
+
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("JAN", "January 31, 2021"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("FEB", "February 28, 2021"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("MAR", "March 31, 2021"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("APR", "April 30, 2021"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("MAY", "May 31, 2021"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("JUN", "June 30, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("JUL", "July 30, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("AUG", "August 31, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("SEP", "September 30, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("OCT", "October 31, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("NOV", "November 30, 2020"));
+	endMonthsContextMap.insert(std::pair<std::string, std::string>("DEC", "December 31, 2020"));
+
 }
 
 std::map<int, std::string>& Dashboard::getMonthCodeMap()
 {
 	return this->month_code_map;
+}
+
+std::map<std::string, std::string>& Dashboard::getEndMonthCodeMap()
+{
+	return this->endMonthsContextMap;
 }
 
 float Dashboard::getTransactionsIncomeForMonthCode(int monthCodeInt)
@@ -2100,6 +2119,138 @@ void Dashboard::on_setOutcome_hovered(bool status, int index)
 		ui.deltaValueLabel->setText(valDifferenceToShow.c_str());
 	}
 }
+
+void Dashboard::prepareCapitalLabelWithValue(QLabel* capitalLabelToPrepare, std::string& stringWith)
+{
+	std::string finalString;
+	if (std::stof(stringWith) < 0.0)
+	{
+		capitalLabelToPrepare->setStyleSheet("QLabel {color : red; }");
+	}
+	else
+	{
+		finalString = "+";
+		capitalLabelToPrepare->setStyleSheet("QLabel {color : green; }");
+	}
+	finalString += stringWith;
+	capitalLabelToPrepare->setText((finalString + " " + userCashCurrencyISO).c_str());
+}
+
+void Dashboard::on_lineSeries_hovered(const QPointF& point, bool state)
+{
+	if (state)
+	{
+		double xval = point.x();
+		float capitalVal;
+		std::string endCapitalValToShow;
+		std::string deltaCapitalValToShow;
+		bool allgood = false;
+		if (xval > 0.0 && xval < 1.0)
+		{
+			// first month
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[0]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[0]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		if (xval >= 1.0 && xval <2.0)
+		{
+			// first month
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[1]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[1]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		else if (xval >= 2.0 && xval < 3.0)
+		{
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[2]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[2]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		else if (xval >= 3.0 && xval < 4.0)
+		{
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[3]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[3]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		else if (xval >= 4.0 && xval < 5.0)
+		{
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[4]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[4]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		else if (xval >= 5.0 && xval < 6.0)
+		{
+			ui.endDateCapitalLabel->setText(this->endMonthsContextMap[this->currLastSixMonths[5]].c_str());
+			capitalVal = generateCapitalForMonth(this->currLastSixMonths[5]);
+			endCapitalValToShow = std::to_string(capitalVal);
+			if (endCapitalValToShow.find('.'))
+			{
+				endCapitalValToShow.erase(endCapitalValToShow.find('.') + 3);
+			}
+			deltaCapitalValToShow = std::to_string(capitalVal - ui.capitalStartMonthLabel->text().toFloat());
+			if (deltaCapitalValToShow.find('.'))
+			{
+				deltaCapitalValToShow.erase(deltaCapitalValToShow.find('.') + 3);
+			}
+			allgood = true;
+		}
+		if (allgood)
+		{
+			prepareCapitalLabelWithValue(ui.capitalEndMonthLabel, endCapitalValToShow);
+			prepareCapitalLabelWithValue(ui.deltaCapitalValueLabel, deltaCapitalValToShow);
+		}
+	}
+}
+
 void Dashboard::on_investmentsCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.investmentPage);
@@ -2239,8 +2390,16 @@ void Dashboard::init_statistics()
 		std::string fourthMonth = month_code[((startMonth + 3) % 12 == 0) ? 12 : (startMonth + 3) % 12].c_str();
 		std::string fifthMonth = month_code[((startMonth + 4) % 12 == 0) ? 12 : (startMonth + 4) % 12].c_str();
 		std::string sixthMonth = month_code[((startMonth + 5) % 12 == 0) ? 12 : (startMonth + 5) % 12].c_str();
+		
+		currLastSixMonths.push_back(firstMonth); 
+		currLastSixMonths.push_back(secondMonth);
+		currLastSixMonths.push_back(thirdMonth);
+		currLastSixMonths.push_back(fourthMonth);
+		currLastSixMonths.push_back(fifthMonth);
+		currLastSixMonths.push_back(sixthMonth);
 
-		axisX->append(firstMonth.c_str());
+
+		axisX->append(firstMonth.c_str()); 
 		axisX->append(secondMonth.c_str());
 		axisX->append(thirdMonth.c_str());
 		axisX->append(fourthMonth.c_str());
@@ -2272,9 +2431,17 @@ void Dashboard::init_statistics()
 		ui.monthsStatsChart->setChart(chart);
 		ui.monthsStatsChart->setRenderHint(QPainter::Antialiasing);
 
+		ui.startDateCapitalLabel->setText(this->endMonthsContextMap[currLastSixMonths[0]].c_str());
+		float startCapital = generateCapitalForMonth(firstMonth);
+		std::string startCapitalValToShow = std::to_string(startCapital);
+		if (startCapitalValToShow.find('.'))
+		{
+			startCapitalValToShow.erase(startCapitalValToShow.find('.') + 3);
+		}
+		prepareCapitalLabelWithValue(ui.capitalStartMonthLabel, startCapitalValToShow);
 
-
-		QLineSeries* lineSeries = new QLineSeries;
+		lineSeries = new QLineSeries;
+		connect(lineSeries, SIGNAL(hovered(const QPointF&, bool)), this, SLOT(on_lineSeries_hovered(const QPointF&, bool)));
 
 		lineSeries->append(0, 0);
 		lineSeries->append(1, generateCapitalForMonth(firstMonth));
@@ -2283,7 +2450,8 @@ void Dashboard::init_statistics()
 		lineSeries->append(4, generateCapitalForMonth(fourthMonth));
 		lineSeries->append(5, generateCapitalForMonth(fifthMonth));
 		lineSeries->append(6, generateCapitalForMonth(sixthMonth));
-
+		lineSeries->setPointsVisible();
+		lineSeries->setColor(QColor("green"));
 
 
 		QBarCategoryAxis* capitalX = new QBarCategoryAxis;
