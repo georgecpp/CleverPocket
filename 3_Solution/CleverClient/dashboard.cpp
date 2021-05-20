@@ -1983,6 +1983,36 @@ float Dashboard::getTransactionsOutcomeForMonthCode(int monthCodeInt)
 	return totalOut;
 }
 
+float Dashboard::generateCapitalForMonth(std::string monthCode)
+{
+	std::map<int, std::string> month_code = getMonthCodeMap();
+	int monthCodeIntForTransactions = 0;
+	for (auto it = month_code.begin(); it != month_code.end(); ++it)
+	{
+		if (it->second == monthCode)
+		{
+			monthCodeIntForTransactions = it->first;
+			break;
+		}
+	}
+	float totalIncomeForMonth = getTransactionsIncomeForMonthCode(monthCodeIntForTransactions);
+
+	float totalReccuringOut = 0.0f;
+	for (auto it = all_user_tranzactions.begin(); it != all_user_tranzactions.end(); ++it)
+	{
+		if (it->getTranzactionType() == clever::TranzactionType::Spending && strcmp(it->getTranzactionCategoryName(), "Recurring") == 0)
+		{
+			std::string tranMonth = it->getTranzactionTimestamp();
+			tranMonth = tranMonth.substr(5, 2); // yyyy-mm-dd hh:mm:ss
+			if (std::stoi(tranMonth) == monthCodeIntForTransactions)
+			{
+				totalReccuringOut += it->getTranzactionValue();
+			}
+		}
+	}
+	return totalIncomeForMonth - totalReccuringOut;
+}
+
 void Dashboard::on_setIncome_hovered(bool status, int index)
 {
 	if (status)
@@ -2247,12 +2277,13 @@ void Dashboard::init_statistics()
 		QLineSeries* lineSeries = new QLineSeries;
 
 		lineSeries->append(0, 0);
-		lineSeries->append(1, 100);
-		lineSeries->append(2, 0);
-		lineSeries->append(3, 0);
-		lineSeries->append(4, 0);
-		lineSeries->append(5, 50);
-		lineSeries->append(6, 100);
+		lineSeries->append(1, generateCapitalForMonth(firstMonth));
+		lineSeries->append(2, generateCapitalForMonth(secondMonth));
+		lineSeries->append(3, generateCapitalForMonth(thirdMonth));
+		lineSeries->append(4, generateCapitalForMonth(fourthMonth));
+		lineSeries->append(5, generateCapitalForMonth(fifthMonth));
+		lineSeries->append(6, generateCapitalForMonth(sixthMonth));
+
 
 
 		QBarCategoryAxis* capitalX = new QBarCategoryAxis;

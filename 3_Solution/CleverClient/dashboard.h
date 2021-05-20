@@ -150,6 +150,7 @@ private:
 	std::map<int, std::string>& getMonthCodeMap();
 	float getTransactionsIncomeForMonthCode(int monthCodeInt);
 	float getTransactionsOutcomeForMonthCode(int monthCodeInt);
+	float generateCapitalForMonth(std::string monthCode);
 
 private:
 	std::string currFinanceName;
