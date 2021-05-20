@@ -5,13 +5,26 @@
         <file>whitneymedium.otf</file>
     </qresource>
     <qresource prefix="/images">
-        <file>Images/img1.png</file>
         <file>Images/img2.png</file>
         <file>Images/img3.jpg</file>
-        <file>Images/img4.png</file>
-        <file>Images/img5.png</file>
+        <file>Images/money.png</file>
+        <file>Images/pictogram.png</file>
+        <file>Images/pie-chart.png</file>
+        <file>Images/transaction.png</file>
+        <file>Images/promotion.png</file>
+        <file>Images/money-bag.png</file>
         <file>Images/img6.png</file>
-        <file>Images/img7.png</file>
-        <file>Images/img8.jpg</file>
+        <file>Images/dash1.png</file>
+        <file>Images/dash2.png</file>
+        <file>Images/dash3.png</file>
+        <file>Images/dash4.png</file>
+        <file>Images/dash5.png</file>
+        <file>Images/dash6.png</file>
+        <file>Images/dash7.png</file>
+        <file>Images/dash8.png</file>
+        <file>Images/dash9.png</file>
+        <file>Images/dash10.png</file>
+        <file>Images/dash12.png</file>
+        <file>Images/dash13.png</file>
     </qresource>
 </RCC>

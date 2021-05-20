@@ -39,7 +39,7 @@
 </string>
    </property>
    <property name="currentIndex">
-    <number>11</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="dashboardPage">
     <widget class="QCommandLinkButton" name="transactionsCommandLinkButton">
@@ -53,20 +53,28 @@
      </property>
      <property name="styleSheet">
       <string notr="true">
-              QCommandLinkButton
+              QCommandLinkButton::hover
               {
-              background-color : lightgreen;
+             
+	background: transparent;
+
               border-radius: 90px;
               }
               QCommandLinkButton::!hover
               {
-              background-color : yellow;
+              border-image: url(:/images/Images/transaction.png);
               border-radius: 90px;
               }
             </string>
      </property>
      <property name="text">
-      <string>tranzactii</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
     <widget class="QCommandLinkButton" name="statisticsCommandLinkButton">
@@ -83,19 +91,26 @@
               QCommandLinkButton::hover
               {
              
+			background:transparent;
 	
-	border-image: url(:/images/Images/img4.png);
               border-radius: 90px;
               }
               QCommandLinkButton::!hover
               {
-              background-color : yellow;
+             
+	border-image: url(:/images/Images/pie-chart.png);
               border-radius: 90px;
               }
             </string>
      </property>
      <property name="text">
-      <string>Statistici</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
     <widget class="QCommandLinkButton" name="investmentsCommandLinkButton">
@@ -109,20 +124,28 @@
      </property>
      <property name="styleSheet">
       <string notr="true">
-              QCommandLinkButton
+              QCommandLinkButton::hover
               {
-              background-color : lightgreen;
-              border-radius: 90px;
+background:transparent;
+border-radius: 90px;
+           
               }
               QCommandLinkButton::!hover
               {
-              background-color : yellow;
-              border-radius: 90px;
+             	border-image: url(:/images/Images/img6.png);
+			border-radius: 90px;
+           
               }
             </string>
      </property>
      <property name="text">
-      <string>Simulator Investitii</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
     <widget class="QComboBox" name="dashboardOptions">
@@ -184,26 +207,32 @@ background: #5865F2
      </property>
      <property name="styleSheet">
       <string notr="true">
-              QCommandLinkButton
+              QCommandLinkButton::hover
               {
-              background-color : lightgreen;
+background:transparent;
               border-radius: 90px;
               }
               QCommandLinkButton::!hover
               {
-              background-color : yellow;
+	border-image: url(:/images/Images/promotion.png);
               border-radius: 90px;
               }
             </string>
      </property>
      <property name="text">
-      <string>Goals</string>
+      <string/>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
      </property>
     </widget>
-    <widget class="QCommandLinkButton" name="financesCommandLinkButton_2">
+    <widget class="QCommandLinkButton" name="financesCommandLinkButton">
      <property name="geometry">
       <rect>
-       <x>390</x>
+       <x>380</x>
        <y>90</y>
        <width>180</width>
        <height>180</height>
@@ -217,18 +246,17 @@ background: #5865F2
      </property>
      <property name="styleSheet">
       <string notr="true">
-              QCommandLinkButton ::hover
+              QCommandLinkButton::hover
               {
-              
-	border-image: url(:/images/Images/img4.png);
-             
+              border-radius: 90px;
+			background: transparent;
               }
               QCommandLinkButton::!hover
               {
-              background-color : rgb(35, 39, 42);
-            
+          
+	border-image: url(:/images/Images/money-bag.png);
+              border-radius: 90px;
               }
-
             </string>
      </property>
      <property name="text">
@@ -244,25 +272,153 @@ background: #5865F2
     <widget class="QLabel" name="label_13">
      <property name="geometry">
       <rect>
-       <x>450</x>
-       <y>170</y>
-       <width>71</width>
-       <height>21</height>
+       <x>410</x>
+       <y>150</y>
+       <width>161</width>
+       <height>81</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Whitney</family>
-       <pointsize>12</pointsize>
+       <pointsize>20</pointsize>
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true">color:white;</string>
+      <string notr="true">color:white;
+border:none;</string>
      </property>
      <property name="text">
-      <string>Finance</string>
+      <string>Finances</string>
      </property>
     </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>710</x>
+       <y>150</y>
+       <width>160</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;
+border:none;</string>
+     </property>
+     <property name="text">
+      <string>Statistics</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>330</x>
+       <y>410</y>
+       <width>161</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;
+border:none;</string>
+     </property>
+     <property name="text">
+      <string>Transactions</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_19">
+     <property name="geometry">
+      <rect>
+       <x>780</x>
+       <y>410</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;
+border:none;</string>
+     </property>
+     <property name="text">
+      <string>Investment</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>790</x>
+       <y>460</y>
+       <width>161</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;
+border:none;</string>
+     </property>
+     <property name="text">
+      <string>Simulator</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_21">
+     <property name="geometry">
+      <rect>
+       <x>590</x>
+       <y>570</y>
+       <width>161</width>
+       <height>81</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Whitney</family>
+       <pointsize>20</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;
+border:none;</string>
+     </property>
+     <property name="text">
+      <string>Goals</string>
+     </property>
+    </widget>
+    <zorder>label_21</zorder>
+    <zorder>label_20</zorder>
+    <zorder>label_19</zorder>
+    <zorder>label_18</zorder>
+    <zorder>label_17</zorder>
+    <zorder>label_13</zorder>
+    <zorder>transactionsCommandLinkButton</zorder>
+    <zorder>statisticsCommandLinkButton</zorder>
+    <zorder>investmentsCommandLinkButton</zorder>
+    <zorder>dashboardOptions</zorder>
+    <zorder>goalsCommandLinkButton</zorder>
+    <zorder>financesCommandLinkButton</zorder>
    </widget>
    <widget class="QWidget" name="financesPage">
     <widget class="QComboBox" name="financesOptions">

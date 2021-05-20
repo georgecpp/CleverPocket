@@ -11,7 +11,7 @@ Startup::Startup(QWidget *parent)
 	this->currPAT = "";
 	this->currEmail = "";
 	ui.setupUi(this);
-	this->setWindowIcon(QIcon("Images/img3.jpg"));
+	this->setWindowIcon(QIcon("Images/money.png"));
 	//m_dshptr = new Dashboard(ui.stackedWidget);
 	connect(ui.countryComboBox, SIGNAL(activated(int)), this, SLOT(on_countrySelected(int)));
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
