@@ -32,7 +32,7 @@
   <property name="windowTitle">
    <string>CleverPocket</string>
   </property>
-  <widget class="QWidget" name="Startup" native="true">
+  <widget class="QWidget" name="Startup_2" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -66,7 +66,7 @@
      <number>0</number>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="loginPage">
      <widget class="QGroupBox" name="loginGroupBox">
@@ -909,9 +909,7 @@ border:none;}</string>
 color:white;
 background-color: rgb(44, 47, 51);
 }
-QComboBox:editable {
-    background: white;
-}
+
 QComboBox QAbstractItemView {
    color:white;
     selection-background-color:rgb(88, 101, 242);
@@ -1039,7 +1037,7 @@ border:none;
       <widget class="QCommandLinkButton" name="alreadyRegisteredLinkButton">
        <property name="geometry">
         <rect>
-         <x>252</x>
+         <x>230</x>
          <y>600</y>
          <width>211</width>
          <height>31</height>
@@ -1048,7 +1046,7 @@ border:none;
        <property name="font">
         <font>
          <family>Segoe UI</family>
-         <pointsize>11</pointsize>
+         <pointsize>12</pointsize>
         </font>
        </property>
        <property name="styleSheet">
@@ -1079,7 +1077,7 @@ border:none;</string>
       </property>
       <property name="font">
        <font>
-        <family>Whitney</family>
+        <family>Segoe UI</family>
         <pointsize>12</pointsize>
        </font>
       </property>
@@ -1435,11 +1433,15 @@ p, li { white-space: pre-wrap; }
      <widget class="QGroupBox" name="forgotPasswordGroupBox">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>200</y>
+        <x>250</x>
+        <y>149</y>
         <width>300</width>
-        <height>210</height>
+        <height>281</height>
        </rect>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">background-color:rgb(35, 39, 42);
+border: none;</string>
       </property>
       <property name="title">
        <string/>
@@ -1450,8 +1452,21 @@ p, li { white-space: pre-wrap; }
          <x>50</x>
          <y>50</y>
          <width>200</width>
-         <height>30</height>
+         <height>40</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Whitney</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
        </property>
        <property name="text">
         <string/>
@@ -1466,8 +1481,30 @@ p, li { white-space: pre-wrap; }
          <x>100</x>
          <y>110</y>
          <width>100</width>
-         <height>30</height>
+         <height>40</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Whitney</family>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
        </property>
        <property name="text">
         <string>Send</string>
@@ -1480,10 +1517,23 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>10</x>
-         <y>170</y>
+         <y>210</y>
          <width>101</width>
          <height>30</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Whitney</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
        </property>
        <property name="text">
         <string/>
@@ -1498,11 +1548,33 @@ p, li { white-space: pre-wrap; }
        </property>
        <property name="geometry">
         <rect>
-         <x>120</x>
-         <y>170</y>
-         <width>100</width>
+         <x>130</x>
+         <y>210</y>
+         <width>81</width>
          <height>30</height>
         </rect>
+       </property>
+       <property name="font">
+        <font>
+         <family>Whitney</family>
+         <pointsize>9</pointsize>
+        </font>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
        </property>
        <property name="text">
         <string>Validate</string>
@@ -1512,17 +1584,21 @@ p, li { white-space: pre-wrap; }
      <widget class="QCommandLinkButton" name="backToLoginLinkButton">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>410</y>
-        <width>100</width>
+        <x>250</x>
+        <y>440</y>
+        <width>121</width>
         <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>9</pointsize>
+        <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color:white;
+border:none;</string>
       </property>
       <property name="text">
        <string>Back to login</string>
@@ -1537,17 +1613,21 @@ p, li { white-space: pre-wrap; }
      <widget class="QCommandLinkButton" name="registerNowLinkButton">
       <property name="geometry">
        <rect>
-        <x>480</x>
-        <y>410</y>
-        <width>100</width>
+        <x>440</x>
+        <y>440</y>
+        <width>121</width>
         <height>40</height>
        </rect>
       </property>
       <property name="font">
        <font>
         <family>Segoe UI</family>
-        <pointsize>9</pointsize>
+        <pointsize>11</pointsize>
        </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color:white;
+border:none;</string>
       </property>
       <property name="text">
        <string>Register now</string>
@@ -1564,11 +1644,24 @@ p, li { white-space: pre-wrap; }
      <widget class="QLineEdit" name="newPasswordLineEdit">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>300</x>
         <y>220</y>
         <width>200</width>
-        <height>30</height>
+        <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Whitney</family>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
       </property>
       <property name="text">
        <string/>
@@ -1583,11 +1676,24 @@ p, li { white-space: pre-wrap; }
      <widget class="QLineEdit" name="confirmNewPasswordLineEdit">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>300</x>
         <y>290</y>
         <width>200</width>
-        <height>30</height>
+        <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Whitney</family>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
       </property>
       <property name="text">
        <string/>
@@ -1602,11 +1708,33 @@ p, li { white-space: pre-wrap; }
      <widget class="QPushButton" name="updatePasswordPushButton">
       <property name="geometry">
        <rect>
-        <x>460</x>
+        <x>300</x>
         <y>370</y>
         <width>191</width>
-        <height>28</height>
+        <height>40</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>Whitney</family>
+        <pointsize>9</pointsize>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
       </property>
       <property name="text">
        <string>Update Password</string>

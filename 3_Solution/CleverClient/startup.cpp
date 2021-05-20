@@ -11,6 +11,7 @@ Startup::Startup(QWidget *parent)
 	this->currPAT = "";
 	this->currEmail = "";
 	ui.setupUi(this);
+	this->setWindowIcon(QIcon("Images/img3.jpg"));
 	//m_dshptr = new Dashboard(ui.stackedWidget);
 	connect(ui.countryComboBox, SIGNAL(activated(int)), this, SLOT(on_countrySelected(int)));
 	connect(ui.phoneLineEdit, SIGNAL(textEdited(QString)), this, SLOT(on_phoneNumberEdited()));
@@ -52,6 +53,14 @@ void Startup::clearGaps()
 	ui.forgotPasswordEmailLineEdit->clear();
 	ui.keeploggedCheckBox->setChecked(false);
 	ui.termsAndConditonsCheckBox->setChecked(false);
+}
+
+void Startup::windowAppCenter()
+{
+	QRect screenGeometry = QApplication::desktop()->screenGeometry();
+	int x = (screenGeometry.width() / 2 - this->width() / 2);
+	int y = (screenGeometry.height() / 2 - this->height() / 2);
+	this->move(QPoint(x, y));
 }
 
 void Startup::fillCountries()
@@ -98,6 +107,7 @@ void Startup::resizeToLoginPage()
 	ui.stackedWidget->resize(QSize(800, 600));*/
 	this->setFixedSize(QSize(800, 600));
 	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	windowAppCenter();
 	this->clearGaps();
 }
 
@@ -107,7 +117,8 @@ void Startup::resizeToRegisterPage()
 	ui.stackedWidget->resize(QSize(1360, 768));*/
 	this->setFixedSize(QSize(1360, 768));
 	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
-	//this->clearGaps();
+	windowAppCenter();
+	this->clearGaps();
 }
 
 void Startup::resizeToForgotPasswordPage()
@@ -116,6 +127,7 @@ void Startup::resizeToForgotPasswordPage()
 	ui.stackedWidget->resize(QSize(800, 600));*/
 	this->setFixedSize(QSize(800, 600));
 	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	windowAppCenter();
 	this->clearGaps();
 }
 
@@ -123,6 +135,7 @@ void Startup::resizeToUpdatePasswordPage()
 {
 	this->setFixedSize(QSize(800, 600));
 	ui.stackedWidget->setFixedSize(QSize(800, 600)); //optional
+	windowAppCenter();
 	this->clearGaps();
 }
 
@@ -130,6 +143,7 @@ void Startup::resizeToDashboard()
 {
 	this->setFixedSize(QSize(1360, 768));
 	ui.stackedWidget->setFixedSize(QSize(1360, 768));
+	windowAppCenter();
 }
 
 void Startup::resizeToTermsAndConditionsPage()
@@ -138,6 +152,7 @@ void Startup::resizeToTermsAndConditionsPage()
 	ui.stackedWidget->resize(QSize(1360, 768));*/
 	this->setFixedSize(QSize(1360, 768));
 	ui.stackedWidget->setFixedSize(QSize(1360, 768)); //optional
+	windowAppCenter();
 }
 
 bool Startup::tryLoginRemembered()
