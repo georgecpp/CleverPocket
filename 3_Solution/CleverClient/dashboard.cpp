@@ -21,6 +21,7 @@ Dashboard::Dashboard(QStackedWidget* parentStackedWidget, QWidget* parent)
 	toggleTranzactionsButtons(0);
 	ui.statisticsTabWidget->setTabPosition(QTabWidget::TabPosition::South);
 	initMonthCodeMap();
+	
 }
 
 Dashboard::Dashboard(const QString& PAT, QStackedWidget* parentStackedWidget, QWidget* parent)
