@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>AddSpendingsDialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(35, 39, 42);
+
+</string>
+  </property>
   <widget class="QLineEdit" name="categoryNameLineEdit">
    <property name="geometry">
     <rect>
@@ -21,6 +26,13 @@
      <width>291</width>
      <height>30</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -40,6 +52,13 @@
      <width>291</width>
      <height>30</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="inputMethodHints">
     <set>Qt::ImhDigitsOnly</set>
@@ -63,6 +82,34 @@
      <height>30</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QComboBox
+{
+color:white;
+background-color: rgb(44, 47, 51);
+}
+
+QComboBox QAbstractItemView {
+   color:white;
+    selection-background-color:rgb(88, 101, 242);
+	backgroud-color:rgb(44, 47, 51);
+	
+}
+
+QComboBox QScrollBar
+{
+background: #5865F2
+}
+
+QComboBox QAbstractItemView QScrollBar
+{
+background: #5865F2
+}
+
+
+
+</string>
+   </property>
   </widget>
   <widget class="QLineEdit" name="financeISOLineEdit">
    <property name="geometry">
@@ -72,6 +119,13 @@
      <width>51</width>
      <height>30</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -92,6 +146,13 @@
      <height>30</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
@@ -111,6 +172,13 @@
      <height>81</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
    </property>
@@ -124,8 +192,24 @@
      <x>200</x>
      <y>480</y>
      <width>75</width>
-     <height>23</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
    </property>
    <property name="text">
     <string>Add</string>
@@ -137,8 +221,24 @@
      <x>410</x>
      <y>480</y>
      <width>75</width>
-     <height>23</height>
+     <height>31</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
    </property>
    <property name="text">
     <string>Cancel</string>
@@ -152,6 +252,13 @@
      <width>291</width>
      <height>30</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="inputMethodHints">
     <set>Qt::ImhDigitsOnly</set>

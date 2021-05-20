@@ -55,7 +55,7 @@ private:
 	clever::CredentialHandler user_information;
 	clever::BudgetHandler user_budget;
 	std::string dailyMailState;
-	std::string profilePicture;
+	std::string profilePicture = "Images/img3.jpg";
 	bool currentlyOnBudget;
 	std::map<int, std::string> month_code_map;
 	std::map<std::string, std::string> endMonthsContextMap;

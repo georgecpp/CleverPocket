@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>InfoTranzactionDialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(35, 39, 42);
+
+</string>
+  </property>
   <widget class="QLineEdit" name="sourceInfoLineEdit">
    <property name="geometry">
     <rect>
@@ -21,6 +26,19 @@
      <width>181</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="readOnly">
     <bool>true</bool>
@@ -35,6 +53,19 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -47,6 +78,19 @@
      <width>171</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="readOnly">
     <bool>true</bool>
@@ -61,6 +105,19 @@
      <height>22</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -74,6 +131,21 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;
+}</string>
+   </property>
    <property name="readOnly">
     <bool>true</bool>
    </property>
@@ -86,6 +158,19 @@
      <width>391</width>
      <height>101</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
@@ -103,6 +188,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Source</string>
    </property>
@@ -115,6 +213,19 @@
      <width>81</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
    </property>
    <property name="text">
     <string>Destination</string>
@@ -129,6 +240,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Timestamp</string>
    </property>
@@ -141,6 +265,19 @@
      <width>71</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
    </property>
    <property name="text">
     <string>Finance</string>
@@ -155,6 +292,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Value</string>
    </property>
@@ -168,6 +318,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Description</string>
    </property>
@@ -180,6 +343,19 @@
      <width>241</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -200,6 +376,28 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
+   </property>
    <property name="text">
     <string>OK</string>
    </property>
@@ -212,6 +410,19 @@
      <width>91</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
    </property>
    <property name="text">
     <string>Category</string>

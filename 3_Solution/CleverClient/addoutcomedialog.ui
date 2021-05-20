@@ -13,6 +13,11 @@
   <property name="windowTitle">
    <string>AddOutComeDialog</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(35, 39, 42);
+
+</string>
+  </property>
   <widget class="QGroupBox" name="groupBox">
    <property name="geometry">
     <rect>
@@ -21,6 +26,11 @@
      <width>431</width>
      <height>481</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background-color:rgb(35, 39, 42);
+
+border:none;</string>
    </property>
    <property name="title">
     <string/>
@@ -33,6 +43,19 @@
       <width>321</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -50,6 +73,19 @@
       <height>31</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+    </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
@@ -63,8 +99,42 @@
       <x>40</x>
       <y>200</y>
       <width>321</width>
-      <height>22</height>
+      <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox
+{
+color:white;
+background-color: rgb(44, 47, 51);
+}
+
+QComboBox QAbstractItemView {
+   color:white;
+    selection-background-color:rgb(88, 101, 242);
+	backgroud-color:rgb(44, 47, 51);
+	
+}
+
+QComboBox QScrollBar
+{
+background: #5865F2
+}
+
+QComboBox QAbstractItemView QScrollBar
+{
+background: #5865F2
+}
+
+
+
+</string>
     </property>
    </widget>
    <widget class="QComboBox" name="dayOfMonthComboBox">
@@ -75,6 +145,40 @@
       <width>69</width>
       <height>22</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QComboBox
+{
+color:white;
+background-color: rgb(44, 47, 51);
+}
+
+QComboBox QAbstractItemView {
+   color:white;
+    selection-background-color:rgb(88, 101, 242);
+	backgroud-color:rgb(44, 47, 51);
+	
+}
+
+QComboBox QScrollBar
+{
+background: #5865F2
+}
+
+QComboBox QAbstractItemView QScrollBar
+{
+background: #5865F2
+}
+
+
+
+</string>
     </property>
     <item>
      <property name="text">
@@ -226,6 +330,19 @@
       <height>20</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+    </property>
     <property name="text">
      <string>Day of the month:</string>
     </property>
@@ -238,6 +355,28 @@
       <width>75</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
     </property>
     <property name="text">
      <string>Add</string>
@@ -252,6 +391,28 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
+    </property>
     <property name="text">
      <string>Cancel</string>
     </property>
@@ -261,9 +422,22 @@
      <rect>
       <x>190</x>
       <y>270</y>
-      <width>81</width>
+      <width>91</width>
       <height>16</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
     </property>
     <property name="text">
      <string>Card Currency:</string>
@@ -277,6 +451,19 @@
       <width>71</width>
       <height>20</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -293,6 +480,19 @@
       <width>321</width>
       <height>31</height>
      </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Whitney</family>
+      <pointsize>9</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>

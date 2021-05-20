@@ -10,8 +10,19 @@
     <height>600</height>
    </rect>
   </property>
+  <property name="font">
+   <font>
+    <family>Whitney</family>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>EditCardDialog</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color:rgb(35, 39, 42);
+
+</string>
   </property>
   <widget class="QLineEdit" name="cardHolderLineEdit">
    <property name="geometry">
@@ -21,6 +32,19 @@
      <width>321</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -38,6 +62,19 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
+   </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
    </property>
@@ -53,6 +90,19 @@
      <width>321</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -70,6 +120,28 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
+   </property>
    <property name="text">
     <string>Cancel</string>
    </property>
@@ -82,6 +154,28 @@
      <width>111</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">
+QPushButton {
+     background-color: rgb(88, 101, 242);
+ }
+ QPushButton#pushButton:pressed {
+   	background-color: rgb(88, 157, 242); 
+ }
+ QPushButton#pushButton:hover {
+     
+	background-color: rgb(88, 157, 242);
+ }
+ QPushButton[text] {
+    color:white;
+ }</string>
    </property>
    <property name="text">
     <string>Edit</string>
@@ -96,6 +190,19 @@
      <height>21</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Valid until:</string>
    </property>
@@ -109,6 +216,40 @@
      <height>31</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QComboBox
+{
+color:white;
+background-color: rgb(44, 47, 51);
+}
+
+QComboBox QAbstractItemView {
+   color:white;
+    selection-background-color:rgb(88, 101, 242);
+	backgroud-color:rgb(44, 47, 51);
+	
+}
+
+QComboBox QScrollBar
+{
+background: #5865F2
+}
+
+QComboBox QAbstractItemView QScrollBar
+{
+background: #5865F2
+}
+
+
+
+</string>
+   </property>
   </widget>
   <widget class="QLineEdit" name="cardNameLineEdit">
    <property name="geometry">
@@ -118,6 +259,19 @@
      <width>321</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLineEdit[text]{
+color: white;}
+QLineEdit{
+background-color: rgb(44, 47, 51);
+border:none;}</string>
    </property>
    <property name="text">
     <string/>
@@ -138,6 +292,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Currency:</string>
    </property>
@@ -150,6 +317,19 @@
      <width>61</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
    </property>
    <property name="text">
     <string>Card Name:</string>
@@ -164,6 +344,19 @@
      <height>16</height>
     </rect>
    </property>
+   <property name="font">
+    <font>
+     <family>Whitney</family>
+     <pointsize>9</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
+   </property>
    <property name="text">
     <string>Card Holder:</string>
    </property>
@@ -176,6 +369,13 @@
      <width>71</width>
      <height>16</height>
     </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel[text]{
+color: white;}
+QLabel{
+background-color:rgb(35, 39, 42);
+border:none;}</string>
    </property>
    <property name="text">
     <string>Card Number</string>

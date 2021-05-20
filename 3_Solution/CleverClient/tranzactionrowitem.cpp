@@ -37,28 +37,31 @@ TranzactionRowItem::TranzactionRowItem(int rowSize, const char* title, const cha
 	this->trStoredTitle = title;
 	this->trStoredDate = date;
 
-
+	
 	this->layout = new QVBoxLayout();
 
 	std::string val = (trType == clever::TranzactionType::Income) ? "+" : "-";
 	val += value;
 	tranzactionTitle = new QLabel(title);
+	tranzactionTitle->setStyleSheet(" QLabel{background:transparent; color:white; font-family: Whitney;font-size: 12px;}");
 	std::string dateTimestamp = date;
 	if (dateTimestamp.find('.'))
 	{
 		dateTimestamp.erase(dateTimestamp.find('.'));
 	}
 	tranzactionDate = new QLabel(dateTimestamp.c_str());
+	tranzactionDate->setStyleSheet(" QLabel{background:transparent; color:white; font-family: Whitney;font-size: 10px;}");
 	tranzactionValue = new QLabel(val.c_str());
 	if (trType == clever::TranzactionType::Income)
 	{
-		tranzactionValue->setStyleSheet("QLabel {color : green; }");
+		tranzactionValue->setStyleSheet(" QLabel{background:transparent; color:green; font-family: Whitney;font-size: 10px;}");
 	}
 	else
 	{
-		tranzactionValue->setStyleSheet("QLabel {color : red; }");
+		tranzactionValue->setStyleSheet(" QLabel{background:transparent; color:red; font-family: Whitney;font-size: 10px;}");
 	}
 	tranzactionCurrencyISO = new QLabel(currencyISO);
+	tranzactionCurrencyISO->setStyleSheet(" QLabel{background:transparent; color:white; font-family: Whitney;font-size: 10px;}");
 	this->titleLayout = new QHBoxLayout();
 	//this->titleLayout->addWidget(new QLabel(""));
 	this->titleLayout->addSpacing(rowSize/4);

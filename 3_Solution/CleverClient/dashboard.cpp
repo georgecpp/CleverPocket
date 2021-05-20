@@ -599,9 +599,9 @@ void Dashboard::load_spendingsTotals()
 
 	series->append("Education", educationTotal);
 	series->append("Free Time", freeTimeTotal);
-	series->append("Health & Self-Care", healthTotal);
-	series->append("Holiday & Travel", holidayTotal);
-	series->append("Public Transport & Taxi", transportTotal);
+	series->append("Health", healthTotal);
+	series->append("Holiday", holidayTotal);
+	series->append("Transport", transportTotal);
 	series->append("Shopping", shoppingTotal);
 
 
@@ -2293,7 +2293,9 @@ void Dashboard::on_calculatePushButton_1_clicked()
 	chart->legend()->hide();
 	QString Title = "Investment revenue \n" + QString::number(totalRevenue);
 	chart->setTitle(Title);
+	chart->setBackgroundVisible(false);
 	chart->setAnimationOptions(QChart::AllAnimations);
+
 
 	ui.investment1_chartView->setChart(chart);
 	ui.investment1_chartView->setRenderHint(QPainter::Antialiasing);
@@ -2363,6 +2365,7 @@ void Dashboard::on_calculatePushButton_2_clicked()
 	chart->addSeries(series);
 	chart->legend()->hide();
 	chart->setTitle(Title);
+	chart->setBackgroundVisible(false);
 	chart->setAnimationOptions(QChart::AllAnimations);
 
 	ui.investment2_chartView->setChart(chart);
