@@ -140,7 +140,7 @@ background: #5865F2
    <widget class="QComboBox" name="dayOfMonthComboBox">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>300</x>
       <y>300</y>
       <width>69</width>
       <height>22</height>
@@ -324,9 +324,9 @@ background: #5865F2
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>165</x>
       <y>300</y>
-      <width>91</width>
+      <width>131</width>
       <height>20</height>
      </rect>
     </property>
@@ -420,9 +420,9 @@ QPushButton {
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>190</x>
+      <x>165</x>
       <y>270</y>
-      <width>81</width>
+      <width>111</width>
       <height>16</height>
      </rect>
     </property>
@@ -446,7 +446,7 @@ border:none;}</string>
    <widget class="QLineEdit" name="cardCurrencyISO">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>300</x>
       <y>270</y>
       <width>71</width>
       <height>20</height>

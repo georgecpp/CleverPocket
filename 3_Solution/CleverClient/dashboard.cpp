@@ -191,7 +191,13 @@ void Dashboard::loadCash()
 				this->user_information.setPhoneNumber(phoneNumber);
 				this->profilePicture = picture;
 
-
+				QImage image;
+				bool valid = image.load("./Images/img3.jpg");
+				if (valid)
+				{
+					image = image.scaledToWidth(ui.profilePictureLabel->width(), Qt::SmoothTransformation);
+					ui.profilePictureLabel->setPixmap(QPixmap::fromImage(image));
+				}
 				// loading profile picture
 				if (this->profilePicture != "")
 				{
@@ -597,21 +603,24 @@ void Dashboard::load_spendingsTotals()
 
 	QPieSeries* series = new QPieSeries;
 
-	series->append("Education", educationTotal);
-	series->append("Free Time", freeTimeTotal);
-	series->append("Health", healthTotal);
-	series->append("Holiday", holidayTotal);
-	series->append("Transport", transportTotal);
-	series->append("Shopping", shoppingTotal);
+	series->append("Education", educationTotal)->setLabelColor(QColor("white"));
+	series->append("Free Time", freeTimeTotal)->setLabelColor(QColor("white"));
+	series->append("Health", healthTotal)->setLabelColor(QColor("white"));
+	series->append("Holiday", holidayTotal)->setLabelColor(QColor("white"));
+	series->append("Transport", transportTotal)->setLabelColor(QColor("white"));
+	series->append("Shopping", shoppingTotal)->setLabelColor(QColor("white"));
 
 
 
 	QChart* totalSpendingsChart = new QChart;
 	totalSpendingsChart->addSeries(series);
 	totalSpendingsChart->setTitle("Total Spendings");
+	totalSpendingsChart->setTitleBrush(QBrush(Qt::white));
 	totalSpendingsChart->legend()->hide();
 	totalSpendingsChart->setAnimationOptions(QChart::AllAnimations);
 	totalSpendingsChart->setBackgroundVisible(false);
+
+
 
 	series->setLabelsVisible();
 
@@ -2254,6 +2263,10 @@ void Dashboard::on_lineSeries_hovered(const QPointF& point, bool state)
 void Dashboard::on_investmentsCommandLinkButton_clicked()
 {
 	ui.stackedWidget->setCurrentWidget(ui.investmentPage);
+	QChart* noBackgroundChart = new QChart;
+	noBackgroundChart->setBackgroundVisible(false);
+	ui.investment1_chartView->setChart(noBackgroundChart);
+	ui.investment2_chartView->setChart(noBackgroundChart);
 }
 void Dashboard::on_calculatePushButton_1_clicked()
 {
@@ -2273,7 +2286,11 @@ void Dashboard::on_calculatePushButton_1_clicked()
 	}
 	std::string currYear = "Year 0";
 	QBarCategoryAxis* axisX = new QBarCategoryAxis;
+	axisX->setGridLineColor(QColor("transparent"));
+	axisX->setLabelsColor(QColor("white"));
 	QBarCategoryAxis* axisY = new QBarCategoryAxis;
+	axisY->setLabelsColor(QColor("white"));
+	axisY->setGridLineColor(QColor("transparent"));
 	
 	QLineSeries* series = new QLineSeries();
 	series->append(0, 0);
@@ -2293,6 +2310,7 @@ void Dashboard::on_calculatePushButton_1_clicked()
 	chart->legend()->hide();
 	QString Title = "Investment revenue \n" + QString::number(totalRevenue);
 	chart->setTitle(Title);
+	chart->setTitleBrush(QBrush(Qt::white));
 	chart->setBackgroundVisible(false);
 	chart->setAnimationOptions(QChart::AllAnimations);
 
@@ -2328,7 +2346,11 @@ void Dashboard::on_calculatePushButton_2_clicked()
 	}
 	std::string currYear = "Year 0";
 	QBarCategoryAxis* axisX = new QBarCategoryAxis;
+	axisX->setGridLineColor(QColor("transparent"));
+	axisX->setLabelsColor(QColor("white"));
 	QBarCategoryAxis* axisY = new QBarCategoryAxis;
+	axisY->setLabelsColor(QColor("white"));
+	axisY->setGridLineColor(QColor("transparent"));
 
 	QLineSeries* series = new QLineSeries();
 	series->append(0, 0);
@@ -2365,6 +2387,7 @@ void Dashboard::on_calculatePushButton_2_clicked()
 	chart->addSeries(series);
 	chart->legend()->hide();
 	chart->setTitle(Title);
+	chart->setTitleBrush(QBrush(Qt::white));
 	chart->setBackgroundVisible(false);
 	chart->setAnimationOptions(QChart::AllAnimations);
 
@@ -2387,6 +2410,7 @@ void Dashboard::init_statistics()
 
 		QBarSeries* barSeries = new QBarSeries;
 		QBarCategoryAxis* axisX = new QBarCategoryAxis;
+		axisX->setLabelsColor(QColor("white"));
 		std::string firstMonth = month_code[startMonth].c_str();
 		std::string secondMonth = month_code[((startMonth + 1) % 12 == 0) ? 12 : (startMonth + 1) % 12].c_str();
 		std::string thirdMonth = month_code[((startMonth + 2) % 12 == 0) ? 12 : (startMonth + 2) % 12].c_str();
@@ -2458,6 +2482,7 @@ void Dashboard::init_statistics()
 
 
 		QBarCategoryAxis* capitalX = new QBarCategoryAxis;
+		capitalX->setLabelsColor(QColor("white"));
 		capitalX->append(firstMonth.c_str());
 		capitalX->append(secondMonth.c_str());
 		capitalX->append(thirdMonth.c_str());

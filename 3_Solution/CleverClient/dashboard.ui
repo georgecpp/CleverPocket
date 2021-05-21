@@ -523,7 +523,7 @@ color:white;
 </string>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="cardsTab">
       <attribute name="title">
@@ -661,7 +661,7 @@ border:none;}</string>
          <rect>
           <x>40</x>
           <y>130</y>
-          <width>81</width>
+          <width>91</width>
           <height>16</height>
          </rect>
         </property>
@@ -713,7 +713,7 @@ border:none;}</string>
          <rect>
           <x>40</x>
           <y>170</y>
-          <width>61</width>
+          <width>71</width>
           <height>16</height>
          </rect>
         </property>
@@ -1376,9 +1376,7 @@ border:none;}</string>
       </rect>
      </property>
      <property name="styleSheet">
-      <string notr="true">border-image: url(:/images/Images/img3.jpg);
-          
-            border-radius:120px;
+      <string notr="true">
           </string>
      </property>
      <property name="text">
@@ -1575,7 +1573,7 @@ color:white;
 border:none;}</string>
      </property>
      <property name="title">
-      <string>GroupBox</string>
+      <string>Preferences</string>
      </property>
      <widget class="QComboBox" name="preferenceCurrencyComboBox">
       <property name="geometry">
@@ -3060,7 +3058,7 @@ border:none;}</string>
          <rect>
           <x>40</x>
           <y>170</y>
-          <width>71</width>
+          <width>91</width>
           <height>16</height>
          </rect>
         </property>
@@ -3112,7 +3110,7 @@ border:none;}</string>
          <rect>
           <x>40</x>
           <y>50</y>
-          <width>91</width>
+          <width>101</width>
           <height>16</height>
          </rect>
         </property>
@@ -3141,6 +3139,12 @@ border:none;}</string>
           <width>211</width>
           <height>16</height>
          </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Segoe UI</family>
+          <pointsize>9</pointsize>
+         </font>
         </property>
         <property name="styleSheet">
          <string notr="true">QLabel[text]{
@@ -3473,7 +3477,7 @@ border:none;}</string>
          <rect>
           <x>40</x>
           <y>50</y>
-          <width>101</width>
+          <width>111</width>
           <height>16</height>
          </rect>
         </property>
@@ -3813,8 +3817,8 @@ background: #5865F2
       <rect>
        <x>70</x>
        <y>650</y>
-       <width>181</width>
-       <height>41</height>
+       <width>211</width>
+       <height>51</height>
       </rect>
      </property>
      <property name="font">
@@ -4412,16 +4416,16 @@ background: #5865F2
     <widget class="QPushButton" name="budgetbackToGoalsPushButton">
      <property name="geometry">
       <rect>
-       <x>120</x>
+       <x>90</x>
        <y>690</y>
-       <width>191</width>
+       <width>221</width>
        <height>51</height>
       </rect>
      </property>
      <property name="font">
       <font>
        <family>Whitney</family>
-       <pointsize>12</pointsize>
+       <pointsize>10</pointsize>
       </font>
      </property>
      <property name="styleSheet">
@@ -4507,7 +4511,7 @@ border:none;}</string>
     <widget class="QLineEdit" name="valueNotToExceedLineEdit">
      <property name="geometry">
       <rect>
-       <x>550</x>
+       <x>590</x>
        <y>470</y>
        <width>141</width>
        <height>22</height>
@@ -4530,7 +4534,7 @@ border:none;}</string>
     <widget class="QLabel" name="budgetISOLabel">
      <property name="geometry">
       <rect>
-       <x>700</x>
+       <x>740</x>
        <y>470</y>
        <width>55</width>
        <height>21</height>
@@ -4715,7 +4719,7 @@ QPushButton {
       <rect>
        <x>320</x>
        <y>80</y>
-       <width>411</width>
+       <width>531</width>
        <height>16</height>
       </rect>
      </property>
@@ -5417,7 +5421,7 @@ color:white;
 </string>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="Investment1">
       <attribute name="title">
@@ -5426,7 +5430,7 @@ color:white;
       <widget class="QLabel" name="label_11">
        <property name="geometry">
         <rect>
-         <x>480</x>
+         <x>460</x>
          <y>110</y>
          <width>141</width>
          <height>51</height>
@@ -5458,9 +5462,9 @@ border:none;}</string>
       <widget class="QLabel" name="label_15">
        <property name="geometry">
         <rect>
-         <x>480</x>
+         <x>460</x>
          <y>160</y>
-         <width>131</width>
+         <width>141</width>
          <height>31</height>
         </rect>
        </property>
@@ -5621,9 +5625,9 @@ border:none;}</string>
       <widget class="QLabel" name="label_12">
        <property name="geometry">
         <rect>
-         <x>480</x>
+         <x>460</x>
          <y>210</y>
-         <width>131</width>
+         <width>161</width>
          <height>31</height>
         </rect>
        </property>
@@ -5641,7 +5645,7 @@ background-color:rgb(35, 39, 42);
 border:none;}</string>
        </property>
        <property name="text">
-        <string>Length of Time in Years</string>
+        <string>Length of Time in Years:</string>
        </property>
       </widget>
       <widget class="QLineEdit" name="contributionLineEdit">
@@ -5819,7 +5823,7 @@ border:none;}</string>
         <rect>
          <x>480</x>
          <y>160</y>
-         <width>131</width>
+         <width>141</width>
          <height>31</height>
         </rect>
        </property>

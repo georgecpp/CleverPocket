@@ -27,7 +27,7 @@
   <widget class="QLineEdit" name="cardHolderLineEdit">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>265</x>
      <y>140</y>
      <width>321</width>
      <height>31</height>
@@ -85,7 +85,7 @@ border:none;}</string>
   <widget class="QLineEdit" name="cardNumberLineEdit">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>265</x>
      <y>200</y>
      <width>321</width>
      <height>31</height>
@@ -186,7 +186,7 @@ QPushButton {
     <rect>
      <x>390</x>
      <y>320</y>
-     <width>61</width>
+     <width>71</width>
      <height>21</height>
     </rect>
    </property>
@@ -254,7 +254,7 @@ background: #5865F2
   <widget class="QLineEdit" name="cardNameLineEdit">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>265</x>
      <y>80</y>
      <width>321</width>
      <height>31</height>
@@ -314,7 +314,7 @@ border:none;}</string>
     <rect>
      <x>160</x>
      <y>80</y>
-     <width>61</width>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
@@ -340,7 +340,7 @@ border:none;}</string>
     <rect>
      <x>160</x>
      <y>150</y>
-     <width>61</width>
+     <width>91</width>
      <height>16</height>
     </rect>
    </property>
@@ -366,7 +366,7 @@ border:none;}</string>
     <rect>
      <x>160</x>
      <y>210</y>
-     <width>71</width>
+     <width>91</width>
      <height>16</height>
     </rect>
    </property>
@@ -378,7 +378,7 @@ background-color:rgb(35, 39, 42);
 border:none;}</string>
    </property>
    <property name="text">
-    <string>Card Number</string>
+    <string>Card Number:</string>
    </property>
   </widget>
  </widget>
