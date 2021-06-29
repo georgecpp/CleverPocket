@@ -1,0 +1,51 @@
+<RCC>
+    <qresource prefix="/QtTest">
+        <file>Images/switch.png</file>
+    </qresource>
+    <qresource prefix="/newPrefix"/>
+    <qresource prefix="/fonts">
+        <file>whitneymedium.otf</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>Images/img2.png</file>
+        <file>Images/img3.jpg</file>
+        <file>Images/money.png</file>
+        <file>Images/pictogram.png</file>
+        <file>Images/pie-chart.png</file>
+        <file>Images/transaction.png</file>
+        <file>Images/promotion.png</file>
+        <file>Images/money-bag.png</file>
+        <file>Images/img6.png</file>
+        <file>Images/dash1.png</file>
+        <file>Images/dash2.png</file>
+        <file>Images/dash3.png</file>
+        <file>Images/dash4.png</file>
+        <file>Images/dash5.png</file>
+        <file>Images/dash6.png</file>
+        <file>Images/dash7.png</file>
+        <file>Images/dash8.png</file>
+        <file>Images/dash9.png</file>
+        <file>Images/dash10.png</file>
+        <file>Images/dash12.png</file>
+        <file>Images/dash13.png</file>
+        <file>Images/exchange.png</file>
+        <file>Images/money2.png</file>
+        <file>Images/moneybag2.png</file>
+        <file>Images/piggy-bank.png</file>
+        <file>Images/budget.png</file>
+        <file>Images/budgeting.png</file>
+        <file>Images/schedule.png</file>
+        <file>Images/beach-chair.png</file>
+        <file>Images/heartbeat (1).png</file>
+        <file>Images/heartbeat.png</file>
+        <file>Images/mortarboard.png</file>
+        <file>Images/presents.png</file>
+        <file>Images/public-transport.png</file>
+        <file>Images/reading.png</file>
+        <file>Images/recurring-payment.png</file>
+        <file>Images/shopping-cart.png</file>
+        <file>Images/sunbed.png</file>
+        <file>Images/traffic.png</file>
+        <file>Images/refresh.png</file>
+    </qresource>
+</RCC>
